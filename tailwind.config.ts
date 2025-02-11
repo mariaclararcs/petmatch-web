@@ -1,13 +1,19 @@
 import type { Config } from "tailwindcss";
 
+<<<<<<< HEAD
 const config: Config = {
     darkMode: ["class"],
     content: [
+=======
+export default {
+  content: [
+>>>>>>> 0a36de5 (feat(user login): add user login form)
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+<<<<<<< HEAD
   	extend: {
   		colors: {
   			background: 'hsl(var(--background))',
@@ -61,3 +67,14 @@ const config: Config = {
   plugins: [require("tailwindcss-animate")],
 };
 export default config;
+=======
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;
+>>>>>>> 0a36de5 (feat(user login): add user login form)
