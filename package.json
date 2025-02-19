@@ -9,26 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@rocketseat/eslint-config": "^2.2.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.441.0",
-    "next": "14.2.11",
-    "react": "^18",
-    "react-dom": "^18",
-    "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.11",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-=======
     "next": "^15.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -41,7 +21,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "mini-css-extract-plugin": "^2.9.2",
->>>>>>> 0a36de5 (feat(user login): add user login form)
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
