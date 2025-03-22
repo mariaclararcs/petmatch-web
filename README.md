@@ -13,7 +13,7 @@ O projeto segue a **arquitetura de três camadas**, sendo dividido em:
 - **Back-End:** Implementado com Laravel (PHP), encarregado do processamento de dados e regras de negócio.
 - **Banco de Dados:** Utiliza MySQL para armazenar informações sobre usuários e animais.
 
-**O projeto foi desenvolvido com o objetivo de ser um Trabalho de Graduação do cuso de Análise e Desenvolvimento de Sistemas.**
+**O projeto foi desenvolvido com o objetivo de ser um Trabalho de Graduação do curso de Análise e Desenvolvimento de Sistemas.**
 
 ---
 
