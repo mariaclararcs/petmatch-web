@@ -1,3 +1,22 @@
+# 🐶🐱 Pet Match
+
+### 🎯 Sobre
+
+O **Pet Match** é uma plataforma web desenvolvida para facilitar a conexão entre adotantes e ONGs/abrigos que resgatam animais. O projeto visa oferecer um ambiente intuitivo e acessível para que as ONGs possam divulgar animais para adoção, permitir que os usuários entrem em contato com as instituições e oferecer uma forma segura de realizar doações.
+
+O principal objetivo é otimizar o processo de adoção de animais resgatados e fortalecer a visibilidade das ONGs, proporcionando um meio eficiente de divulgação e comunicação entre as partes interessadas.
+
+### 🏗️ Arquitetura do Projeto
+
+O projeto segue a **arquitetura de três camadas**, sendo dividido em:
+- **Front-End:** Desenvolvido com Next.js e TypeScript, responsável pela interface do usuário.
+- **Back-End:** Implementado com Laravel (PHP), encarregado do processamento de dados e regras de negócio.
+- **Banco de Dados:** Utiliza MySQL para armazenar informações sobre usuários e animais.
+
+**O projeto foi desenvolvido com o objetivo de ser um Trabalho de Graduação do cuso de Análise e Desenvolvimento de Sistemas**
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
 ## Getting Started
