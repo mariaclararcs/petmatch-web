@@ -15,13 +15,13 @@ export default function loginUser() {
                 />
             </div>
             <div className={style.direita}>
-                <div className={style.form}>
+                <form action="" className={style.form}>
                     <h1>Login Usuário</h1>
-                        <input type="text" placeholder="Insira seu e-mail"></input>
-                        <input type="password" placeholder="Insira sua senha"></input>
-                        <button>Entrar</button>
-                    <span className="text-xs">Ainda não possui cadastro? <Link href="/register/user">Cadastre-se agora!</Link></span>
-                </div>
+                    <input type="text" placeholder="Insira seu e-mail"></input>
+                    <input type="password" placeholder="Insira sua senha"></input>
+                    <button>Entrar</button>
+                    <span className="text-xs">Você inda não possui cadastro? <Link href="/register/user">Cadastre-se agora!</Link></span>
+                </form>
             </div>
         </div>
     )
