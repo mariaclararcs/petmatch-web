@@ -1,10 +1,11 @@
+import Footer from "@/components/footer"
 import Header from "@/components/header"
 
 export default function registerONG() {
     return (
         <div>
             <Header/>
-            <main>
+            <main className="flex flex-col justify-between items-center min-w-screen px-10 py-4">
                 <h1>Cadastro de Instituição</h1>
                 <form action="">
                     <label htmlFor="">Nome da Instituição:</label>
@@ -22,6 +23,7 @@ export default function registerONG() {
                     <button>Cadastrar</button>
                 </form>
             </main>
+            <Footer/>
         </div>
     )
 }

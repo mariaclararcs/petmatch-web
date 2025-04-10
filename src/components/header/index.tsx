@@ -9,12 +9,12 @@ const animais = [
   {
     value: "cachorros",
     label: "Cachorros",
-    href: "/login/user", // Adicione o caminho para cada animal
+    href: "",
   },
   {
     value: "gatos",
     label: "Gatos",
-    href: "/login/user",
+    href: "",
   },
 ]
 
@@ -22,58 +22,67 @@ export default function Header() {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <div className="flex flex-row justify-between items-center min-h-24 min-w-screen px-10 bg-primary">
-      <div className="flex flex-row items-center gap-24 lg:gap-32 text-lg">
-        <div className={style.textoLogo}>
-          <Link href="/">
-            <span className="text-4xl">Pet Match</span>
+    <header className="w-full bg-primary py-6">
+      <div className="flex flex-row justify-between items-center container mx-auto px-4">
+        <div className="flex flex-row items-center gap-6 md:gap-12 lg:gap-24">
+          <div className={style.textoLogo}>
+            <Link href="/" className="flex items-center gap-3">
+              {/* Adicione a imagem do logo como no footer se quiser */}
+              <span className="text-[40px] leading-[42px]">Pet Match</span>
+            </Link>
+          </div>
+
+          <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
+            <Link href="" className="hover:underline">
+              ONGs
+            </Link>
+            
+            {/* Dropdown de Animais */}
+            <div className="relative">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-1 hover:underline"
+                aria-expanded={isOpen}
+                aria-haspopup="true"
+              >
+                Animais
+                <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+              
+              {isOpen && (
+                <div 
+                  className="absolute z-10 mt-2 w-48 bg-background rounded-lg shadow-lg"
+                  onMouseLeave={() => setIsOpen(false)}
+                >
+                  {animais.map((animal) => (
+                    <Link
+                      key={animal.value}
+                      href={animal.href}
+                      onClick={() => setIsOpen(false)}
+                      className="block px-4 py-2 hover:bg-muted rounded-lg transition-colors"
+                    >
+                      {animal.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            <Link href="" className="hover:underline">
+              Sobre Nós
+            </Link>
+          </nav>
+        </div>
+
+        <div>
+          <Link 
+            href="" 
+            className="bg-background rounded-xl border-2 border-secondary px-6 py-3 font-bold text-secondary hover:bg-secondary hover:text-background transition-colors"
+          >
+            Entrar
           </Link>
         </div>
-
-        <Link href="/ongs" className="">ONGs</Link>
-        
-        {/* Combobox Customizada com Links */}
-        <div className="relative">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex items-center justify-between gap-2 px-4 py-2 text-left hover:bg-gray-100 rounded-md transition-colors"
-            aria-expanded={isOpen}
-            aria-haspopup="true"
-          >
-            Animais
-            <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-          </button>
-          
-          {isOpen && (
-            <div 
-              className="absolute z-10 mt-1 w-[200px] bg-background border rounded-lg shadow-lg"
-              // onMouseLeave={() => setIsOpen(false)} Fecha quando o mouse sai
-            >
-              {animais.map((animal) => (
-                <Link
-                  key={animal.value}
-                  href={animal.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-2 hover:bg-muted rounded-lg transition-colors ${
-                    // Você pode adicionar lógica para destacar a página atual se quiser
-                    false ? "bg-muted font-medium" : ""
-                  }`}
-                >
-                  {animal.label}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-        
-        <Link href="/sobre">Sobre Nós</Link>
       </div>
-
-      <div>
-        <button className="bg-background rounded-xl border-2 border-secondary px-8 py-4 font-bold text-secondary">
-          Entrar
-        </button>
-      </div>
-    </div>
+    </header>
   )
 }
