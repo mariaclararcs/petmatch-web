@@ -9,7 +9,7 @@ O principal objetivo é otimizar o processo de adoção de animais resgatados e 
 ### 🏗️ Arquitetura do Projeto
 
 O projeto segue a **arquitetura de três camadas**, sendo dividido em:
-- **Front-End:** Desenvolvido com Next.js e TypeScript, responsável pela interface do usuário.
+- **Front-End:** Desenvolvido com Next.js (TypeScript), responsável pela interface do usuário.
 - **Back-End:** Implementado com Laravel (PHP), encarregado do processamento de dados e regras de negócio.
 - **Banco de Dados:** Utiliza MySQL para armazenar informações sobre usuários e animais.
 
