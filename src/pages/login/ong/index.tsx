@@ -7,7 +7,7 @@ export default function loginONG() {
     return (
         <div className="flex columns-2">
             <div className={style.esquerda}>
-                <div className="flex flex-col justify-between items-center container mx-auto px-8 py-6 h-full">
+                <div className="flex flex-col justify-between items-center container mx-auto px-8 py-8 xl:py-12 h-full">
                     <div className="flex flex-col items-center w-full">
                         <div className={font.textoLogo}>
                             <span className="text-[52px] leading-[54px]">Pet Match</span>
@@ -42,7 +42,7 @@ export default function loginONG() {
             </div>
             <div className={style.direita}>
                 <Image
-                    src="/login-user.jpg"
+                    src="/images/login-ong.svg"
                     alt="User login image"
                     width={800}
                     height={800}
