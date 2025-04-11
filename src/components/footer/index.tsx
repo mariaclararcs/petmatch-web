@@ -11,7 +11,7 @@ export default function Footer() {
                         <Image 
                             className="text-secondary"
                             alt="Pet Match Icon" 
-                            src="/icon.svg"
+                            src="/icons/pet-house.svg"
                             width={90}
                             height={90}
                         />

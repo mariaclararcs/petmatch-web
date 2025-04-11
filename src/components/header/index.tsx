@@ -76,7 +76,7 @@ export default function Header() {
 
         <div>
           <Link 
-            href="" 
+            href="/login/user" 
             className="bg-background rounded-xl border-2 border-secondary px-6 py-3 font-bold text-secondary hover:bg-secondary hover:text-background transition-colors"
           >
             Entrar
