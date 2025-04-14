@@ -1,7 +1,55 @@
 import Footer from "@/components/footer"
 import Header from "@/components/header"
+import { useState } from "react"
 
-export default function registerONG() {
+export default function RegisterONG() {
+    const [phone, setPhone] = useState('')
+    const [cep, setCep] = useState('')
+    const [cnpj, setCnpj] = useState('')
+
+    const formatPhone = (value: string) => {
+        value = value.replace(/\D/g, '')
+        if (value.length > 11) value = value.substring(0, 11)
+            
+        if (value.length > 0) {
+            value = `(${value.substring(0, 2)}${value.length > 2 ? ')' : ''}${value.substring(2)}`
+        }
+        if (value.length > 10) {
+            value = `${value.substring(0, 9)}-${value.substring(9)}`
+        }
+        return value
+    }
+
+    const formatCEP = (value: string) => {
+        value = value.replace(/\D/g, '')
+        if (value.length > 8) value = value.substring(0, 8)
+        
+        if (value.length > 5) {
+          value = `${value.substring(0, 5)}-${value.substring(5)}`
+        }
+        return value
+    }
+
+    const formatCNPJ = (value: string) => {
+        value = value.replace(/\D/g, '')
+        if (value.length > 14) value = value.substring(0, 14)
+        
+        // Aplicando a máscara 00.000.000/0000-00
+        if (value.length > 0) {
+            value = value.replace(/^(\d{2})(\d)/, '$1.$2')
+        }
+        if (value.length > 3) {
+            value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
+        }
+        if (value.length > 7) {
+            value = value.replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3/$4')
+        }
+        if (value.length > 12) {
+            value = value.replace(/^(\d{2})\.(\d{3})\.(\d{3})\/(\d{4})(\d)/, '$1.$2.$3/$4-$5')
+        }
+        return value
+    }
+
     return (
         <div>
             <Header/>
@@ -18,17 +66,41 @@ export default function registerONG() {
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">CNPJ *</label>
-                                <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6" required/>
+                                <input
+                                    type="text"
+                                    value={cnpj}
+                                    onChange={(e) => setCnpj(formatCNPJ(e.target.value))}
+                                    placeholder="00.000.000/0000-00"
+                                    className="rounded-xl border-2 px-4 py-3 mb-6 w-full"
+                                    maxLength={18}
+                                    required
+                                />
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Celular *</label>
-                                <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6" required/>
+                                <input
+                                    type="text"
+                                    value={phone}
+                                    onChange={(e) => setPhone(formatPhone(e.target.value))}
+                                    placeholder="(00)00000-0000"
+                                    className="rounded-xl border-2 px-4 py-3 mb-6 w-full"
+                                    maxLength={15}
+                                    required
+                                />
                             </div>
                         </div>
                         <label className="mb-1">Endereço *</label>
                         <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6" required/>
                         <label className="mb-1">CEP *</label>
-                        <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6" required/>
+                        <input
+                            type="text"
+                            value={cep}
+                            onChange={(e) => setCep(formatCEP(e.target.value))}
+                            placeholder="00000-000"
+                            className="rounded-xl border-2 px-4 py-3 mb-6 w-full"
+                            maxLength={9}
+                            required
+                        />
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Senha *</label>
