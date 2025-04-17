@@ -34,7 +34,6 @@ export default function RegisterONG() {
         value = value.replace(/\D/g, '')
         if (value.length > 14) value = value.substring(0, 14)
         
-        // Aplicando a máscara 00.000.000/0000-00
         if (value.length > 0) {
             value = value.replace(/^(\d{2})(\d)/, '$1.$2')
         }
