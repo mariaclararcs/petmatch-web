@@ -1,3 +1,5 @@
+'use client'
+
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { useState } from "react"
@@ -10,12 +12,12 @@ export default function RegisterONG() {
     const formatPhone = (value: string) => {
         value = value.replace(/\D/g, '')
         if (value.length > 11) value = value.substring(0, 11)
-            
+        
         if (value.length > 0) {
-            value = `(${value.substring(0, 2)}${value.length > 2 ? ')' : ''}${value.substring(2)}`
+          value = `(${value.substring(0, 2)}${value.length > 2 ? ')' : ''}${value.substring(2)}`
         }
         if (value.length > 10) {
-            value = `${value.substring(0, 9)}-${value.substring(9)}`
+          value = `${value.substring(0, 9)}-${value.substring(9)}`
         }
         return value
     }

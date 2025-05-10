@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import style from "@/styles/Font.module.css"
 import Link from "next/link" 
