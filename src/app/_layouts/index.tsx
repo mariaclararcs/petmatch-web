@@ -1,5 +1,6 @@
 'use client';
 
+import NavbarAdministrative from "@/components/navbar_adm";
 import { ReactNode } from "react";
 
 interface ILayout {
@@ -9,8 +10,9 @@ interface ILayout {
 
 export default function Layout({ children, className }: ILayout) {
     return (
-        <div className={`${className}`}>
-            <div className="">
+        <div className={`min-h-screen flex flex-col bg-white ${className}`}>
+            <NavbarAdministrative />
+            <div className="flex-grow flex items-center justify-center p-4">
                 {children}
             </div>
         </div>

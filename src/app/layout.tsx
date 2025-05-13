@@ -1,15 +1,17 @@
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+'use client'
+
+import { Inter } from 'next/font/google'
 import '@/styles/globals.css'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/react-query'
+// import { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
+/* export const metadata: Metadata = {
   title: "PetMatch",
   description: "Encontre seu melhor amigo",
-}
+} */
 
 export default function RootLayout({
   children,
