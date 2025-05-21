@@ -13,6 +13,8 @@ O projeto segue a **arquitetura de três camadas**, sendo dividido em:
 - **Back-End:** Implementado com Laravel (PHP), encarregado do processamento de dados e regras de negócio.
 - **Banco de Dados:** Utiliza MySQL para armazenar informações sobre usuários e animais.
 
+Repositório do Back-End disponível em [petmatch-api](https://github.com/mariaclararcs/petmatch-api).
+
 **O projeto foi desenvolvido com o objetivo de ser um Trabalho de Graduação do curso de Análise e Desenvolvimento de Sistemas.**
 
 ---
