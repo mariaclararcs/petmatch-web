@@ -1,12 +1,13 @@
-'use client';
+'use client'
 
-import Footer from "@/components/footer";
-import Navbar from "@/components/navbar"
-import { useGetAnimals } from "@/hooks/animals/use-get-animals";
-import { IAnimal } from "@/interfaces/animals";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { z } from "zod";
+import Footer from "@/components/footer"
+import Header from "@/components/header"
+import { useGetAnimals } from "@/hooks/animals/use-get-animals"
+import { IAnimal } from "@/interfaces/animals"
+import Image from "next/image"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -30,7 +31,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <>
-        <Navbar />
+        <Header />
         <div className="min-h-screen flex flex-col bg-background">
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
@@ -54,7 +55,7 @@ export default function Home() {
   if (isError) {
     return (
       <>
-        <Navbar />
+        <Header />
         <div className="min-h-screen flex items-center justify-center">
           <p className="text-red-500">Error loading animals</p>
         </div>
@@ -65,7 +66,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+      <Header />
       <div className="min-h-screen flex flex-col bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-medium tracking-tight text-gray-900">
@@ -75,7 +76,7 @@ export default function Home() {
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
             {animals.map((animal: IAnimal) => (
               <div key={animal.id} className="group relative">
-                <img
+                <Image
                   alt={animal.name}
                   src={animal.image || '/placeholder-animal.jpg'}
                   className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"

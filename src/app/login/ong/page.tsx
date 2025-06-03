@@ -30,7 +30,7 @@ export default function LoginONG() {
         });
     
         if (result?.ok) {
-          router.push('/dashboard'); // Ou a rota desejada para usuários
+          router.push('/dashboard')
         }
     }
 

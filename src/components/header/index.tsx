@@ -27,7 +27,6 @@ export default function Header() {
         <div className="flex flex-row items-center gap-6 md:gap-12 lg:gap-24">
           <div className={style.textoLogo}>
             <Link href="/" className="flex items-center gap-3">
-              {/* Adicione a imagem do logo como no footer se quiser */}
               <span className="text-[40px] leading-[42px]">Pet Match</span>
             </Link>
           </div>

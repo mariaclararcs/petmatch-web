@@ -18,37 +18,20 @@ html, body {
   --popover-foreground: 240 10% 3.9%;
   --primary: 355 100% 88%;        /* Rosa claro - #FFC2C7 */
   --primary-foreground: 355 33% 59%; /* Rosa escuro */
-  --secondary: 355 33% 59%;       /* Rosa escuro - #C2777D */
+  --secondary: 355 38% 61%;       /* Rosa escuro - #C2777D */
   --secondary-foreground: 0 0% 100%; /* Branco */
-  --muted: 60 33% 93%;           /* Cinza claro - #EFEFDE */
+  --muted: 60 35% 90%;           /* Cinza claro - #EFEFDE */
   --muted-foreground: 240 3.8% 46.1%; /* Cinza médio */
   --accent: 240 4.8% 95.9%;      /* Cinza muito claro */
   --accent-foreground: 240 5.9% 10%; /* Cinza escuro */
   --destructive: 0 84.2% 60.2%;  /* Vermelho */
   --destructive-foreground: 0 0% 98%; /* Branco */
-  --border: 60 9% 80%;           /* Cinza claro - #CDCDBD */
+  --border: 60 14% 77%;           /* Cinza claro - #CDCDBD */
   --input: 60 55% 97%;           /* Bege claro - #FCFCF2 */
   --ring: 240 10% 3.9%;          /* Cinza escuro */
   --radius: 0.625rem;            /* 10px */
-  --background: 60 55% 97%;      /* Bege claro - #FCFCF2 */
+  --background: 60 63% 97%;      /* Bege claro - #FCFCF2 */
   --foreground: 240 10% 3.9%;    /* Cinza escuro */
-
-  /* Cores de gráficos */
-  --chart-1: 220 70% 50%;        /* Azul */
-  --chart-2: 160 60% 45%;        /* Verde */
-  --chart-3: 30 80% 55%;         /* Laranja */
-  --chart-4: 280 65% 60%;        /* Roxo */
-  --chart-5: 340 75% 55%;        /* Rosa */
-
-  /* Cores da sidebar */
-  --sidebar: 0 0% 100%;          /* Branco */
-  --sidebar-foreground: 240 10% 3.9%; /* Cinza escuro */
-  --sidebar-primary: 355 100% 88%; /* Rosa claro */
-  --sidebar-primary-foreground: 355 33% 59%; /* Rosa escuro */
-  --sidebar-accent: 60 33% 93%;  /* Cinza claro */
-  --sidebar-accent-foreground: 240 5.9% 10%; /* Cinza escuro */
-  --sidebar-border: 60 9% 80%;   /* Cinza claro */
-  --sidebar-ring: 240 10% 3.9%;  /* Cinza escuro */
 }
 
 .dark {
@@ -70,23 +53,6 @@ html, body {
   --border: 240 3.7% 15.9%;
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;        /* Cinza claro */
-  
-  /* Dark mode chart colors */
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
-  
-  /* Dark mode sidebar colors */
-  --sidebar: 240 10% 3.9%;
-  --sidebar-foreground: 0 0% 98%;
-  --sidebar-primary: 0 0% 98%;
-  --sidebar-primary-foreground: 240 5.9% 10%;
-  --sidebar-accent: 240 3.7% 15.9%;
-  --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 240 4.9% 83.9%;
 }
 
 form {
@@ -129,16 +95,6 @@ form button {
   padding-top: 2px;
   padding-bottom: 2px;
   background-color: rgb(252, 165, 165);
-}
-
-form span a {
-  color: red;
-}
-
-form span a:hover {
-  color: blue;
-  cursor: pointer;
-  text-decoration: underline;
 }
 
 * {
