@@ -55,11 +55,7 @@ export default function LoginUser() {
                     </div>
 
                     <div className="flex flex-col items-center w-full gap-2">
-<<<<<<< HEAD
                         <form className="flex flex-col" onSubmit={handleSubmit(handleSignInCredentials)}> 
-=======
-                        <form onSubmit={handleSubmit(handleSignInCredentials)}> 
->>>>>>> c4799faaf1fcf947e99410a5679246727716b08b
                             <label className="mb-1">Insira o e-mail</label>
                             <input 
                                 type="email" 

@@ -9,12 +9,12 @@ const animais = [
   {
     value: "cachorros",
     label: "Cachorros",
-    href: "",
+    href: "/animals",
   },
   {
     value: "gatos",
     label: "Gatos",
-    href: "",
+    href: "/animals",
   },
 ]
 

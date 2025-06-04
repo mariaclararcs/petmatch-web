@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "petmatchweb",
-=======
-  "name": "petmatch_web",
->>>>>>> c4799faaf1fcf947e99410a5679246727716b08b
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,9 +10,10 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.80.2",
     "axios": "^1.9.0",
+    "clsx": "^2.1.1",
+    "keen-slider": "^6.8.6",
     "lucide": "^0.511.0",
     "lucide-react": "^0.511.0",
     "next": "15.3.3",
@@ -24,26 +21,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.57.0",
-    "zod": "^3.25.49"
-=======
-    "@radix-ui/react-dialog": "^1.1.13",
-    "@radix-ui/react-popover": "^1.1.13",
-    "@radix-ui/react-slot": "^1.2.2",
-    "@tanstack/react-query": "^5.75.0",
-    "axios": "^1.8.4",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "lucide": "^0.510.0",
-    "lucide-react": "^0.510.0",
-    "next": "15.2.4",
-    "next-auth": "^4.24.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-hook-form": "^7.55.0",
     "tailwind-merge": "^3.3.0",
-    "zod": "^3.24.2"
->>>>>>> c4799faaf1fcf947e99410a5679246727716b08b
+    "zod": "^3.25.49"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -52,14 +31,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-<<<<<<< HEAD
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
-=======
-    "eslint-config-next": "15.2.4",
-    "tailwindcss": "^4",
-    "tw-animate-css": "^1.2.9",
->>>>>>> c4799faaf1fcf947e99410a5679246727716b08b
     "typescript": "^5"
   }
 }

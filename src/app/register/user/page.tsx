@@ -34,20 +34,20 @@ export default function RegisterUser() {
     return (
         <div>
             <Header/>
-            <main className="flex flex-col justify-between items-center min-w-screen mx-auto px-12 py-6 xl:py-8 h-full">
-                <div className="flex flex-col items-center w-full max-w-2xl">
+            <main className="flex flex-col justify-between items-center mx-auto px-12 py-6 xl:py-8 h-full">
+                <div className="flex flex-col items-center">
                     <h1 className="text-lg font-bold">Cadastro de Usuário</h1>
-                    <form action="" className="py-4 w-full">
+                    <form action="" className="flex flex-col py-4">
                         <label className="mb-1">Nome *</label>
-                        <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                        <input type="text" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                         
                         <label className="mb-1">E-mail *</label>
-                        <input type="email" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                        <input type="email" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                         
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Data de Nascimento *</label>
-                                <input type="date" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                                <input type="date" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Celular *</label>
@@ -56,7 +56,7 @@ export default function RegisterUser() {
                                     value={phone}
                                     onChange={(e) => setPhone(formatPhone(e.target.value))}
                                     placeholder="(00)00000-0000"
-                                    className="rounded-xl border-2 px-4 py-3 mb-6 w-full"
+                                    className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full"
                                     maxLength={15}
                                     required
                                 />
@@ -64,7 +64,7 @@ export default function RegisterUser() {
                         </div>
                         
                         <label className="mb-1">Endereço *</label>
-                        <input type="text" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                        <input type="text" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                         
                         <label className="mb-1">CEP *</label>
                         <input
@@ -72,7 +72,7 @@ export default function RegisterUser() {
                             value={cep}
                             onChange={(e) => setCep(formatCEP(e.target.value))}
                             placeholder="00000-000"
-                            className="rounded-xl border-2 px-4 py-3 mb-6 w-full"
+                            className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full"
                             maxLength={9}
                             required
                         />
@@ -80,11 +80,11 @@ export default function RegisterUser() {
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Senha *</label>
-                                <input type="password" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                                <input type="password" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Confirme sua senha *</label>
-                                <input type="password" className="rounded-xl border-2 px-4 py-3 mb-6 w-full" required/>
+                                <input type="password" className="rounded-xl border-2 border-border px-4 py-3 mb-6 w-full" required/>
                             </div>
                         </div>
                         
