@@ -27,7 +27,7 @@ export default function Footer() {
 
                     <div className="flex flex-col font-bold text-md text-secondary gap-[6px]">
                         <Link href="" className="hover:underline">ONGs</Link>
-                        <Link href="" className="hover:underline">Animais para adoção</Link>
+                        <Link href="/animals" className="hover:underline">Animais para adoção</Link>
                         <Link href="" className="hover:underline">Sobre Nós</Link>
                     </div>
                 </div>
