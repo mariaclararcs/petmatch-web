@@ -20,6 +20,26 @@ import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+  } from "@/components/ui/card"
+import Link from "next/link"
+import { Dog, Cat, Bird } from 'lucide-react'
+
+// Componente para o ícone do animal
+function AnimalIcon({ type }: { type: string }) {
+  const iconClass = "h-6 w-6";
+  
+  switch(type) {
+    case 'dog': return <Dog className={iconClass} />;
+    case 'cat': return <Cat className={iconClass} />;
+    default: return <Bird className={iconClass} />;
+  }
+}
 
 export default function Animals() {
   const searchParams = useSearchParams()
@@ -49,10 +69,8 @@ export default function Animals() {
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
               {[...Array(per_page)].map((_, i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="aspect-square w-full rounded-md bg-gray-200 lg:h-80" />
+                  <div className="aspect-square w-full rounded-xl bg-gray-200 lg:h-68" />
                   <div className="mt-4 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-3/4" />
-                    <div className="h-4 bg-gray-200 rounded w-1/2" />
                   </div>
                 </div>
               ))}
@@ -87,8 +105,51 @@ export default function Animals() {
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
             {animals.map((animal: IAnimal) => (
-              <div key={animal.id} className="group relative">
-                <Image
+                    <div key={animal.id} className="group relative">
+                      <Card className="flex flex-col items-center rounded-xl border-2 border-border w-fit h-fit gap-2">
+                        <CardHeader className="flex flex-col items-center w-full">
+                          <Image
+                            className="rounded-lg bg-primary object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
+                            alt={animal.name} 
+                            src={animal.image || '/placeholder-animal.jpg'}
+                            width={176}
+                            height={176}
+                            style={{
+                            width: '176px',
+                            height: '176px'
+                          }}
+                          />
+                        </CardHeader>
+                        
+                        <CardContent className="w-full items-center">
+                          <div className="flex items-center gap-2">
+                            {/* Ícone condicional baseado no tipo */}
+                            <AnimalIcon type={animal.type} />
+                            {/*<span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                              {animal.type === 'dog' ? 'Cachorro' : 
+                              animal.type === 'cat' ? 'Gato' : 'Outro'}
+                            </span>*/}
+                            <CardTitle className="text-lg">{animal.name}</CardTitle>
+                          </div>
+                          {animal.gender === 'female' && 
+                            <span className="text-md text-muted-foreground">fêmea</span>}
+                          {animal.gender === 'male' && 
+                            <span className="text-md text-muted-foreground">macho</span>}
+                        </CardContent>
+                        
+                        <CardFooter className="w-full">
+                          <Link 
+                            href="" 
+                            className="font-bold text-secondary hover:underline text-md"
+                          >
+                            Mais informações
+                          </Link>
+                        </CardFooter>
+                      </Card>
+                    </div>
+              
+              /*<div key={animal.id} className="group relative">
+                <img
                   alt={animal.name}
                   src={animal.image || '/placeholder-animal.jpg'}
                   className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
@@ -109,7 +170,7 @@ export default function Animals() {
                     {animal.gender}
                   </p>
                 </div>
-              </div>
+              </div>*/
             ))}
           </div>
         </div>
