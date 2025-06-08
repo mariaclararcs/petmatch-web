@@ -3,9 +3,9 @@
 import style from "@/styles/Font.module.css"
 import Link from "next/link" 
 import * as React from "react"
-import { ChevronDown } from "lucide-react"
+//import { ChevronDown } from "lucide-react"
 
-const animais = [
+/*const animais = [
   {
     value: "cachorros",
     label: "Cachorros",
@@ -16,10 +16,10 @@ const animais = [
     label: "Gatos",
     href: "/animals",
   },
-]
+]*/
 
 export default function Header() {
-  const [isOpen, setIsOpen] = React.useState(false)
+  //const [isOpen, setIsOpen] = React.useState(false)
 
   return (
     <header className="w-full bg-primary py-6">
@@ -35,8 +35,12 @@ export default function Header() {
             <Link href="" className="hover:underline">
               ONGs
             </Link>
+
+            <Link href="/animals" className="hover:underline">
+              Animais
+            </Link>
             
-            {/* Dropdown de Animais */}
+            {/*Dropdown de Animais
             <div className="relative">
               <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -65,7 +69,7 @@ export default function Header() {
                   ))}
                 </div>
               )}
-            </div>
+            </div>*/}
             
             <Link href="" className="hover:underline">
               Sobre Nós

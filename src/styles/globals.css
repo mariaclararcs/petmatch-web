@@ -5,6 +5,8 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-quaternary: var(--quaternary);
   --color-border: var(--border);
   --color-muted: var(--muted);
   --font-sans: var(--font-geist-sans);
@@ -21,8 +23,10 @@
 :root {
   --background: #FCFCF2;
   --foreground: #000000;
-  --primary: #FFC2C7;
-  --secondary: #C2777D;
+  --primary: #99dddd;
+  --secondary: #2d7777;
+  --tertiary: #FFC2C7;
+  --quaternary: #C2777D;
   --border: #CDCDBD;
   --muted: #EFEFDE;
 }
