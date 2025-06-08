@@ -1,6 +1,6 @@
 'use client'
 
-import CardP from "@/components/cards"
+import CardS from "@/components/cards"
 import Footer from "@/components/footer"
 import Header from "@/components/header"
 import Slider from "@/components/slider"
@@ -23,11 +23,11 @@ export default function Home() {
             <Link href="" className="font-bold text-md text-secondary hover:underline">Ver mais </Link>
           </div>
           <div className="flex flex-row justify-between">
-            <CardP />
-            <CardP />
-            <CardP />
-            <CardP />
-            <CardP />
+            <CardS />
+            <CardS />
+            <CardS />
+            <CardS />
+            <CardS />
           </div>
         </div>
 
@@ -40,11 +40,11 @@ export default function Home() {
             <Link href="" className="font-bold text-md text-secondary hover:underline">Ver mais </Link>
           </div>
           <div className="flex flex-row justify-between">
-            <CardP />
-            <CardP />
-            <CardP />
-            <CardP />
-            <CardP />
+            <CardS />
+            <CardS />
+            <CardS />
+            <CardS />
+            <CardS />
           </div>
         </div>
 

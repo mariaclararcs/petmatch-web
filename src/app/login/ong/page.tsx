@@ -37,7 +37,7 @@ export default function LoginONG() {
     return (
         <div className="flex columns-2">
             <div className={style.esquerda}>
-                <div className="flex flex-col justify-between items-center container mx-auto px-8 py-8 xl:py-12 h-full">
+                <div className="flex flex-col justify-between items-center container px-6 py-8 xl:py-12 h-full">
                     <div className="flex flex-col items-center w-full">
                         <div className={font.textoLogo}>
                             <span className="text-[52px] leading-[54px]">Pet Match</span>

@@ -9,7 +9,7 @@ import {
   import Link from "next/link"
   import { Dog } from 'lucide-react'
   
-  export default function CardP() {
+  export default function CardS() {
     return (
       <div>
         <Card className="flex flex-col items-center rounded-xl border-2 border-border w-fit h-fit gap-2">
