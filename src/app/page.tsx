@@ -5,7 +5,6 @@ import Footer from "@/components/footer"
 import Header from "@/components/header"
 import Slider from "@/components/slider"
 import { CalendarCheck2, CalendarHeart } from 'lucide-react'
-import Image from "next/image"
 import Link from "next/link"
 
 export default function Home() {
@@ -49,7 +48,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center mx-auto px-20 max-h-auto justify-center w-full max-w-screen-xl bg-secondary/50 gap-4 py-6">
+        {/*<div className="flex flex-col items-center mx-auto px-20 max-h-auto justify-center w-full max-w-screen-xl bg-secondary/50 gap-4 py-6">
           <span className="text-xl font-bold">Como adotar?</span>
           <div className="flex flex-row justify-between gap-10">
             <div className="flex flex-col items-center gap-1 text-center">
@@ -85,7 +84,7 @@ export default function Home() {
               <span>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc consectetur porttitor posuere. Maecenas nec lacinia.</span>
             </div>
           </div>
-        </div>
+        </div>*/}
       </div>
       <Footer />
     </>

@@ -17,7 +17,7 @@ import Header from "@/components/header"
 import { useGetAnimals } from "@/hooks/animals/use-get-animals"
 import { IAnimal } from "@/interfaces/animals"
 import Image from "next/image"
-import { useSearchParams } from "next/navigation"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import {
@@ -28,7 +28,8 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 import Link from "next/link"
-import { Dog, Cat, Bird } from 'lucide-react'
+import { Dog, Cat, Bird, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from "@/components/ui/button"
 
 // Componente para o ícone do animal
 function AnimalIcon({ type }: { type: string }) {
@@ -43,8 +44,12 @@ function AnimalIcon({ type }: { type: string }) {
 
 export default function Animals() {
   const searchParams = useSearchParams()
-  const page = z.coerce.number().parse(searchParams.get('page') ?? '1')
-  const per_page = z.coerce.number().parse(searchParams.get('per_page') ?? '10')
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Definindo 15 itens por página
+  const itemsPerPage = 10
+  const currentPage = z.coerce.number().parse(searchParams.get('page') ?? '1')
   const [debouncedSearchTerm] = useState<string>(searchParams.get('search') || '')
 
   const { 
@@ -52,13 +57,22 @@ export default function Animals() {
     isLoading, 
     isError 
   } = useGetAnimals({
-    page,
-    per_page,
+    page: currentPage,
+    per_page: itemsPerPage,
     search: debouncedSearchTerm,
   })
 
-  // Access the nested data structure safely
+  // Acessando os dados de paginação
   const animals = animalsResponse?.data?.data || []
+  const totalItems = animalsResponse?.data?.total || 0
+  const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+  // Função para mudar de página
+  const goToPage = (page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    router.push(`${pathname}?${params.toString()}`)
+  }
 
   if (isLoading) {
     return (
@@ -67,7 +81,7 @@ export default function Animals() {
         <div className="min-h-screen flex flex-col bg-background">
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
-              {[...Array(per_page)].map((_, i) => (
+              {[...Array(itemsPerPage)].map((_, i) => (
                 <div key={i} className="animate-pulse">
                   <div className="aspect-square w-full rounded-xl bg-gray-200 lg:h-68" />
                   <div className="mt-4 space-y-2">
@@ -100,13 +114,13 @@ export default function Animals() {
       <div className="min-h-screen flex flex-col bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-medium tracking-tight text-gray-900">
-            Adote um amigo <span className="font-bold">agora!</span>
+            Animais para adoção
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-5 xl:gap-x-8">
             {animals.map((animal: IAnimal) => (
                     <div key={animal.id} className="group relative">
-                      <Card className="flex flex-col items-center rounded-xl border-2 border-border w-fit h-fit gap-2">
+                      <Card className="flex flex-col items-center rounded-xl border-2 border-border w-fit h-fit gap-2 hover:cursor-pointer">
                         <CardHeader className="flex flex-col items-center w-full">
                           <Image
                             className="rounded-lg bg-primary object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
@@ -173,6 +187,66 @@ export default function Animals() {
               </div>*/
             ))}
           </div>
+
+          {/* Componente de Paginação */}
+        {totalPages > 1 && (
+          <div className="mt-12 flex items-center justify-between font-bold">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex items-center justify-center rounded-xl border-2 border-border h-10 w-10 hover:bg-border hover:text-background transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Lógica para mostrar páginas próximas à atual
+                let pageNum
+                if (totalPages <= 5) {
+                  pageNum = i + 1
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i
+                } else {
+                  pageNum = currentPage - 2 + i
+                }
+
+                return (
+                  <Button
+                    key={pageNum}
+                    variant={currentPage === pageNum ? "default" : "outline"}
+                    onClick={() => goToPage(pageNum)}
+                    className={currentPage === pageNum ? `flex items-center rounded-xl border-2 border-secondary h-10 w-10 text-secondary font-bold` : "flex items-center rounded-xl border-2 border-border h-10 w-10 font-bold hover:bg-border hover:text-background transition-colors"}
+                  >
+                    {pageNum}
+                  </Button>
+                )
+              })}
+              {totalPages > 5 && currentPage < totalPages - 2 && (
+                <span className="mx-1">...</span>
+              )}
+              {totalPages > 5 && currentPage < totalPages - 2 && (
+                <Button
+                  variant="outline"
+                  onClick={() => goToPage(totalPages)}
+                  className="flex items-center rounded-xl border-2 border-border h-10 w-10 font-bold hover:bg-border hover:text-background transition-colors"
+                >
+                  {totalPages}
+                </Button>
+              )}
+            </div>
+
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex items-center justify-center rounded-xl border-2 border-border h-10 w-10 hover:bg-border hover:text-background transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
         </div>
       </div>
       <Footer />
