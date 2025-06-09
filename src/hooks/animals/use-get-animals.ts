@@ -1,14 +1,10 @@
 import { getAnimals } from "@/app/api/animals/get-animals";
-import { ISearchParamsRoot } from "@/interfaces/api";
+import { ISearchParamsRoot } from "@/interfaces/animals";
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetAnimals = ({
-    page,
-    per_page,
-    search,
-}: ISearchParamsRoot) => {
+export const useGetAnimals = (params: ISearchParamsRoot) => {
     return useQuery({
-        queryKey: ['get-animals', page, per_page, search],
-        queryFn: () => getAnimals({ page, per_page, search }),
+        queryKey: ['get-animals', params],
+        queryFn: () => getAnimals(params),
     });
 };

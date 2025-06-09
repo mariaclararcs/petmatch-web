@@ -17,3 +17,11 @@ export interface IGetAnimals extends IApiRoot {
         data: IAnimal[];
     }
 }
+
+export interface ISearchParamsRoot {
+  page?: number
+  per_page?: number
+  search?: string
+  order_by?: 'shelter_date' | 'name' | 'age' // Adicione outros campos se necessário
+  order?: 'asc' | 'desc'
+}

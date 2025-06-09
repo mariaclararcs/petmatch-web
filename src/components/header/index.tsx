@@ -32,7 +32,7 @@ export default function Header() {
           </div>
 
           <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
-            <Link href="" className="hover:underline">
+            <Link href="/ongs" className="hover:underline">
               ONGs
             </Link>
 
@@ -71,7 +71,7 @@ export default function Header() {
               )}
             </div>*/}
             
-            <Link href="" className="hover:underline">
+            <Link href="/about-us" className="hover:underline">
               Sobre Nós
             </Link>
           </nav>
