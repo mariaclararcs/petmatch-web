@@ -20,7 +20,6 @@ import { IAnimal } from "@/interfaces/animals"
 import { useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
-import CardS from "@/components/cards/card-s"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
@@ -30,12 +29,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import CardM from "@/components/cards/card-m"
 
 export default function Animals() {
   const searchParams = useSearchParams()
 
   // Definindo itens por página
-  const itemsPerPage = 20
+  const itemsPerPage = 15
   const currentPage = z.coerce.number().parse(searchParams.get('page') ?? '1')
   const [debouncedSearchTerm] = useState<string>(searchParams.get('search') || '')
 
@@ -88,7 +88,7 @@ export default function Animals() {
         <Header />
         <div className="flex flex-col">
           <div className="mx-auto px-20 py-6 xl:py-8 max-h-auto">
-            <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {[...Array(itemsPerPage)].map((_, i) => (
                 <div key={i} className="animate-pulse">
                   <div className="aspect-square w-full rounded-xl bg-border lg:h-68 lg:w-52" />
@@ -235,10 +235,10 @@ export default function Animals() {
               Animais para adoção
             </h2>
 
-            <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+            <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {animals.map((animal: IAnimal) => (
                 <div key={animal.id} className="group">
-                  <CardS
+                  <CardM
                     key={animal.id} 
                     animal={animal}
                     className="w-full"
