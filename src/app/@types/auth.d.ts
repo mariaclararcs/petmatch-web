@@ -1,6 +1,6 @@
-import { IUser } from '@/interfaces/user'; 
+import { IUser } from "@/interfaces/user";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: IUser;
     token: string;

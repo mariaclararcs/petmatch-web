@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import api from "@/services/api";
+import api from "@/app/services/api";
 import { IUser, IUserLogin } from "@/interfaces/user";
 
 const nextAuthOptions: NextAuthOptions = {
@@ -23,19 +24,13 @@ const nextAuthOptions: NextAuthOptions = {
           const { user, token } = response.data.data;
 
           if (!user || !token) {
-            throw new Error(
-              "Falha na autenticação: dados de usuário ou token ausentes."
-            );
+            throw new Error("Falha na autenticação: dados de usuário ou token ausentes.");
           }
 
           return { ...user, token };
         } catch (error: any) {
           console.error("Erro na função de autorização: ", error);
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.message
-          ) {
+          if (error.response && error.response.data && error.response.data.message) {
             throw new Error(error.response.data.message);
           }
           throw new Error("Falha na autenticação.");
@@ -57,13 +52,13 @@ const nextAuthOptions: NextAuthOptions = {
 
       return session;
     },
-    async redirect({ url, baseUrl }) {
-      return `${baseUrl}/dashboard`; 
+    async redirect({ baseUrl }) {
+      return `${baseUrl}/home`;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
 };
 
