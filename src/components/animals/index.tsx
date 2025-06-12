@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Table,
@@ -7,34 +7,34 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useGetAnimals } from "@/hooks/animal/useGetAnimals";
-import { IAnimal } from "@/interfaces/animal";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { z } from "zod";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { CreateAnimalSheet } from "./create-animal";
-import { UpdateAnimal } from "./update-animal";
-import { DeleteAnimal } from "./delete-animal";
+} from "@/components/ui/table"
+import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { IAnimal } from "@/interfaces/animal"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { CreateAnimalSheet } from "./create-animal"
+import { UpdateAnimal } from "./update-animal"
+import { DeleteAnimal } from "./delete-animal"
 
 export default function Animals() {
-  const searchParams = useSearchParams();
-  const page = z.coerce.number().parse(searchParams.get("page") ?? "1");
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10");
-  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "");
+  const searchParams = useSearchParams()
+  const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
+  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: animalsResponse } = useGetAnimals({
     page,
     per_page,
     search: debouncedSearchTerm,
-  });
+  })
 
-  const animals = animalsResponse?.data || [];
+  const animals = animalsResponse?.data || []
 
   return (
     <section>
-      <div className="flex justify-end mt-20">
+      <div className="flex justify-end mt-10">
         <CreateAnimalSheet />
       </div>
       <Table>
@@ -90,5 +90,5 @@ export default function Animals() {
         </TableBody>
       </Table>
     </section>
-  );
+  )
 }

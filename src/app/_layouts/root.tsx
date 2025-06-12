@@ -1,3 +1,4 @@
+import Footer from "@/components/global/footer";
 import Header from "@/components/global/header";
 import { Suspense } from "react";
 
@@ -19,6 +20,7 @@ export default function Layout({
         <main className="px-4 pb-4 h-full w-[100%]">
           <Suspense>{children}</Suspense>
         </main>
+        <Footer />
     </div>
-  );
+  )
 }
