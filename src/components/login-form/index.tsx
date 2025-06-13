@@ -61,7 +61,7 @@ export default function LoginForm() {
             <span className="text-lg">Encontre seu melhor amigo!</span>
           </div>
 
-          <div className="flex flex-col items-center w-full gap-2 m-8 px-12">
+          <div className="flex flex-col items-center w-full gap-2 m-8 sm:px-10 lg:px-20">
             <form 
               className="flex flex-col w-full h-full" 
               onSubmit={handleSubmit(handleSignInCredentials)}

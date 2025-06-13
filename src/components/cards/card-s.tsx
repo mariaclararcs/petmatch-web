@@ -7,7 +7,7 @@ import { Dog, Cat, Bird, Venus, Mars } from 'lucide-react'
 import { IAnimal } from "@/interfaces/animal"
 
 interface CardSProps {
-  animal: IAnimal
+  animal: IAnimal & { shelter_date?: string }
   className?: string
 }
 
@@ -21,19 +21,9 @@ export default function CardS({ animal, className }: CardSProps) {
     }
   }
 
-  // Função para traduzir o tamanho
-  const getSizeText = (size: string) => {
-    switch(size) {
-      case 'small': return 'Pequeno'
-      case 'medium': return 'Médio'
-      case 'large': return 'Grande'
-      default: return size
-    }
-  }
-
   return (
     <div className={`group ${className}`}>
-      <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-52 h-fit gap-3 hover:cursor-pointer overflow-hidden">
+      <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-full h-fit gap-3 hover:cursor-pointer overflow-hidden">
         <CardHeader className="flex flex-col items-center w-full h-44 p-0">
           <Image
             className="rounded-lg bg-primary object-cover group-hover:opacity-75"
@@ -42,42 +32,40 @@ export default function CardS({ animal, className }: CardSProps) {
             width={176}
             height={176}
             style={{
-              width: '176px',
-              height: '176px'
+              width: '100%',
+              height: '176px',
+              objectFit: 'cover'
             }}
             unoptimized
           />
         </CardHeader>
         
-        <CardContent className="flex flex-row justify-between w-full items-center h-8">
-          <div className="flex items-center gap-2 min-w-0">
-            <AnimalIcon type={animal.type} />
-            <CardTitle className="text-lg overflow-hidden whitespace-nowrap">
-              {animal.name}
-            </CardTitle>
+        <CardContent className="flex flex-col w-full p-3 gap-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <AnimalIcon type={animal.type} />
+              <CardTitle className="text-lg overflow-hidden whitespace-nowrap">
+                {animal.name}
+              </CardTitle>
+            </div>
             {animal.gender === 'female' ? (
               <Venus className="h-5 w-5 flex-shrink-0 text-aquaternary" />
             ) : (
               <Mars className="h-5 w-5 flex-shrink-0 text-asecondary" />
             )}
           </div>
-          
-          {/*<div className="grid grid-cols-2 gap-2 text-sm">
-            <div>
-              <p className="text-muted-foreground">Idade</p>
-              <p>{animal.age} anos</p>
+
+          {animal.shelter_date && (
+            <div className="text-sm text-muted-foreground">
+              Abrigado em: {animal.shelter_date}
             </div>
-            <div>
-              <p className="text-muted-foreground">Porte</p>
-              <p>{getSizeText(animal.size)}</p>
-            </div>
-          </div>*/}
+          )}
         </CardContent>
         
-        <CardFooter className="w-full pt-0">
+        <CardFooter className="w-full p-3 pt-0">
           <Link 
             href={`/animals/${animal.id}`}
-            className="font-bold text-asecondary hover:underline text-md w-full text-center"
+            className="font-bold text-asecondary hover:underline text-sm w-full text-center"
           >
             Mais informações
           </Link>

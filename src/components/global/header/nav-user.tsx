@@ -15,15 +15,17 @@ import { Button } from "@/components/ui/button"
 import type { User } from "next-auth"
 import { signOut } from "next-auth/react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 export function NavUser({ user }: { user: User }) {
+  const router = useRouter()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          size="lg"
-          className="w-full justify-start p-1 gap-2 data-[state=open]:bg-accent"
+          className="w-full justify-start p-1 h-fit gap-2 data-[state=open]:bg-accent"
         >
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{user.name}</span>
@@ -52,7 +54,16 @@ export function NavUser({ user }: { user: User }) {
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
             <Avatar className="h-10 w-10 rounded-xg">
-              <AvatarFallback className="rounded-lg">{user.name?.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="h-10 w-10 rounded-xg">
+                <Image
+                  src={user.image || "/images/default-avatar.jpg"}
+                  alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
+                  width={40}
+                  height={40}
+                  className="size-full object-cover rounded-full"
+                  priority
+                />
+              </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -63,6 +74,12 @@ export function NavUser({ user }: { user: User }) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className="cursor-pointer"
+          onClick={() => router.push("/listagem-animais")}
+        >
+          Listagem de Animais
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className="cursor-pointer justify-between"
           onClick={() => {
             signOut({
               redirect: true,
@@ -70,8 +87,8 @@ export function NavUser({ user }: { user: User }) {
             });
           }}
         >
-          <LogOut className="mr-2 size-4" />
           Sair
+          <LogOut className="mr-2 size-4" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

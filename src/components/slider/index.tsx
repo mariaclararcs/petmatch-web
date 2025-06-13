@@ -47,7 +47,7 @@ export default function Slider(){
 
   return (
     <div ref={sliderRef} className="keen-slider rounded-xl h-72">
-      <div className="keen-slider__slide number-slide1 rounded-xl bg-quaternary">
+      <div className="keen-slider__slide number-slide1 rounded-xl bg-aquaternary">
         <Image
           className="w-full h-72 object-cover"
           alt="Banner image 1" 
@@ -56,8 +56,7 @@ export default function Slider(){
           height={176}
         />
       </div>
-      <div className="keen-slider__slide number-slide2 rounded-xl bg-quaternary">2</div>
-      <div className="keen-slider__slide number-slide3 rounded-xl bg-quaternary">3</div>
+      <div className="keen-slider__slide number-slide2 rounded-xl bg-aquaternary">2</div>
     </div>
   )
 }
