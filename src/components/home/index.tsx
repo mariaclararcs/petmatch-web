@@ -1,7 +1,7 @@
 'use client'
 
 import CardS from "@/components/cards/card-s"
-import Slider from "@/components/slider"
+import BannerSlider from "@/components/banner-slider"
 import { CalendarCheck2, CalendarHeart } from 'lucide-react'
 import Link from "next/link"
 import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
@@ -56,7 +56,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center gap-12 mx-auto px-20 py-6 xl:py-8 max-h-auto">
-        <Slider />
+        <BannerSlider />
         {/* Placeholders para loading */}
         <div className="flex flex-col w-full gap-3">
           <div className="flex flex-row justify-between items-center">
@@ -64,7 +64,12 @@ export default function Home() {
               <CalendarHeart />
               <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
             </div>
-            <Link href="" className="font-bold text-md text-secondary hover:underline">Ver mais </Link>
+            <Link
+              href="#" 
+              className="font-bold text-md text-asecondary hover:underline"
+            >
+              Ver mais 
+            </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[...Array(5)].map((_, i) => (
@@ -81,7 +86,12 @@ export default function Home() {
               <CalendarCheck2 />
               <h2 className="text-lg font-bold">Animais recém abrigados</h2>
             </div>
-            <Link href="" className="font-bold text-md text-secondary hover:underline">Ver mais </Link>
+            <Link 
+              href="#" 
+              className="font-bold text-md text-asecondary hover:underline"
+            >
+              Ver mais
+            </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[...Array(5)].map((_, i) => (
@@ -105,7 +115,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center gap-12 mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-6 xl:py-8 max-h-auto">
-      <Slider />
+      <BannerSlider />
 
       {/* Seção de animais a mais tempo no abrigo */}
       <div className="flex flex-col w-full gap-6">
@@ -115,8 +125,8 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
           </div>
           <Link 
-            href="/animals?order_by=shelter_date&order=asc" 
-            className="font-bold text-md text-secondary hover:underline"
+            href="#" 
+            className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais
           </Link>
@@ -133,7 +143,7 @@ export default function Home() {
               />
             ))
           ) : (
-            <p className="col-span-full text-center text-muted-foreground">
+            <p className="col-span-full text-center text-muted-foreground py-4">
               Nenhum animal encontrado
             </p>
           )}
@@ -148,8 +158,8 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais recém abrigados</h2>
           </div>
           <Link 
-            href="/animals?order_by=shelter_date&order=desc" 
-            className="font-bold text-md text-secondary hover:underline"
+            href="#" 
+            className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais
           </Link>
@@ -166,7 +176,7 @@ export default function Home() {
               />
             ))
           ) : (
-            <p className="col-span-full text-center text-muted-foreground">
+            <p className="col-span-full text-center text-muted-foreground py-4">
               Nenhum animal encontrado
             </p>
           )}

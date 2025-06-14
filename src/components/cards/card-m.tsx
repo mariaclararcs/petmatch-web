@@ -47,7 +47,13 @@ export default function CardM({ animal, className }: CardMProps) {
           />
         </CardHeader>
         
-        <CardContent className="flex flex-col w-full h-20 gap-2 px-4">
+        <CardContent className="flex flex-col w-full h-fit gap-2 px-4">
+          <div className="w-full overflow-hidden">
+            <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
+              Associação Paulista de Proteção Animal com nome muito grande que precisa ser truncado
+            </span>
+          </div>
+
             {/* ONG associada (se disponível nos dados)
             {animal.ong && (
               <div className="w-full overflow-hidden">
@@ -57,12 +63,6 @@ export default function CardM({ animal, className }: CardMProps) {
               </div>
             )}
             */}
-
-            <div className="w-full overflow-hidden">
-              <span className="text-sm text-asecondary block overflow-hidden whitespace-nowrap">
-                 Associação Paulista de Proteção Animal com nome muito grande que precisa ser truncado
-              </span>
-            </div>
             
             <div className="flex flex-row w-full justify-between items-center gap-2">
                 <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">

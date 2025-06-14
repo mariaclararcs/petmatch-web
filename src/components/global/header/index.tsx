@@ -38,7 +38,7 @@ export default function Header() {
                 {session ? <NavUser user={session.user} /> : 
                     <Link 
                         href="/" 
-                        className="bg-abackground rounded-xl border-2 border-asecondary px-6 py-3 font-bold text-asecondary hover:bg-asecondary hover:text-abackground transition-colors"
+                        className="bg-background rounded-xl border-2 border-asecondary px-6 py-3 font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors"
                     >
                         Entrar
                     </Link>

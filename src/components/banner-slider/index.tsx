@@ -4,7 +4,7 @@ import "keen-slider/keen-slider.min.css"
 import '@/styles/globals.css'
 import Image from "next/image"
 
-export default function Slider(){
+export default function BannerSlider(){
   const [sliderRef] = useKeenSlider({
       loop: true,
       mode: "free-snap",

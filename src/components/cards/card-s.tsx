@@ -23,7 +23,7 @@ export default function CardS({ animal, className }: CardSProps) {
 
   return (
     <div className={`group ${className}`}>
-      <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-full h-fit gap-3 hover:cursor-pointer overflow-hidden">
+      <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-52 h-fit gap-4 hover:cursor-pointer overflow-hidden">
         <CardHeader className="flex flex-col items-center w-full h-44 p-0">
           <Image
             className="rounded-lg bg-primary object-cover group-hover:opacity-75"
@@ -40,7 +40,7 @@ export default function CardS({ animal, className }: CardSProps) {
           />
         </CardHeader>
         
-        <CardContent className="flex flex-col w-full p-3 gap-2">
+        <CardContent className="flex flex-col w-full gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
               <AnimalIcon type={animal.type} />
@@ -62,7 +62,7 @@ export default function CardS({ animal, className }: CardSProps) {
           )}
         </CardContent>
         
-        <CardFooter className="w-full p-3 pt-0">
+        <CardFooter className="w-full">
           <Link 
             href={`/animals/${animal.id}`}
             className="font-bold text-asecondary hover:underline text-sm w-full text-center"

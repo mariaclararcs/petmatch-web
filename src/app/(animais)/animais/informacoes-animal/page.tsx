@@ -5,7 +5,7 @@ import Animals from "@/components/animals"
 
 export default function Page() {
   return (
-    <Layout breadCrumbItems={[{ title: "Animais", url: "/animais" }]} pageTitle="Animais">
+    <Layout breadCrumbItems={[{ title: "Informações do Animal", url: "/infomacoes-animal" }]} pageTitle="Informações do Animal">
       <Animals />
     </Layout>
   )
