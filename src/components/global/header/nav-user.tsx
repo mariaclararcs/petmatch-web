@@ -17,7 +17,9 @@ import { signOut } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-export function NavUser({ user }: { user: User }) {
+type UserWithAvatar = User & { avatar?: string };
+
+export function NavUser({ user }: { user: UserWithAvatar }) {
   const router = useRouter()
 
   return (
@@ -33,7 +35,7 @@ export function NavUser({ user }: { user: User }) {
             <Avatar className="h-10 w-10 rounded-lg">
                 <AvatarFallback className="h-10 w-10 rounded-xg">
                     <Image
-                        src={user.image || "/images/default-avatar.jpg"}
+                        src={user.avatar || user.image || "/images/default-avatar.jpg"}
                         alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
                         width={40}
                         height={40}
@@ -56,7 +58,7 @@ export function NavUser({ user }: { user: User }) {
             <Avatar className="h-10 w-10 rounded-xg">
               <AvatarFallback className="h-10 w-10 rounded-xg">
                 <Image
-                  src={user.image || "/images/default-avatar.jpg"}
+                  src={user.avatar || user.image || "/images/default-avatar.jpg"}
                   alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
                   width={40}
                   height={40}
@@ -82,9 +84,11 @@ export function NavUser({ user }: { user: User }) {
           className="cursor-pointer justify-between"
           onClick={() => {
             signOut({
-              redirect: true,
-              callbackUrl: "/",
-            });
+              callbackUrl: "/", // Força o redirecionamento para a raiz
+              redirect: true
+            }).then(() => {
+              window.location.href = "/" // Garantia extra
+            })
           }}
         >
           Sair

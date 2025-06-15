@@ -1,13 +1,12 @@
 "use client"
 
-import LoginForm from "@/components/login-form"
+import Home from "@/components/home"
+import Layout from "./_layouts/root"
 
 export default function Login() {
   return (
-    <div className="flex flex-col items-center justify-center bg-background">
-      <div className="w-full">
-        <LoginForm />
-      </div>
-    </div>
+    <Layout breadCrumbItems={[{ title: "Home", url: "/home" }]} pageTitle="Home">
+      <Home />
+    </Layout>
   )
 }

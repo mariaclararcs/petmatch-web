@@ -16,10 +16,11 @@ const nextAuthOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials) throw new Error("Credenciais não informadas.");
         try {
-          const response = await api.post<IUserLogin>("/auth/login", {
+          const response = await api.post<IUserLogin>("http://localhost:8000/api/auth/login", {
             email: credentials.email,
             password: credentials.password,
           });
+          console.log(response);
 
           const { user, token } = response.data.data;
 

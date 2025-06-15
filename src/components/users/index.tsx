@@ -29,7 +29,7 @@ export default function Users() {
   const users = usersResponse?.data?.data || [];
 
   return (
-    <section>
+    <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
       <Table>
         <TableHeader>
           <TableRow>
@@ -52,7 +52,7 @@ export default function Users() {
                   <Button variant="outline" size="sm">
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="sm" className="text-red-500">
+                  <Button variant="outline" size="sm">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

@@ -1,91 +1,119 @@
-'use client'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { handlePaginate } from "@/lib/utils";
 
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  className?: string
+import { Button } from "../ui/button";
+
+export interface PaginationProps {
+  pageIndex: number;
+  totalCount: number;
+  perPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  onPageChange: (index: number) => void;
 }
 
-export function Pagination({ currentPage, totalPages, className }: PaginationProps) {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+export function PaginationFull({
+  pageIndex,
+  totalCount,
+  totalPages,
+  hasNextPage,
+  hasPreviousPage,
+  onPageChange,
+}: PaginationProps) {
+  return (
+    <div className="flex flex-col md:flex-row gap-4 w-full md:items-center md:justify-between">
+      <span className="text-sm text-muted-foreground">Total de {totalCount} item(s)</span>
 
-  const goToPage = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('page', page.toString())
-    router.push(`${pathname}?${params.toString()}`)
-  }
+      <div className="flex justify-between md:justify-start items-center gap-6 lg:gap-8">
+        <div className="text-sm font-medium">
+          Página {pageIndex} de {totalPages}
+        </div>
 
-  if (totalPages <= 1) return null
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-8 w-8 p-1"
+            onClick={() => onPageChange(1)}
+            disabled={!hasPreviousPage}
+          >
+            <ChevronsLeft className="h-4 w-4" />
+            <span className="sr-only">Primeira página</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="h-8 w-8 p-1"
+            onClick={() => onPageChange(pageIndex - 1)}
+            disabled={!hasPreviousPage}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="sr-only">Página anterior</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="h-8 w-8 p-1"
+            onClick={() => onPageChange(pageIndex + 1)}
+            disabled={!hasNextPage}
+          >
+            <ChevronRight className="h-4 w-4" />
+            <span className="sr-only">Próxima página</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="h-8 w-8 p-1"
+            onClick={() => onPageChange(totalPages)}
+            disabled={!hasNextPage}
+          >
+            <ChevronsRight className="h-4 w-4" />
+            <span className="sr-only">Última página</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function PaginationShorty({ pageIndex, totalCount, perPage = 20 }: PaginationProps) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pages = Math.ceil(totalCount / perPage) || 1;
 
   return (
-    <div className={`flex items-center justify-between font-bold ${className}`}>
+    <div className="flex items-center gap-2">
       <Button
+        type="button"
         variant="outline"
-        onClick={() => goToPage(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="flex items-center justify-center rounded-xl border-2 border-border h-10 w-10 hover:bg-border hover:text-background transition-colors"
+        className="h-8 w-8 p-1"
+        onClick={() => handlePaginate(pageIndex - 1, searchParams, router)}
+        disabled={pageIndex === 1}
       >
-        <ChevronLeft className="h-4 w-4" strokeWidth={3} />
+        <ChevronLeft className="h-4 w-4" />
+        <span className="sr-only">Previous page</span>
       </Button>
 
-      <div className="flex items-center gap-1">
-        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-          let pageNum
-          if (totalPages <= 5) {
-            pageNum = i + 1
-          } else if (currentPage <= 3) {
-            pageNum = i + 1
-          } else if (currentPage >= totalPages - 2) {
-            pageNum = totalPages - 4 + i
-          } else {
-            pageNum = currentPage - 2 + i
-          }
-
-          return (
-            <Button
-              key={pageNum}
-              variant={currentPage === pageNum ? "default" : "outline"}
-              onClick={() => goToPage(pageNum)}
-              className={
-                currentPage === pageNum 
-                  ? 'flex items-center rounded-xl border-2 border-secondary h-10 w-10 text-secondary font-bold hover:bg-secondary hover:text-background transition-colors' 
-                  : 'flex items-center rounded-xl border-2 border-border bg-border text-background h-10 w-10 font-bold hover:bg-background hover:text-foreground transition-colors'
-              }
-            >
-              {pageNum}
-            </Button>
-          )
-        })}
-        
-        {totalPages > 5 && currentPage < totalPages - 2 && (
-          <span className="mx-1">...</span>
-        )}
-        
-        {totalPages > 5 && currentPage < totalPages - 2 && (
-          <Button
-            variant="outline"
-            onClick={() => goToPage(totalPages)}
-            className="flex items-center rounded-xl border-2 border-border h-10 w-10 font-bold hover:bg-border hover:text-background transition-colors"
-          >
-            {totalPages}
-          </Button>
-        )}
-      </div>
+      <span className="whitespace-nowrap">
+        {pageIndex} / {pages}
+      </span>
 
       <Button
+        type="button"
         variant="outline"
-        onClick={() => goToPage(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="flex items-center justify-center rounded-xl border-2 border-border h-10 w-10 hover:bg-border hover:text-background transition-colors"
+        className="h-8 w-8 p-1"
+        onClick={() => handlePaginate(pageIndex + 1, searchParams, router)}
+        disabled={pageIndex === pages}
       >
-        <ChevronRight className="h-4 w-4" strokeWidth={3} />
+        <ChevronRight className="h-4 w-4" />
+        <span className="sr-only">Next page</span>
       </Button>
     </div>
-  )
+  );
 }

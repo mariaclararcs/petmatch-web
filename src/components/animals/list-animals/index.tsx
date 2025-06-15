@@ -24,17 +24,20 @@ export default function ListAnimals() {
   const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
-  const { data: animalsResponse } = useGetAnimals({
+  const { data: animalsResponse, isLoading, isError } = useGetAnimals({
     page,
     per_page,
     search: debouncedSearchTerm,
   })
 
-  const animals = animalsResponse?.data || []
+  const animals = animalsResponse?.data?.data || []
+
+  if (isLoading) return <div>Carregando...</div>
+  if (isError) return <div>Erro ao carregar animais</div>
 
   return (
-    <section>
-      <div className="flex justify-end mt-10">
+    <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
+      <div className="flex justify-end">
         <CreateAnimalSheet />
       </div>
       <Table>

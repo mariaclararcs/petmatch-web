@@ -17,11 +17,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import type { User } from "next-auth";
+import { IUser } from "@/interfaces/user";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 
-export function NavUser({ user }: { user: User }) {
+export function NavUser({ user }: { user: IUser }) {
   const { isMobile } = useSidebar();
 
   return (
@@ -36,7 +36,7 @@ export function NavUser({ user }: { user: User }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">
                   <Image
-                    src={user.image || "/img/default-avatar.jpg"}
+                    src={user.avatar}
                     alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
                     width={32}
                     height={32}

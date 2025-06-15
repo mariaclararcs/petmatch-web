@@ -47,5 +47,14 @@ export interface IPaginateRoot extends IApiRoot {
 export interface ISearchParamsRoot {
   per_page?: number;
   page?: number;
-  search?: any;
+  search?: string;
+}
+
+export interface IAnimalSearchParams extends ISearchParamsRoot {
+  sort_by?: 'name' | 'age' | 'shelter_date';
+  sort_order?: 'asc' | 'desc';
+  type?: 'dog' | 'cat' | 'other';
+  gender?: 'male' | 'female';
+  min_age?: number;
+  max_age?: number;
 }

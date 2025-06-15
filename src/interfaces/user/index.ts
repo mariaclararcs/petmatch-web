@@ -7,6 +7,7 @@ export interface IUser extends ITimestamps {
   email: string;
   password: string;
   type_user: string;
+  avatar: string;
 }
 
 export interface IUserLogin extends IApiRoot {
