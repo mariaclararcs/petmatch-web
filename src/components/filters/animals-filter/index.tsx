@@ -166,6 +166,18 @@ export function AnimalsFilter({
           </div>
         </div>
       </div>
+
+      {/*<div className="flex flex-col gap-2">
+        <h3 className="text-md">
+          Estado
+        </h3>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h3 className="text-md">
+          Cidade
+        </h3>
+      </div>*/}
     </div>
   )
 }

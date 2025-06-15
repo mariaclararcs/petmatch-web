@@ -48,21 +48,12 @@ export default function CardM({ animal, className }: CardMProps) {
         </CardHeader>
         
         <CardContent className="flex flex-col w-full h-fit gap-2 px-4">
+          {/* div para nome da ONG */}
           <div className="w-full overflow-hidden">
             <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
-              Associação Paulista de Proteção Animal com nome muito grande que precisa ser truncado
+              Associação Paulista de Proteção Animal
             </span>
           </div>
-
-            {/* ONG associada (se disponível nos dados)
-            {animal.ong && (
-              <div className="w-full overflow-hidden">
-                <span className="text-sm text-asecondary block overflow-hidden whitespace-nowrap">
-                  {animal.ong.name}
-                </span>
-              </div>
-            )}
-            */}
             
             <div className="flex flex-row w-full justify-between items-center gap-2">
                 <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
@@ -76,13 +67,13 @@ export default function CardM({ animal, className }: CardMProps) {
 
             <div>
               <p className="text-muted-foreground">Idade</p>
-              <p>{animal.age} anos</p>
+              <p>{animal.age}{animal.age === 1 ? " ano" : " anos"}</p> 
             </div>
         </CardContent>
         
         <CardFooter className="w-full p-4">
             <Link 
-                href={`/animals/${animal.id}`}
+                href={`/animais/${animal.id}`}
                 className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
             >
                 Ver mais
