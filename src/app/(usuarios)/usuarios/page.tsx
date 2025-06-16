@@ -1,12 +1,12 @@
 "use client"
 
 import Layout from "@/app/_layouts/root"
-import Users from "@/components/users"
+import ListUsers from "@/components/list-users"
 
 export default function Page() {
   return (
     <Layout breadCrumbItems={[{ title: "Usuários", url: "/usuarios" }]} pageTitle="Usuários">
-      <Users />
+      <ListUsers />
     </Layout>
   )
 }

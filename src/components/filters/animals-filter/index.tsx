@@ -103,8 +103,8 @@ export function AnimalsFilter({
             <SelectValue placeholder="Selecione" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="shelter-asc">Mais tempo</SelectItem>
-            <SelectItem value="shelter-desc">Menos tempo</SelectItem>
+            <SelectItem value="shelter_date-asc">Mais tempo</SelectItem>
+            <SelectItem value="shelter_date-desc">Menos tempo</SelectItem>
           </SelectContent>
         </Select>
       </div>

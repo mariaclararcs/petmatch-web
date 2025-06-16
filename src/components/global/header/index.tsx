@@ -22,26 +22,9 @@ export default function Header() {
             </div>
 
             <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
-                <span
-                    className="hover:underline cursor-pointer"
-                    onClick={() => router.push("/ongs")}
-                >
-                    ONGs
-                </span>
-
-                <span
-                    className="hover:underline cursor-pointer"
-                    onClick={() => router.push("/animais")}
-                >
-                    Animais
-                </span>
-                
-                <span 
-                    className="hover:underline cursor-pointer"
-                    onClick={() => router.push("#")}
-                >
-                    Sobre Nós
-                </span>
+                <Link href="/ongs" className="hover:underline">ONGs</Link>
+                <Link href="/animais" className="hover:underline">Animais</Link>
+                <Link href="/sobre-nos" className="hover:underline">Sobre Nós</Link>
             </nav>
             </div>
 

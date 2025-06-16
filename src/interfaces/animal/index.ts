@@ -1,4 +1,5 @@
 import { IApiRoot, IPaginate, ITimestamps } from "../api";
+import { IOng } from "../ong";
 
 export interface IAnimal extends ITimestamps {
   ong_id: string;
@@ -10,6 +11,7 @@ export interface IAnimal extends ITimestamps {
   shelter_date: Date;
   image: string;
   description: string;
+  ong: IOng;
 }
 
 export interface IGetAnimals extends IApiRoot {

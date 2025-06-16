@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -9,10 +7,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useGetOngs } from "@/hooks/ongs/useGetOngs"
+import { IOng } from "@/interfaces/ong"
 import { Pencil, Trash2 } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
 
 export default function ListOngs() {
-return (
+  const searchParams = useSearchParams()
+  const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
+  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
+
+  const { data: ongsResponse } = useGetOngs({
+    page,
+    per_page,
+    search: debouncedSearchTerm,
+  })
+
+  const ongs = ongsResponse?.data?.data || []
+
+  return (
     <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
       <Table>
         <TableHeader>
@@ -26,12 +42,13 @@ return (
           </TableRow>
         </TableHeader>
         <TableBody>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+          {ongs.map((ong: IOng) => (
+            <TableRow key={ong.id}>
+              <TableCell>{ong.name_institution}</TableCell>
+              <TableCell>{ong.name_responsible}</TableCell>
+              <TableCell>{ong.cnpj}</TableCell>
+              <TableCell>{ong.phone}</TableCell>
+              <TableCell>{ong.address}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
@@ -43,6 +60,7 @@ return (
                 </div>
               </TableCell>
             </TableRow>
+          ))}
         </TableBody>
       </Table>
     </section>

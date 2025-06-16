@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -6,27 +6,27 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useGetUsers } from "@/hooks/users/useGetUsers";
-import { IUser } from "@/interfaces/user";
-import { Pencil, Trash2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { z } from "zod";
+} from "@/components/ui/table"
+import { useGetUsers } from "@/hooks/users/useGetUsers"
+import { IUser } from "@/interfaces/user"
+import { Pencil, Trash2 } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
 
-export default function Users() {
-  const searchParams = useSearchParams();
-  const page = z.coerce.number().parse(searchParams.get("page") ?? "1");
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10");
-  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "");
+export default function ListUsers() {
+  const searchParams = useSearchParams()
+  const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
+  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: usersResponse } = useGetUsers({
     page,
     per_page,
     search: debouncedSearchTerm,
-  });
+  })
 
-  const users = usersResponse?.data?.data || [];
+  const users = usersResponse?.data?.data || []
 
   return (
     <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
@@ -62,5 +62,5 @@ export default function Users() {
         </TableBody>
       </Table>
     </section>
-  );
+  )
 }

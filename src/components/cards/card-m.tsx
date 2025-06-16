@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
@@ -29,6 +29,15 @@ export default function CardM({ animal, className }: CardMProps) {
     )
   }
 
+  const translateSize = (size: string) => {
+    switch(size) {
+      case 'small': return 'Pequeno'
+      case 'medium': return 'Médio'
+      case 'large': return 'Grande'
+      default: return size;
+    }
+  }
+
   return (
     <div className={`${className}`}>
       <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-64 h-fit gap-4 p-0 overflow-hidden">
@@ -51,7 +60,7 @@ export default function CardM({ animal, className }: CardMProps) {
           {/* div para nome da ONG */}
           <div className="w-full overflow-hidden">
             <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
-              Associação Paulista de Proteção Animal
+              {animal.ong.name_institution}
             </span>
           </div>
             
@@ -65,13 +74,21 @@ export default function CardM({ animal, className }: CardMProps) {
                 <GenderIcon gender={animal.gender} />
             </div>
 
-            <div>
-              <p className="text-muted-foreground">Idade</p>
-              <p>{animal.age}{animal.age === 1 ? " ano" : " anos"}</p> 
+            <div className="flex flex-row w-full justify-between items-center gap-2">
+              <div className="flex flex-col overflow-hidden whitespace-nowrap flex-1">
+                <span className="text-muted-foreground">Idade</span>
+                <span>{animal.age}{animal.age === 1 ? " ano" : " anos"}</span>
+              </div>
+              <div className="flex flex-col overflow-hidden whitespace-nowrap">
+                <span className="text-muted-foreground">Porte</span>
+                <span>
+                  {translateSize(animal.size)}
+                </span>
+              </div>
             </div>
         </CardContent>
         
-        <CardFooter className="w-full p-4">
+        <CardFooter className="w-full px-4 pb-4">
             <Link 
                 href={`/animais/${animal.id}`}
                 className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"

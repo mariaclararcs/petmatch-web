@@ -42,9 +42,8 @@ function SelectTrigger({
         [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4
         aria-invalid:ring-destructive/20 aria-invalid:border-destructive
         focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[2px]
-        dark:aria-invalid:ring-destructive/40 dark:bg-input/30 dark:hover:bg-input/50
         disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8
-        *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2`,
+        *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2` /* dark:aria-invalid:ring-destructive/40 dark:bg-input/30 dark:hover:bg-input/50 */,
         className
       )}
       {...props}

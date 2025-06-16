@@ -15,11 +15,10 @@ function Checkbox({
       data-slot="checkbox"
       className={cn(
         `peer border size-5 shrink-0 rounded-sm bg-background
-        dark:bg-input/30 dark:data-[state=checked]:bg-aprimary dark:aria-invalid:ring-destructive/40 
         data-[state=checked]:bg-asecondary data-[state=checked]:text-background data-[state=checked]:border-asecondary data-[state=checked]:border-2
         focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[2px] 
         aria-invalid:ring-destructive/20 aria-invalid:border-destructive 
-        disabled:cursor-not-allowed disabled:opacity-50`,
+        disabled:cursor-not-allowed disabled:opacity-50` /* dark:bg-input/30 dark:data-[state=checked]:bg-aprimary dark:aria-invalid:ring-destructive/40 */,
         className
       )}
       {...props}
