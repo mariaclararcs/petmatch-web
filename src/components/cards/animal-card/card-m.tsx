@@ -93,7 +93,7 @@ export default function CardM({ animal, className }: CardMProps) {
                 href={`/animais/${animal.id}`}
                 className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
             >
-                Ver mais
+                Detalhes
             </Link>
         </CardFooter>
       </Card>

@@ -1,6 +1,6 @@
 'use client'
 
-import CardS from "@/components/cards/card-s"
+import CardS from "@/components/cards/animal-card/card-s"
 import BannerSlider from "@/components/banner-slider"
 import { CalendarCheck2, CalendarHeart } from 'lucide-react'
 import Link from "next/link"

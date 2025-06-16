@@ -1,12 +1,12 @@
 "use client"
 
 import Layout from "@/app/_layouts/root"
-import ListOngs from "@/components/list-ongs"
+import Ongs from "@/components/ongs"
 
 export default function Page() {
   return (
     <Layout breadCrumbItems={[{ title: "ONGs", url: "/ongs" }]} pageTitle="ONGs">
-      <ListOngs />
+      <Ongs />
     </Layout>
   )
 }

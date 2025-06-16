@@ -6,11 +6,11 @@ export function CreateAnimalSheet() {
   return (
     <Sheet>
       <SheetTrigger>
-        <Button>Criar</Button>
+        <Button>Cadastrar</Button>
       </SheetTrigger>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Crie um animal</SheetTitle>
+          <SheetTitle>Cadastre um animal</SheetTitle>
         </SheetHeader>
         <div className="py-4">
           <CreateAnimalForm />

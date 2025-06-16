@@ -67,7 +67,7 @@ export default function CardS({ animal, className }: CardSProps) {
             href={`/animais/${animal.id}`}
             className="font-bold text-asecondary hover:underline text-sm w-full text-center"
           >
-            Mais informações
+            Detalhes
           </Link>
         </CardFooter>
       </Card>

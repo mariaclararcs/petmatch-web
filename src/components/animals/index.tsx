@@ -1,47 +1,47 @@
-"use client";
+"use client"
 
-import CardM from "@/components/cards/card-m";
-import { AnimalsFilter } from "@/components/filters/animals-filter";
-import { useGetAnimals } from "@/hooks/animal/useGetAnimals";
-import { IAnimal } from "@/interfaces/animal";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { z } from "zod";
-import { PaginationFull } from "../pagination";
+import CardM from "@/components/cards/animal-card/card-m"
+import { AnimalsFilter } from "@/components/filters/animals-filter"
+import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { IAnimal } from "@/interfaces/animal"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { z } from "zod"
+import { PaginationFull } from "../pagination"
 
 export default function Animals() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   // Definindo itens por página
-  const itemsPerPage = 15;
-  const currentPage = z.coerce.number().parse(searchParams.get("page") ?? "1");
-  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "");
+  const itemsPerPage = 12
+  const currentPage = z.coerce.number().parse(searchParams.get("page") ?? "1")
+  const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   // Estados para os filtros
   const [animalTypes, setAnimalTypes] = useState<Record<string, boolean>>({
     dog: false,
     cat: false,
     other: false,
-  });
+  })
   const [genders, setGenders] = useState<Record<string, boolean>>({
     female: false,
     male: false,
-  });
-  const [nameOrder, setNameOrder] = useState<string>("");
-  const [shelterTime, setShelterTime] = useState<string>("");
-  const [ageRange, setAgeRange] = useState<number[]>([0, 15]);
+  })
+  const [nameOrder, setNameOrder] = useState<string>("")
+  const [shelterTime, setShelterTime] = useState<string>("")
+  const [ageRange, setAgeRange] = useState<number[]>([0, 15])
 
   // Get selected type and gender
   const selectedType = Object.entries(animalTypes).find(([, value]) => value)?.[0] as
     | "dog"
     | "cat"
     | "other"
-    | undefined;
+    | undefined
   const selectedGender = Object.entries(genders).find(([, value]) => value)?.[0] as
     | "male"
     | "female"
-    | undefined;
+    | undefined
 
   // Determine sort parameters
   const getSortParams = () => {

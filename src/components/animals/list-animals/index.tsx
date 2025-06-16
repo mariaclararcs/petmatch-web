@@ -10,18 +10,20 @@ import {
 } from "@/components/ui/table"
 import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
 import { IAnimal } from "@/interfaces/animal"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
 import { CreateAnimalSheet } from "../create-animal"
 import { UpdateAnimal } from "../update-animal"
 import { DeleteAnimal } from "../delete-animal"
+import { PaginationFull } from "../../pagination"
 
 export default function ListAnimals() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: animalsResponse, isLoading, isError } = useGetAnimals({
@@ -31,8 +33,16 @@ export default function ListAnimals() {
   })
 
   const animals = animalsResponse?.data?.data || []
+  const paginationData = animalsResponse?.data
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", page.toString())
+    router.push(`?${params.toString()}`)
+  }
 
   if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Carregando...</div>
+  
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar animais</div>
 
   return (
@@ -55,43 +65,56 @@ export default function ListAnimals() {
         <TableBody>
           {animals.map((animal: IAnimal) => (
             <TableRow key={animal.id}>
-                <TableCell>
-                  <Avatar>
-                    <AvatarImage src={animal.image} alt={animal.name} />
-                    <AvatarFallback>
-                      {animal.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell>{animal.name}</TableCell>
-                <TableCell>{animal.age} anos</TableCell>
-                <TableCell>
-                  {animal.gender === "male" ? "Macho" : "Fêmea"}
-                </TableCell>
-                <TableCell>
-                  {animal.type === "dog"
-                    ? "Cachorro"
-                    : animal.type === "cat"
-                    ? "Gato"
-                    : "Outro"}
-                </TableCell>
-                <TableCell>
-                  {animal.size === "small"
-                    ? "Pequeno"
-                    : animal.size === "medium"
-                    ? "Médio"
-                    : "Grande"}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <UpdateAnimal animal={animal} />
-                    <DeleteAnimal animal={animal} />
-                  </div>
-                </TableCell>
-              </TableRow>
+              <TableCell>
+                <Avatar>
+                  <AvatarImage src={animal.image} alt={animal.name} />
+                  <AvatarFallback>
+                    {animal.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </TableCell>
+              <TableCell>{animal.name}</TableCell>
+              <TableCell>{animal.age} anos</TableCell>
+              <TableCell>
+                {animal.gender === "male" ? "Macho" : "Fêmea"}
+              </TableCell>
+              <TableCell>
+                {animal.type === "dog"
+                  ? "Cachorro"
+                  : animal.type === "cat"
+                  ? "Gato"
+                  : "Outro"}
+              </TableCell>
+              <TableCell>
+                {animal.size === "small"
+                  ? "Pequeno"
+                  : animal.size === "medium"
+                  ? "Médio"
+                  : "Grande"}
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <UpdateAnimal animal={animal} />
+                  <DeleteAnimal animal={animal} />
+                </div>
+              </TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Adicionando a paginação */}
+      {paginationData && (
+        <PaginationFull
+          pageIndex={paginationData.current_page}
+          totalCount={paginationData.total}
+          perPage={paginationData.per_page}
+          totalPages={paginationData.last_page}
+          hasNextPage={!!paginationData.next_page_url}
+          hasPreviousPage={!!paginationData.prev_page_url}
+          onPageChange={handlePageChange}
+        />
+      )}
     </section>
   )
 }

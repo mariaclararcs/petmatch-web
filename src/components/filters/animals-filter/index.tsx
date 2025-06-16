@@ -31,7 +31,7 @@ export function AnimalsFilter({
   onNameOrderChange,
   onShelterTimeChange,
   onAgeRangeChange,
-  ageRange = [0, 15] // Valor padrão para o range
+  ageRange = [0, 15] // Valor padrão para o range de idade
 }: AnimalsFilterProps) {
 
   const [localAgeRange, setLocalAgeRange] = useState<number[]>(ageRange)
@@ -94,7 +94,7 @@ export function AnimalsFilter({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
+      {/*<div className="flex flex-col gap-2">
         <h3 className="text-md">
           Tempo no abrigo
         </h3>
@@ -107,7 +107,7 @@ export function AnimalsFilter({
             <SelectItem value="shelter_date-desc">Menos tempo</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div>*/}
 
       <div className="flex flex-col gap-2">
         <h3 className="text-md">

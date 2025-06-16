@@ -17,7 +17,7 @@ import { signOut } from "next-auth/react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
-type UserWithAvatar = User & { avatar?: string };
+type UserWithAvatar = User & { avatar?: string }
 
 export function NavUser({ user }: { user: UserWithAvatar }) {
   const router = useRouter()
@@ -36,7 +36,7 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
                 <AvatarFallback className="h-10 w-10 rounded-xg">
                     <Image
                         src={user.avatar || user.image || "/images/default-avatar.jpg"}
-                        alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
+                        alt={user.name ? `${user.name} avatar` : "Default avatar"}
                         width={40}
                         height={40}
                         className="size-full object-cover rounded-full"
@@ -59,7 +59,7 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
               <AvatarFallback className="h-10 w-10 rounded-xg">
                 <Image
                   src={user.avatar || user.image || "/images/default-avatar.jpg"}
-                  alt={user.name ? `${user.name}'s avatar` : "Default avatar"}
+                  alt={user.name ? `${user.name} avatar` : "Default avatar"}
                   width={40}
                   height={40}
                   className="size-full object-cover rounded-full"
