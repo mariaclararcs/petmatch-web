@@ -15,12 +15,10 @@ import { Button } from "@/components/ui/button"
 import type { User } from "next-auth"
 import { signOut } from "next-auth/react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 
 type UserWithAvatar = User & { avatar?: string }
 
 export function NavUser({ user }: { user: UserWithAvatar }) {
-  const router = useRouter()
 
   return (
     <DropdownMenu>
@@ -74,12 +72,7 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => router.push("/listagem-animais")}
-        >
-          Listagem de Animais
-        </DropdownMenuItem>
+
         <DropdownMenuItem
           className="cursor-pointer justify-between"
           onClick={() => {

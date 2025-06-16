@@ -5,11 +5,10 @@ import Link from "next/link"
 import * as React from "react"
 import { useSession } from "next-auth/react"
 import { NavUser } from "./nav-user"
-import { useRouter } from "next/navigation"
+import { NavAnimals } from "./nav-animals"
 
 export default function Header() {
     const { data: session } = useSession()
-    const router = useRouter()
 
     return (
         <header className="w-full bg-aprimary py-6">
@@ -23,7 +22,11 @@ export default function Header() {
 
             <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
                 <Link href="/ongs" className="hover:underline">ONGs</Link>
-                <Link href="/animais" className="hover:underline">Animais</Link>
+                {session ? <NavAnimals /> : 
+                    <Link href="/animais" className="hover:underline">
+                        Animais
+                    </Link>
+                }
                 <Link href="/sobre-nos" className="hover:underline">Sobre Nós</Link>
             </nav>
             </div>
