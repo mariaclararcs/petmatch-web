@@ -87,7 +87,7 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
               callbackUrl: "/", // Força o redirecionamento para a raiz
               redirect: true
             }).then(() => {
-              window.location.href = "/" // Garantia extra
+              window.location.href = "/"
             })
           }}
         >

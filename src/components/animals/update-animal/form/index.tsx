@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import api from "@/app/services/api";
-import { Button } from "@/components/ui/button";
+import api from "@/app/services/api"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -9,44 +9,44 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useGetOngs } from "@/hooks/ongs/useGetOngs";
-import { useSheetContext } from "@/hooks/use-sheet-context";
-import { IAnimal } from "@/interfaces/animal";
-import { IOng } from "@/interfaces/ong";
-import { queryClient } from "@/lib/react-query";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { useGetOngs } from "@/hooks/ongs/useGetOngs"
+import { useSheetContext } from "@/hooks/use-sheet-context"
+import { IAnimal } from "@/interfaces/animal"
+import { IOng } from "@/interfaces/ong"
+import { queryClient } from "@/lib/react-query"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
   { label: "Fêmea", value: "female" },
-] as const;
+] as const
 
 const SIZE_TYPES = [
   { label: "Pequeno", value: "small" },
   { label: "Médio", value: "medium" },
   { label: "Grande", value: "large" },
-] as const;
+] as const
 
 const TYPE_TYPES = [
   { label: "Cachorro", value: "dog" },
   { label: "Gato", value: "cat" },
   { label: "Outro", value: "other" },
-] as const;
+] as const
 
 const animalFormSchema = z.object({
   ong_id: z.string().min(1, "Selecione uma ONG"),
@@ -56,32 +56,37 @@ const animalFormSchema = z.object({
   type: z.enum(["dog", "cat", "other"]),
   size: z.enum(["small", "medium", "large"]),
   shelter_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  image: z.string().url("URL inválida").optional(),
-  description: z.string().min(10, "Descrição muito curta").max(500),
-});
+  image: z.string().optional(),
+  description: z.string().max(500).optional(),
+})
 
-type AnimalFormValues = z.infer<typeof animalFormSchema>;
+type AnimalFormValues = z.infer<typeof animalFormSchema>
 
 interface UpdateAnimalFormProps {
-  animal: IAnimal;
+  animal: IAnimal
 }
 
 export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
-  const { setIsOpen } = useSheetContext();
+  const { setIsOpen } = useSheetContext()
+
+  const defaultValues = {
+    ong_id: animal?.ong_id || "",
+    name: animal?.name || "",
+    age: animal?.age || 1,
+    gender: (animal?.gender as "male" | "female") || "male",
+    type: (animal?.type as "dog" | "cat" | "other") || "dog",
+    size: (animal?.size as "small" | "medium" | "large") || "medium",
+    shelter_date: animal?.shelter_date 
+      ? new Date(animal.shelter_date).toISOString().split("T")[0]
+      : new Date().toISOString().split("T")[0],
+    image: animal?.image || "",
+    description: animal?.description || "",
+  }
+
   const form = useForm<AnimalFormValues>({
     resolver: zodResolver(animalFormSchema),
-    defaultValues: {
-      ong_id: "",
-      name: "",
-      age: 1,
-      gender: "male",
-      type: "dog",
-      size: "medium",
-      shelter_date: new Date().toISOString().split("T")[0],
-      image: "",
-      description: "",
-    },
-  });
+    defaultValues,
+  })
 
   useEffect(() => {
     if (animal) {
@@ -95,9 +100,9 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
         shelter_date: new Date(animal.shelter_date).toISOString().split("T")[0],
         image: animal.image || "",
         description: animal.description || "",
-      });
+      })
     }
-  }, [animal, form]);
+  }, [animal, form])
 
   console.log(animal.id);
   const { mutate: updateAnimal, isPending } = useMutation({
@@ -114,11 +119,18 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     },
   });
 
-  const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" });
-  const ongs = ongsResponse?.data || [];
+  const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
+  const ongs = ongsResponse?.data || []
 
   function onSubmit(data: AnimalFormValues) {
-    updateAnimal(data);
+    const payload = {
+      ...data,
+      image: data.image?.trim() || "Campo vazio",
+      description: data.description?.trim() || "Campo vazio"
+    }
+    
+    console.log("Dados sendo enviados:", payload) // Para verificação
+    updateAnimal(payload)
   }
 
   return (
@@ -188,7 +200,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
           name="gender"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Gênero</FormLabel>
+              <FormLabel>Sexo</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -263,7 +275,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
           name="shelter_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Data de acolhimento</FormLabel>
+              <FormLabel>Data de abrigo</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>

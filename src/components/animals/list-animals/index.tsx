@@ -32,8 +32,8 @@ export default function ListAnimals() {
 
   const animals = animalsResponse?.data?.data || []
 
-  if (isLoading) return <div>Carregando...</div>
-  if (isError) return <div>Erro ao carregar animais</div>
+  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Carregando...</div>
+  if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar animais</div>
 
   return (
     <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
