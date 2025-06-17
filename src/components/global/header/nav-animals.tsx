@@ -27,14 +27,14 @@ export function NavAnimals() {
       <DropdownMenuContent className="min-w-40 rounded-lg">
         <DropdownMenuItem asChild>
           <Link href="/animais" className="w-full cursor-pointer">
-            Ver Animais
+            Animais para Adoção
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() => router.push("/listagem-animais")}
         >
-          Listagem de Animais
+          Gerenciar Animais
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

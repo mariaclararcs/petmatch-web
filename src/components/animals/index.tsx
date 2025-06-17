@@ -14,7 +14,7 @@ export default function Animals() {
   const router = useRouter()
 
   // Definindo itens por página
-  const itemsPerPage = 12
+  const itemsPerPage = 9
   const currentPage = z.coerce.number().parse(searchParams.get("page") ?? "1")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 

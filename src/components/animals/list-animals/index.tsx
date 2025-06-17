@@ -23,7 +23,7 @@ export default function ListAnimals() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: animalsResponse, isLoading, isError } = useGetAnimals({
@@ -47,9 +47,13 @@ export default function ListAnimals() {
 
   return (
     <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
-      <div className="flex justify-end">
-        <CreateAnimalSheet />
+      <div className="flex flex-row justify-between items-center">
+        <h2 className="text-2xl font-medium">Gerenciar Animais</h2>
+        <div className="flex justify-end">
+          <CreateAnimalSheet />
+        </div>
       </div>
+
       <Table>
         <TableHeader>
           <TableRow>
