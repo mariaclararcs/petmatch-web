@@ -56,7 +56,6 @@ export default function BannerSlider(){
           height={176}
         />
       </div>
-      <div className="keen-slider__slide number-slide2 rounded-xl bg-aquaternary">2</div>
     </div>
   )
 }
