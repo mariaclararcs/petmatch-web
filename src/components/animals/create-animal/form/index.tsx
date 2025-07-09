@@ -18,6 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { useGetOngs } from "@/hooks/ongs/useGetOngs"
 import { IOng } from "@/interfaces/ong"
@@ -27,6 +34,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import { useState } from "react"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -60,6 +68,8 @@ const animalFormSchema = z.object({
 type AnimalFormValues = z.infer<typeof animalFormSchema>
 
 export function CreateAnimalForm() {
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+
   const form = useForm<AnimalFormValues>({
     resolver: zodResolver(animalFormSchema),
     defaultValues: {
@@ -78,7 +88,7 @@ export function CreateAnimalForm() {
   const { mutate: createAnimal, isPending } = useMutation({
     mutationFn: (data: AnimalFormValues) => api.post("http://localhost:8000/api/animals", data),
     onSuccess: () => {
-      toast.success("Animal criado com sucesso!")
+      setIsSuccessDialogOpen(true) // Abre o dialog de sucesso
       queryClient.invalidateQueries({ queryKey: ["get-animals"] })
       form.reset()
     },
@@ -103,188 +113,202 @@ export function CreateAnimalForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4">
-        <FormField
-          control={form.control}
-          name="ong_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ONG</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione uma ONG" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {ongs && ongs.length > 0 ? (
-                    ongs.map((ong: IOng) => (
-                      <SelectItem key={ong.id} value={ong.id}>
-                        {ong.name_institution}
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 pb-6">
+          <FormField
+            control={form.control}
+            name="ong_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ONG</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione uma ONG" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {ongs && ongs.length > 0 ? (
+                      ongs.map((ong: IOng) => (
+                        <SelectItem key={ong.id} value={ong.id}>
+                          {ong.name_institution}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-ongs" disabled>
+                        Nenhuma ONG disponível
                       </SelectItem>
-                    ))
-                  ) : (
-                    <SelectItem value="no-ongs" disabled>
-                      Nenhuma ONG disponível
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Nome do animal" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Idade (anos)</FormLabel>
-              <FormControl>
-                <Input type="number" min="1" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sexo</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o sexo" />
-                  </SelectTrigger>
+                  <Input placeholder="Nome do animal" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {GENDER_TYPES.map(gender => (
-                    <SelectItem key={gender.value} value={gender.value}>
-                      {gender.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+          <FormField
+            control={form.control}
+            name="age"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Idade (anos)</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
+                  <Input type="number" min="1" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {TYPE_TYPES.map(type => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="size"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Porte</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sexo</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o sexo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {GENDER_TYPES.map(gender => (
+                      <SelectItem key={gender.value} value={gender.value}>
+                        {gender.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {TYPE_TYPES.map(type => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="size"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Porte</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o porte" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {SIZE_TYPES.map(size => (
+                      <SelectItem key={size.value} value={size.value}>
+                        {size.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="shelter_date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Data de abrigo</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione o porte" />
-                  </SelectTrigger>
+                  <Input type="date" {...field} />
                 </FormControl>
-                <SelectContent>
-                  {SIZE_TYPES.map(size => (
-                    <SelectItem key={size.value} value={size.value}>
-                      {size.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="shelter_date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Data de abrigo</FormLabel>
-              <FormControl>
-                <Input type="date" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>URL da imagem</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL da imagem</FormLabel>
-              <FormControl>
-                <Input placeholder="https://..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descrição</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Descreva o animal..." className="min-h-[100px]" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descrição</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Descreva o animal..." className="min-h-[100px]" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Cadastrando..." : "Cadastrar Animal"}
+          </Button>
+        </form>
+      </Form>
 
-        <Button type="submit" disabled={isPending}>
-          {isPending ? "Cadastrando..." : "Cadastrar Animal"}
-        </Button>
-      </form>
-    </Form>
-  );
+      {/* Dialog de sucesso */}
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Animal cadastrado com sucesso!</DialogTitle>
+            <DialogDescription>
+              O animal foi cadastrado no sistema e agora está disponível para adoção.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
 }

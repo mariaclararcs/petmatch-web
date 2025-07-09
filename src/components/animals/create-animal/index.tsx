@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { CreateAnimalForm } from "./form";
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { CreateAnimalForm } from "./form"
 
 export function CreateAnimalSheet() {
   return (
@@ -12,10 +12,8 @@ export function CreateAnimalSheet() {
         <SheetHeader>
           <SheetTitle>Cadastre um animal</SheetTitle>
         </SheetHeader>
-        <div className="py-4">
           <CreateAnimalForm />
-        </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

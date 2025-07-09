@@ -3,7 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
-import { Dog, Cat, Bird, Venus, Mars } from 'lucide-react'
+import { Dog, Cat, Venus, Mars, PawPrint } from 'lucide-react'
 import { IAnimal } from "@/interfaces/animal"
 
 interface CardSProps {
@@ -17,7 +17,7 @@ export default function CardS({ animal, className }: CardSProps) {
     switch(type) {
       case 'dog': return <Dog className={iconClass} />
       case 'cat': return <Cat className={iconClass} />
-      default: return <Bird className={iconClass} />
+      default: return <PawPrint className={iconClass} />
     }
   }
 
@@ -26,7 +26,7 @@ export default function CardS({ animal, className }: CardSProps) {
       <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-52 h-fit gap-4 hover:cursor-pointer overflow-hidden">
         <CardHeader className="flex flex-col items-center w-full h-44 p-0">
           <Image
-            className="rounded-lg bg-primary object-cover group-hover:opacity-75"
+            className="rounded-lg bg-aprimary object-cover group-hover:opacity-75"
             alt={animal.name} 
             src={animal.image || '/placeholder-animal.jpg'}
             width={176}

@@ -18,43 +18,25 @@ export default function Animals() {
   const currentPage = z.coerce.number().parse(searchParams.get("page") ?? "1")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
-  // Estados para os filtros
-  const [animalTypes, setAnimalTypes] = useState<Record<string, boolean>>({
-    dog: false,
-    cat: false,
-    other: false,
-  })
-  const [genders, setGenders] = useState<Record<string, boolean>>({
-    female: false,
-    male: false,
-  })
+  // Estados para os filtros (agora usando string | null)
+  const [animalType, setAnimalType] = useState<string | null>(null)
+  const [gender, setGender] = useState<string | null>(null)
   const [nameOrder, setNameOrder] = useState<string>("")
   const [shelterTime, setShelterTime] = useState<string>("")
   const [ageRange, setAgeRange] = useState<number[]>([0, 15])
 
-  // Get selected type and gender
-  const selectedType = Object.entries(animalTypes).find(([, value]) => value)?.[0] as
-    | "dog"
-    | "cat"
-    | "other"
-    | undefined
-  const selectedGender = Object.entries(genders).find(([, value]) => value)?.[0] as
-    | "male"
-    | "female"
-    | undefined
-
   // Determine sort parameters
   const getSortParams = () => {
     if (nameOrder) {
-      const [field, order] = nameOrder.split("-");
-      return { sort_by: field as "name", sort_order: order as "asc" | "desc" };
+      const [field, order] = nameOrder.split("-")
+      return { sort_by: field as "name", sort_order: order as "asc" | "desc" }
     }
     if (shelterTime) {
-      const [field, order] = shelterTime.split("-");
-      return { sort_by: field as "shelter_date", sort_order: order as "asc" | "desc" };
+      const [field, order] = shelterTime.split("-")
+      return { sort_by: field as "shelter_date", sort_order: order as "asc" | "desc" }
     }
-    return {};
-  };
+    return {}
+  }
 
   const {
     data: animalsResponse,
@@ -64,68 +46,63 @@ export default function Animals() {
     page: currentPage,
     per_page: itemsPerPage,
     search: debouncedSearchTerm,
-    type: selectedType,
-    gender: selectedGender,
+    type: animalType as "dog" | "cat" | "other" | undefined,
+    gender: gender as "male" | "female" | undefined,
     min_age: ageRange[0],
     max_age: ageRange[1],
     ...getSortParams(),
-  });
+  })
 
-  const animals = animalsResponse?.data?.data || [];
-  const paginationData = animalsResponse?.data;
+  const animals = animalsResponse?.data?.data || []
+  const paginationData = animalsResponse?.data
 
   const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
-    router.push(`?${params.toString()}`);
-  };
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", page.toString())
+    router.push(`?${params.toString()}`)
+  }
 
-  const handleTypeChange = (type: string) => {
-    setAnimalTypes(prev => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-  };
+  // Função simplificada para lidar com mudança de tipo
+  const handleTypeChange = (type: string | null) => {
+    setAnimalType(type)
+  }
 
-  const handleGenderChange = (gender: string) => {
-    setGenders(prev => ({
-      ...prev,
-      [gender]: !prev[gender],
-    }));
+  // Função simplificada para lidar com mudança de sexo
+  const handleGenderChange = (gender: string | null) => {
+    setGender(gender)
   }
 
   if (isLoading) {
     return (
       <div className="flex flex-col mx-auto px-20 py-6 xl:py-8 max-h-auto">
-      <div className="flex flex-row justify-center gap-10 mb-8">
-        {/* Área de filtros */}
-        <AnimalsFilter
-          animalTypes={animalTypes}
-          genders={genders}
-          onTypeChange={handleTypeChange}
-          onGenderChange={handleGenderChange}
-          onNameOrderChange={setNameOrder}
-          onShelterTimeChange={setShelterTime}
-          onAgeRangeChange={setAgeRange}
-          ageRange={ageRange}
-        />
+        <div className="flex flex-row justify-center gap-10 mb-8">
+          {/* Área de filtros */}
+          <AnimalsFilter
+            animalTypes={null}
+            genders={null}
+            onTypeChange={handleTypeChange}
+            onGenderChange={handleGenderChange}
+            onNameOrderChange={setNameOrder}
+            onShelterTimeChange={setShelterTime}
+            onAgeRangeChange={setAgeRange}
+            ageRange={ageRange}
+          />
 
-        {/* Área de listagem de cards */}
-        <div className="flex flex-col mt-4 w-3/4">
-          <h2 className="text-2xl font-medium">Animais para adoção</h2>
+          {/* Área de listagem de cards */}
+          <div className="flex flex-col mt-4 w-3/4">
+            <h2 className="text-2xl font-medium">Animais para adoção</h2>
 
-          <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-            {[...Array(itemsPerPage)].map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="aspect-square w-full rounded-xl bg-border lg:h-68 lg:w-52" />
-                  <div className="mt-4 space-y-2">
+            <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              {[...Array(itemsPerPage)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-square w-full rounded-xl bg-border lg:h-96 lg:w-62" />
+                  <div className="mt-4 space-y-2"></div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
     )
   }
 
@@ -142,8 +119,8 @@ export default function Animals() {
       <div className="flex flex-row justify-center gap-10 mb-8">
         {/* Área de filtros */}
         <AnimalsFilter
-          animalTypes={animalTypes}
-          genders={genders}
+          animalTypes={animalType}
+          genders={gender}
           onTypeChange={handleTypeChange}
           onGenderChange={handleGenderChange}
           onNameOrderChange={setNameOrder}

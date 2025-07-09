@@ -11,7 +11,7 @@ import { UpdateAnimalForm } from "./form";
 import { IAnimal } from "@/interfaces/animal";
 
 interface UpdateAnimalProps {
-  animal: IAnimal;
+  animal: IAnimal
 }
 
 export function UpdateAnimal({ animal }: UpdateAnimalProps) {
@@ -29,5 +29,5 @@ export function UpdateAnimal({ animal }: UpdateAnimalProps) {
         <UpdateAnimalForm animal={animal} />
       </SheetContent>
     </Sheet>
-  );
+  )
 } 

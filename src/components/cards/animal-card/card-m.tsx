@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
-import { Dog, Cat, Bird, Venus, Mars } from 'lucide-react'
+import { Dog, Cat, Venus, Mars, PawPrint } from 'lucide-react'
 import { IAnimal } from "@/interfaces/animal"
 import Link from "next/link"
 
@@ -17,7 +17,7 @@ export default function CardM({ animal, className }: CardMProps) {
     switch(type) {
       case 'dog': return <Dog className={iconClass} />
       case 'cat': return <Cat className={iconClass} />
-      default: return <Bird className={iconClass} />
+      default: return <PawPrint className={iconClass} />
     }
   }
 

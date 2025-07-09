@@ -1,7 +1,6 @@
 import style from "@/styles/Font.module.css"
-import { Button } from "../ui/button";
-import Image from "next/image";
-import { Check } from "lucide-react";
+import Image from "next/image"
+import { Check } from "lucide-react"
 
 export default function AboutUs() {
   return (
@@ -77,7 +76,7 @@ export default function AboutUs() {
            Junte-se a nós nessa causa e ajude a transformar histórias! 💙
         </h2>
         <p className="text-lg font-medium">
-          Adotar é um ato de amor. E aqui, cada match é uma vida salva!
+          Adotar é um ato de amor. Aqui, cada match é uma vida salva!
         </p>
       </section>
     </div>

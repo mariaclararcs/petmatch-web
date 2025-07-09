@@ -56,6 +56,15 @@ export default function BannerSlider(){
           height={176}
         />
       </div>
+      <div className="keen-slider__slide number-slide2 rounded-xl bg-aquaternary">
+        <Image
+          className="w-full h-72 object-cover"
+          alt="Banner image 2" 
+          src="/images/home-banner-2.svg"
+          width={176}
+          height={176}
+        />
+      </div>
     </div>
   )
 }

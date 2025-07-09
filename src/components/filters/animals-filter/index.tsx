@@ -13,8 +13,8 @@ import { Slider } from "@/components/ui/slider"
 import { useState } from "react"
 
 interface AnimalsFilterProps {
-  animalTypes: Record<string, boolean>
-  genders: Record<string, boolean>
+  animalTypes: string | null // Record<string, boolean>
+  genders: string | null // Record<string, boolean>
   onTypeChange: (type: string) => void
   onGenderChange: (gender: string) => void
   onNameOrderChange: (value: string) => void
@@ -29,16 +29,24 @@ export function AnimalsFilter({
   onTypeChange,
   onGenderChange,
   onNameOrderChange,
-  onShelterTimeChange,
   onAgeRangeChange,
-  ageRange = [0, 15] // Valor padrão para o range de idade
+  ageRange = [0, 15]
 }: AnimalsFilterProps) {
-
   const [localAgeRange, setLocalAgeRange] = useState<number[]>(ageRange)
 
   const handleAgeRangeChange = (value: number[]) => {
     setLocalAgeRange(value)
     onAgeRangeChange(value)
+  }
+
+  // Função para lidar com mudança de tipo
+  const handleTypeChange = (type: string) => {
+    onTypeChange(animalTypes === type ? null : type)
+  }
+
+  // Função para lidar com mudança de sexo
+  const handleGenderChange = (gender: string) => {
+    onGenderChange(genders === gender ? null : gender)
   }
 
   return (
@@ -63,31 +71,29 @@ export function AnimalsFilter({
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-md">
-          Tipo
-        </h3>
+        <h3 className="text-md">Tipo</h3>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <Checkbox 
               id="dog" 
-              checked={animalTypes.dog}
-              onCheckedChange={() => onTypeChange('dog')}
+              checked={animalTypes === 'dog'}
+              onCheckedChange={() => handleTypeChange('dog')}
             />
             <Label htmlFor="dog">Cachorros</Label>
           </div>
           <div className="flex items-center gap-2">
             <Checkbox 
               id="cat" 
-              checked={animalTypes.cat}
-              onCheckedChange={() => onTypeChange('cat')}
+              checked={animalTypes === 'cat'}
+              onCheckedChange={() => handleTypeChange('cat')}
             />
             <Label htmlFor="cat">Gatos</Label>
           </div>
           <div className="flex items-center gap-2">
             <Checkbox 
               id="other" 
-              checked={animalTypes.other}
-              onCheckedChange={() => onTypeChange('other')}
+              checked={animalTypes === 'other'}
+              onCheckedChange={() => handleTypeChange('other')}
             />
             <Label htmlFor="other">Outros</Label>
           </div>
@@ -144,28 +150,26 @@ export function AnimalsFilter({
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3 className="text-md">
-          Sexo
-        </h3>
+        <h3 className="text-md">Sexo</h3>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <Checkbox 
               id="female" 
-              checked={genders.female}
-              onCheckedChange={() => onGenderChange('female')}
+              checked={genders === 'female'}
+              onCheckedChange={() => handleGenderChange('female')}
             />
             <Label htmlFor="female">Fêmea</Label>
           </div>
           <div className="flex items-center gap-2">
             <Checkbox 
               id="male" 
-              checked={genders.male}
-              onCheckedChange={() => onGenderChange('male')}
+              checked={genders === 'male'}
+              onCheckedChange={() => handleGenderChange('male')}
             />
             <Label htmlFor="male">Macho</Label>
           </div>
+          </div>
         </div>
-      </div>
 
       {/*<div className="flex flex-col gap-2">
         <h3 className="text-md">
