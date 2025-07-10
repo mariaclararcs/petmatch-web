@@ -1,32 +1,35 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import font from "@/styles/Font.module.css";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { Button } from "@/components/ui/button"
+import font from "@/styles/Font.module.css"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
+import { Eye, EyeClosed } from "lucide-react"
+import { useState } from "react"
 
 const loginFormSchema = z.object({
   email: z.string().email("E-mail inválido"),
   password: z.string().min(6, "A senha deve ter no mínimo 6 caracteres"),
-});
+})
 
-type LoginFormData = z.infer<typeof loginFormSchema>;
+type LoginFormData = z.infer<typeof loginFormSchema>
 
 export default function LoginForm() {
-  const router = useRouter();
+  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-  });
+  })
 
   async function handleSignInCredentials(data: LoginFormData) {
     try {
@@ -34,19 +37,19 @@ export default function LoginForm() {
         email: data.email,
         password: data.password,
         redirect: false,
-      });
+      })
 
       if (result?.error) {
-        toast.error(result.error);
-        return;
+        toast.error(result.error)
+        return
       }
 
       if (result?.ok) {
-        router.push("/");
+        router.push("/")
       }
     } catch (error) {
-      toast.error("Ocorreu um erro ao fazer login.");
-      console.error(error);
+      toast.error("Ocorreu um erro ao fazer login.")
+      console.error(error)
     }
   }
 
@@ -70,7 +73,7 @@ export default function LoginForm() {
               <input
                 type="email"
                 className={`rounded-xl border-2 px-4 py-2 mb-4 ${
-                  errors.email ? "border-red-500" : "border-gray-300"
+                  errors.email ? "border-red-500" : "border-aborder"
                 }`}
                 {...register("email")}
                 disabled={isSubmitting}
@@ -78,14 +81,27 @@ export default function LoginForm() {
               {errors.email && <p className="text-red-500 text-sm mb-4">{errors.email.message}</p>}
 
               <label className="mb-1">Insira a senha</label>
-              <input
-                type="password"
-                className={`rounded-xl border-2 px-4 py-2 mb-1 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
-                {...register("password")}
-                disabled={isSubmitting}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className={`rounded-xl border-2 px-4 py-2 mb-1 w-full ${
+                    errors.password ? "border-red-500" : "border-aborder"
+                  }`}
+                  {...register("password")}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <Eye className="h-5 w-5" />
+                  ) : (
+                    <EyeClosed className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-sm mb-4">{errors.password.message}</p>
               )}
@@ -128,5 +144,5 @@ export default function LoginForm() {
         />
       </div>
     </div>
-  );
+  )
 }

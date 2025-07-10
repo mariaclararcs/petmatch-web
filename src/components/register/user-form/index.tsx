@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { Eye, EyeClosed } from "lucide-react"
 
 // Schema de validação
 const registerSchema = z.object({
@@ -27,6 +28,7 @@ export default function RegisterUser() {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [apiError, setApiError] = useState<string | null>(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     const {
         register,
@@ -133,7 +135,7 @@ export default function RegisterUser() {
                     <h1 className="text-lg font-bold">Cadastro de Usuário</h1>
 
                     {apiError && (
-                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 w-full">
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 w-full">
                             {apiError}
                         </div>
                     )}
@@ -143,7 +145,7 @@ export default function RegisterUser() {
                         <input
                             type="text"
                             {...register('name')}
-                            className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                            className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.name ? 'border-red-500' : 'border-aborder'
                             }`}
                         />
@@ -155,7 +157,7 @@ export default function RegisterUser() {
                         <input 
                             type="email"
                             {...register('email')}
-                            className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                            className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.email ? 'border-red-500' : 'border-aborder'
                             }`}
                         />
@@ -169,7 +171,7 @@ export default function RegisterUser() {
                                 <input 
                                     type="date"
                                     {...register('birthDate')}
-                                    className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                                    className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                         errors.birthDate ? 'border-red-500' : 'border-aborder'
                                     }`}
                                 />
@@ -185,7 +187,7 @@ export default function RegisterUser() {
                                     onChange={(e) => formatPhone(e.target.value)}
                                     value={watch('phone')}
                                     placeholder="(00)00000-0000"
-                                    className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                                    className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                         errors.phone ? 'border-red-500' : 'border-aborder'
                                     }`}
                                     maxLength={15}
@@ -200,7 +202,7 @@ export default function RegisterUser() {
                         <input 
                             type="text"
                             {...register('address')}
-                            className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                            className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.address ? 'border-red-500' : 'border-aborder'
                             }`}
                         />
@@ -215,7 +217,7 @@ export default function RegisterUser() {
                             onChange={(e) => formatCEP(e.target.value)}
                             value={watch('cep')}
                             placeholder="00000-000"
-                            className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
+                            className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.cep ? 'border-red-500' : 'border-aborder'
                              }`}
                             maxLength={9}
@@ -227,26 +229,51 @@ export default function RegisterUser() {
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Senha *</label>
-                                <input 
-                                    type="password" 
-                                    {...register('password')}
-                                    className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
-                                        errors.password ? 'border-red-500' : 'border-aborder'
+                                <div className="relative">
+                                    <input
+                                    type={showPassword ? "text" : "password"}
+                                    className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
+                                        errors.password ? "border-red-500" : "border-aborder"
                                     }`}
-                                />
-                                {errors.password && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                                )}
+                                    {...register("password")}
+                                    disabled={isSubmitting}
+                                    />
+                                    <button
+                                    type="button"
+                                    className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                    {showPassword ? (
+                                        <Eye className="h-5 w-5" />
+                                    ) : (
+                                        <EyeClosed className="h-5 w-5" />
+                                    )}
+                                    </button>
+                                </div>
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Confirme sua senha *</label>
-                                <input 
-                                    type="password" 
-                                    {...register('confirmPassword')}
-                                    className={`rounded-xl border-2 px-4 py-3 mb-6 w-full ${
-                                        errors.confirmPassword ? 'border-red-500' : 'border-aborder'
+                                <div className="relative">
+                                    <input
+                                    type={showPassword ? "text" : "password"}
+                                    className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
+                                        errors.password ? "border-red-500" : "border-aborder"
                                     }`}
-                                />
+                                    {...register("confirmPassword")}
+                                    disabled={isSubmitting}
+                                    />
+                                    <button
+                                    type="button"
+                                    className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                    {showPassword ? (
+                                        <Eye className="h-5 w-5" />
+                                    ) : (
+                                        <EyeClosed className="h-5 w-5" />
+                                    )}
+                                    </button>
+                                </div>
                                 {errors.confirmPassword && (
                                     <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
                                 )}
@@ -256,7 +283,7 @@ export default function RegisterUser() {
                         <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="bg-aprimary rounded-xl border-2 border-asecondary py-3 mt-2 font-bold text-asecondary hover:bg-asecondary hover:text-abackground transition-colors w-full disabled:opacity-70"
+                        className="bg-aprimary rounded-xl border-2 border-asecondary py-2 mt-2 font-bold text-asecondary hover:bg-asecondary hover:text-abackground transition-colors w-full disabled:opacity-70"
                         >
                         {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                         </button>
