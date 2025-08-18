@@ -1,19 +1,21 @@
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { CreateAnimalForm } from "./form"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export function CreateAnimalSheet() {
   return (
-    <Sheet>
-      <SheetTrigger>
+    <Dialog>
+      <DialogTrigger>
         <Button>Cadastrar</Button>
-      </SheetTrigger>
-      <SheetContent className="overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Cadastre um animal</SheetTitle>
-        </SheetHeader>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="sticky top-0 z-10">
+          <DialogTitle>Cadastre um animal</DialogTitle>
+        </DialogHeader>
+        <div className="overflow-y-auto">
           <CreateAnimalForm />
-      </SheetContent>
-    </Sheet>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -183,7 +183,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 pb-6" encType="multipart/form-data">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto" encType="multipart/form-data">
           <FormField
             control={form.control}
             name="ong_id"

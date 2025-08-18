@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
+import { Pencil } from "lucide-react"
+import { UpdateAnimalForm } from "./form"
+import { IAnimal } from "@/interfaces/animal"
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Pencil } from "lucide-react";
-import { UpdateAnimalForm } from "./form";
-import { IAnimal } from "@/interfaces/animal";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog" // Importe todos do mesmo lugar
 
 interface UpdateAnimalProps {
   animal: IAnimal
@@ -16,18 +16,20 @@ interface UpdateAnimalProps {
 
 export function UpdateAnimal({ animal }: UpdateAnimalProps) {
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
           <Pencil className="h-4 w-4" />
         </Button>
-      </SheetTrigger>
-      <SheetContent className="overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Atualizar Animal</SheetTitle>
-        </SheetHeader>
-        <UpdateAnimalForm animal={animal} />
-      </SheetContent>
-    </Sheet>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] xl:w-[50vw] overflow-y-auto">
+        <DialogHeader className="sticky top-0 z-10">
+          <DialogTitle>Atualizar Animal</DialogTitle>
+        </DialogHeader>
+        <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
+          <UpdateAnimalForm animal={animal} />
+        </div>
+      </DialogContent>
+    </Dialog>
   )
-} 
+}
