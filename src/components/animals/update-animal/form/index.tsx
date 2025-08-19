@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { useGetOngs } from "@/hooks/ongs/useGetOngs"
-import { useSheetContext } from "@/hooks/use-sheet-context"
 import { IAnimal } from "@/interfaces/animal"
 import { IOng } from "@/interfaces/ong"
 import { queryClient } from "@/lib/react-query"
@@ -37,7 +36,6 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import Image from "next/image"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -64,7 +62,7 @@ const animalFormSchema = z.object({
   type: z.enum(["dog", "cat", "other"]),
   size: z.enum(["small", "medium", "large"]),
   shelter_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  image: z.union([z.instanceof(File), z.string()]).optional(),
+  image: z.string().optional(),
   description: z.string().max(500).optional(),
 })
 
@@ -75,32 +73,8 @@ interface UpdateAnimalFormProps {
 }
 
 export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const { setIsOpen } = useSheetContext()
+  
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false) // Estado para controlar o dialog
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>, fieldChange: (value: any) => void) => {
-    event.preventDefault()
-    
-    const fileReader = new FileReader()
-    
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0]
-      
-      if (!file.type.includes('image')) {
-        toast.error('Por favor, envie apenas imagens')
-        return
-      }
-      
-      fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || ''
-        setPreviewImage(imageDataUrl)
-      }
-      
-      fileReader.readAsDataURL(file)
-      fieldChange(file)
-    }
-  }
 
   const defaultValues = {
     ong_id: animal?.ong_id || "",
@@ -154,36 +128,21 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
-  async function onSubmit(data: AnimalFormValues) {
-    try {
-      const formData = new FormData()
-      
-      // Adiciona todos os campos ao FormData
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === 'image' && value instanceof File) {
-          formData.append('image', value)
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, String(value))
-        }
-      })
-
-      const payload = {
-        ...data,
-        description: data.description?.trim() || "Campo vazio"
-      }
-      
-      console.log("Dados sendo enviados:", payload)
-      await updateAnimal(payload)
-    } catch (error) {
-      console.error("Erro ao enviar formulário:", error)
-      toast.error("Ocorreu um erro ao atualizar o animal")
+  function onSubmit(data: AnimalFormValues) {
+    const payload = {
+      ...data,
+      image: data.image?.trim() || "Campo vazio",
+      description: data.description?.trim() || "Campo vazio"
     }
+    
+    console.log("Dados sendo enviados:", payload)
+    updateAnimal(payload)
   }
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto" encType="multipart/form-data">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto">
           <FormField
             control={form.control}
             name="ong_id"
@@ -337,38 +296,9 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Imagem do Animal</FormLabel>
+                <FormLabel>URL da imagem</FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-4">
-                    {previewImage || animal.image ? (
-                      <div className="relative h-20 w-20">
-                        <Image
-                          src={previewImage || animal.image || ''}
-                          alt="Preview da imagem"
-                          fill
-                          className="rounded-full object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    ) : (
-                      <div className="h-20 w-20 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500">Sem imagem</span>
-                      </div>
-                    )}
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      id="image-upload"
-                      onChange={(e) => handleFileChange(e, field.onChange)}
-                    />
-                    <label
-                      htmlFor="image-upload"
-                      className="cursor-pointer rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50"
-                    >
-                      {field.value instanceof File ? 'Alterar imagem' : 'Selecionar imagem'}
-                    </label>
-                  </div>
+                  <Input placeholder="https://..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
