@@ -34,7 +34,7 @@ export default function CardM({ animal, className }: CardMProps) {
       case 'small': return 'Pequeno'
       case 'medium': return 'Médio'
       case 'large': return 'Grande'
-      default: return size;
+      default: return size
     }
   }
 

@@ -1,18 +1,18 @@
-import Footer from "@/components/global/footer";
-import Header from "@/components/global/header";
-import { Suspense } from "react";
+import Footer from "@/components/global/footer"
+import Header from "@/components/global/header"
+import { Suspense } from "react"
 
 interface BreadCrumbItem {
-  title: string;
-  url: string;
+  title: string
+  url: string
 }
 
 export default function Layout({
   children,
 }: {
-  children: React.ReactNode;
-  breadCrumbItems: BreadCrumbItem[];
-  pageTitle?: string;
+  children: React.ReactNode
+  breadCrumbItems: BreadCrumbItem[]
+  pageTitle?: string
 }) {
   return (
     <div className={`min-h-screen flex flex-col`}>

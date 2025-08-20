@@ -111,7 +111,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     }
   }, [animal, form])
 
-  console.log(animal.id);
+  console.log(animal.id)
   const { mutate: updateAnimal, isPending } = useMutation({
     mutationFn: (data: AnimalFormValues) =>
       api.put(`http://localhost:8000/api/animals/${animal.id}`, data),

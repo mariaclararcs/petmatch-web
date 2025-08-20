@@ -40,15 +40,15 @@ export default function Ongs() {
             <div className="flex flex-row justify-center gap-10 mb-8">
                 {/* Área de listagem de cards */}
                 <div className="flex flex-col mt-4 w-3/4">
-                <h2 className="text-2xl font-medium">ONGs Cadastradas</h2>
+                    <h2 className="text-2xl font-medium">ONGs Cadastradas</h2>
 
-                <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                    {ongs.map((ong: IOng) => (
-                        <div key={ong.id} className="group">
-                        <CardOng key={ong.id} ong={ong} className="w-full" />
+                    <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                        {ongs.map((ong: IOng) => (
+                            <div key={ong.id} className="group">
+                            <CardOng key={ong.id} ong={ong} className="w-full" />
+                        </div>
+                        ))}
                     </div>
-                    ))}
-                </div>
                 </div>
             </div>
             {paginationData && (

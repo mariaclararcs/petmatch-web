@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { DogIcon, MenuIcon, User2Icon } from "lucide-react";
-import type * as React from "react";
+import { DogIcon, MenuIcon, User2Icon } from "lucide-react"
+import type * as React from "react"
 
 import {
   Sidebar,
@@ -9,17 +9,17 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/sidebar"
 
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
+import { NavMain } from "./nav-main"
+import { NavUser } from "./nav-user"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession();
+  const { data: session } = useSession()
 
   const data = {
     navMain: [
@@ -42,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [],
       },
     ],
-  };
+  }
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -68,5 +68,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  );
+  )
 }

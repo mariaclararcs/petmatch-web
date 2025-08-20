@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,19 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { IUser } from "@/interfaces/user";
-import { signOut } from "next-auth/react";
-import Image from "next/image";
+} from "@/components/ui/sidebar"
+import { IUser } from "@/interfaces/user"
+import { signOut } from "next-auth/react"
+import Image from "next/image"
 
 export function NavUser({ user }: { user: IUser }) {
-  const { isMobile } = useSidebar();
+  const { isMobile } = useSidebar()
 
   return (
     <SidebarMenu>
@@ -76,7 +76,7 @@ export function NavUser({ user }: { user: IUser }) {
                 signOut({
                   redirect: true,
                   callbackUrl: "/",
-                });
+                })
               }}
             >
               <LogOut />
@@ -86,5 +86,5 @@ export function NavUser({ user }: { user: IUser }) {
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  );
+  )
 }

@@ -40,7 +40,7 @@ export default function CardOng({ ong, className }: CardOngProps) {
             
             <CardFooter className="w-full">
                 <Link 
-                    href="#"
+                    href="/perfil/ong"
                     className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
                 >
                     Detalhes

@@ -9,8 +9,8 @@ import { IAnimal } from "@/interfaces/animal"
 import { useEffect, useState } from "react"
 
 interface AnimalWithFormattedDate extends Omit<IAnimal, 'shelter_date'> {
-  formatted_date?: string;
-  shelter_date: Date;
+  formatted_date?: string
+  shelter_date: Date
 }
 
 type CardAnimal = Omit<IAnimal, 'shelter_date'> & { shelter_date?: string }

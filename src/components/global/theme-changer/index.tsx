@@ -1,18 +1,18 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Moon, Sun } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useTheme } from "next-themes";
+"use client"
+import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react"
+import { useSession } from "next-auth/react"
+import { useTheme } from "next-themes"
 
 export const ThemeChanger = () => {
-  const { data: session } = useSession();
-  const { theme, setTheme } = useTheme();
+  const { data: session } = useSession()
+  const { theme, setTheme } = useTheme()
 
-  if (!session) return null;
+  if (!session) return null
 
   const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
+    setTheme(theme === "light" ? "dark" : "light")
+  }
 
   return (
     <div suppressHydrationWarning className="fixed top-4 right-8">
@@ -20,5 +20,5 @@ export const ThemeChanger = () => {
         {theme === "light" ? <Sun size={20} /> : <Moon size={20} />}
       </Button>
     </div>
-  );
-};
+  )
+}

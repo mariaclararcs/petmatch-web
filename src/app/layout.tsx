@@ -23,7 +23,7 @@ const oneMonth = 60 * 24 * 30
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html suppressHydrationWarning lang="en">

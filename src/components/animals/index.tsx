@@ -96,7 +96,7 @@ export default function Animals() {
               {[...Array(itemsPerPage)].map((_, i) => (
                 <div key={i} className="animate-pulse">
                   <div className="aspect-square w-full rounded-xl bg-border lg:h-96 lg:w-62" />
-                  <div className="mt-4 space-y-2"></div>
+                  <div className="mt-4 space-y-2"/>
                 </div>
               ))}
             </div>

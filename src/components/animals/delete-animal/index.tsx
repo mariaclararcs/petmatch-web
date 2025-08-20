@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import api from "@/app/services/api";
+import api from "@/app/services/api"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,34 +11,34 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { IAnimal } from "@/interfaces/animal";
-import { queryClient } from "@/lib/react-query";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { IAnimal } from "@/interfaces/animal"
+import { queryClient } from "@/lib/react-query"
+import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
 
 interface DeleteAnimalProps {
-  animal: IAnimal;
+  animal: IAnimal
 }
 
 export function DeleteAnimal({ animal }: DeleteAnimalProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   async function handleDelete() {
     try {
-      setIsDeleting(true);
-      await api.delete(`http://localhost:8000/api/animals/${animal.id}`);
-      queryClient.invalidateQueries({ queryKey: ["get-animals"] });
-      toast.success("Animal excluído com sucesso!");
-      setIsOpen(false);
+      setIsDeleting(true)
+      await api.delete(`http://localhost:8000/api/animals/${animal.id}`)
+      queryClient.invalidateQueries({ queryKey: ["get-animals"] })
+      toast.success("Animal excluído com sucesso!")
+      setIsOpen(false)
     } catch (error) {
-      toast.error("Erro ao excluir animal");
-      console.error(error);
+      toast.error("Erro ao excluir animal")
+      console.error(error)
     } finally {
-      setIsDeleting(false);
+      setIsDeleting(false)
     }
   }
 
@@ -64,5 +64,5 @@ export function DeleteAnimal({ animal }: DeleteAnimalProps) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 } 

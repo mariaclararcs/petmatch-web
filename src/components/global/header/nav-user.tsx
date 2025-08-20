@@ -52,24 +52,24 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
         sideOffset={4}
       >
         <DropdownMenuLabel className="p-0 font-normal">
-          <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-10 w-10 rounded-xg">
-              <AvatarFallback className="h-10 w-10 rounded-xg">
-                <Image
-                  src={user.image || "/images/default-avatar.jpg"}
-                  alt={user.name ? `${user.name} avatar` : "Default avatar"}
-                  width={40}
-                  height={40}
-                  className="size-full object-cover rounded-full"
-                  priority
-                />
-              </AvatarFallback>
-            </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="truncate text-xs">{user.email}</span>
+            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <Avatar className="h-10 w-10 rounded-xg">
+                <AvatarFallback className="h-10 w-10 rounded-xg">
+                  <Image
+                    src={user.image || "/images/default-avatar.jpg"}
+                    alt={user.name ? `${user.name} avatar` : "Default avatar"}
+                    width={40}
+                    height={40}
+                    className="size-full object-cover rounded-full"
+                    priority
+                  />
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate text-xs">{user.email}</span>
+              </div>
             </div>
-          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 

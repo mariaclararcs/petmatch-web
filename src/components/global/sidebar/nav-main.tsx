@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { type LucideIcon } from "lucide-react";
-import Link from "next/link";
+import { type LucideIcon } from "lucide-react"
+import Link from "next/link"
 
 import {
   SidebarGroup,
@@ -10,23 +10,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/sidebar"
 
 export function NavMain({
   items,
 }: {
   items: {
-    title: string;
-    url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
+    title: string
+    url: string
+    icon?: LucideIcon
+    isActive?: boolean
     items?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
+      title: string
+      url: string
+    }[]
+  }[]
 }) {
-  const { open, setOpen } = useSidebar();
+  const { open, setOpen } = useSidebar()
 
   return (
     <SidebarGroup>
@@ -40,7 +40,7 @@ export function NavMain({
                 tooltip={item.title}
                 onClick={() => {
                   if (!open) {
-                    setOpen(true);
+                    setOpen(true)
                   }
                 }}
               >
@@ -52,5 +52,5 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  );
+  )
 }

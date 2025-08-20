@@ -1,18 +1,18 @@
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
 
-import { handlePaginate } from "@/lib/utils";
+import { handlePaginate } from "@/lib/utils"
 
-import { Button } from "../ui/button";
+import { Button } from "../ui/button"
 
 export interface PaginationProps {
-  pageIndex: number;
-  totalCount: number;
-  perPage: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  onPageChange: (index: number) => void;
+  pageIndex: number
+  totalCount: number
+  perPage: number
+  totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  onPageChange: (index: number) => void
 }
 
 export function PaginationFull({
@@ -79,13 +79,13 @@ export function PaginationFull({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export function PaginationShorty({ pageIndex, totalCount, perPage = 20 }: PaginationProps) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pages = Math.ceil(totalCount / perPage) || 1;
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pages = Math.ceil(totalCount / perPage) || 1
 
   return (
     <div className="flex items-center gap-2">
@@ -115,5 +115,5 @@ export function PaginationShorty({ pageIndex, totalCount, perPage = 20 }: Pagina
         <span className="sr-only">Next page</span>
       </Button>
     </div>
-  );
+  )
 }
