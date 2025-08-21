@@ -59,6 +59,9 @@ export default function ProfileOng() {
                                     <Phone />
                                     <div className="h-6 w-80 bg-gray-200 animate-pulse rounded"/>
                                 </div>
+                                <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
+                                    <div className="h-6 w-80 bg-gray-200 animate-pulse rounded"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,7 +87,7 @@ export default function ProfileOng() {
     if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONG</div>
 
     return (
-        <div className="flex flex-col gap-12 mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-6 xl:py-8 min-h-screen">
+        <div className="flex flex-col mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-6 xl:py-8 min-h-screen">
             <div className="flex flex-col mt-4 gap-10">
                 <h2 className="text-2xl font-medium">Perfil da ONG</h2>
 
@@ -103,7 +106,7 @@ export default function ProfileOng() {
                     </Avatar>
 
                     <div className="flex flex-col justify-center py-4 gap-4 w-full">
-                        <h3 className="text-2xl font-semibold">Nome da ONG</h3>
+                        <h3 className="text-2xl font-semibold">Petss</h3>
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                 <MapPin />
@@ -127,7 +130,7 @@ export default function ProfileOng() {
                     </div>
                 </div>
 
-                <div className="flex flex-col w-full mx-auto py-6 xl:py-8">
+                <div className="flex flex-col w-full mx-auto pb-6 xl:pb-8">
                     <h2 className="text-xl font-medium">Animais abrigados</h2>
 
                     {/* Área de listagem de cards */}

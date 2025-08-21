@@ -6,6 +6,7 @@ import { useParams } from "next/navigation"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { AlarmClock, CalendarFold, MapPinHouse, NotebookPen, PawPrint, Ruler, VenusAndMars } from "lucide-react"
+import Link from "next/link"
 
 const getSizeInPortuguese = (size: string) => {
     const sizes = {
@@ -148,6 +149,12 @@ export default function AnimalInfo() {
                             {animal.description}
                         </span>
                     </div>
+                    <Link 
+                        href="/formulario-adocao"
+                        className="bg-aprimary rounded-xl border-2 border-asecondary my-6 py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
+                    >
+                        Formulário de Adoção
+                    </Link>
                 </div>
             </div>
         </div>
