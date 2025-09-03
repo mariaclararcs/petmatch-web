@@ -58,7 +58,16 @@ export default function AdoptionForm () {
                             <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
                         <label className="mb-1">6. O que faria se precisasse mudar de residência, cidade ou estado?</label>
                             <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
-
+                        <label className="mb-1">7. Já possui outros animais na casa? Se sim, quais? São vacinados e castrados?</label>
+                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                        <label className="mb-1">8. Caso não tenha animais atualmente, já teve?</label>
+                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                        <label className="mb-1">9. Se houver outros animais atualmente, haverá espaço para fazer a adaptação e previnir uma briga territorial?</label>
+                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                        <label className="mb-1">10. Você ou alguém da sua família possuem alergia a pelos de animais? O que faria caso descobrisse que alguém da família possui alergia após a adoção do animal?</label>
+                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                        <label className="mb-1">11. O que faria com o animal em caso de viagem?</label>
+                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
 
                         <span className="text-center mb-2">
                             Ao enviar este formulário o usuário concorda em compartilhar as informações com a ONG.

@@ -106,18 +106,20 @@ export default function ProfileOng() {
                     </Avatar>
 
                     <div className="flex flex-col justify-center py-4 gap-4 w-full">
-                        <h3 className="text-2xl font-semibold">Petss</h3>
+                        <h3 className="text-2xl font-semibold">
+                            {ong.name_institution}
+                        </h3>
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                 <MapPin />
                                 <span className="text-muted-foreground">
-                                    Travessa Floriano Peixoto, Itagaçaba - Cruzeiro
+                                    {ong.address}
                                 </span>
                             </div>
                             <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                 <Phone />
                                 <span className="text-muted-foreground">
-                                    (16) 98917-9313
+                                    {ong.phone}
                                 </span>
                             </div>
                         </div>
