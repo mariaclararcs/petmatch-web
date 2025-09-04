@@ -4,15 +4,27 @@ import Image from "next/image"
 import CardM from "@/components/cards/animal-card/card-m"
 import { IAnimal } from "@/interfaces/animal"
 import { PaginationFull } from "@/components/pagination"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { useGetOng } from "@/hooks/ongs/useGetOng"
 import Link from "next/link"
 
 export default function ProfileOng() {
     const searchParams = useSearchParams()
+    const params = useParams()
+    const ongId = params.id as string
     
+    // Buscar dados da ONG
+    const { 
+        data: ongResponse, 
+        isLoading: isLoadingOng, 
+        isError: isErrorOng 
+    } = useGetOng(ongId)
+    
+    const ong = ongResponse?.data
+
     // Definindo itens por página
     const itemsPerPage = 12
     const currentPage = z.coerce.number().parse(searchParams.get("page") ?? "1")
@@ -20,12 +32,13 @@ export default function ProfileOng() {
 
     const {
         data: animalsResponse,
-        isLoading,
-        isError,
+        isLoading: isLoadingAnimals,
+        isError: isErrorAnimals,
     } = useGetAnimals({
         page: currentPage,
         per_page: itemsPerPage,
         search: debouncedSearchTerm,
+        ong_id: ongId // Filtra animais apenas desta ONG
     })
 
     const animals = animalsResponse?.data?.data || []
@@ -36,6 +49,9 @@ export default function ProfileOng() {
         params.set("page", page.toString())
         window.history.pushState({}, '', `?${params.toString()}`)
     }
+
+    const isLoading = isLoadingOng || isLoadingAnimals
+    const isError = isErrorOng || isErrorAnimals
 
     if (isLoading) { 
         return (
@@ -85,6 +101,8 @@ export default function ProfileOng() {
     }
 
     if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONG</div>
+
+    if (!ong) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">ONG não encontrada</div>
 
     return (
         <div className="flex flex-col mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-6 xl:py-8 min-h-screen">

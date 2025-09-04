@@ -57,4 +57,5 @@ export interface IAnimalSearchParams extends ISearchParamsRoot {
   gender?: 'male' | 'female';
   min_age?: number;
   max_age?: number;
+  ong_id?: string;
 }

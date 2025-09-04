@@ -1,14 +1,13 @@
-import { useQuery } from "@tanstack/react-query"
 import api from "@/app/services/api"
-import { IOng } from "@/interfaces/ong"
+import { useQuery } from "@tanstack/react-query"
 
-export function useGetOng(id: string) {
+export const useGetOng = (id: string) => {
   return useQuery({
     queryKey: ["get-ong", id],
     queryFn: async () => {
       const response = await api.get(`http://localhost:8000/api/ongs/${id}`)
-      return response.data as IOng
+      return response.data
     },
-    enabled: !!id, // Só executa se o ID existir
+    enabled: !!id,
   })
 }
