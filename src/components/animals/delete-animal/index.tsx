@@ -51,9 +51,9 @@ export function DeleteAnimal({ animal }: DeleteAnimalProps) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Excluir Animal</AlertDialogTitle>
+          <AlertDialogTitle>Excluir Cadastro do Animal</AlertDialogTitle>
           <AlertDialogDescription>
-            Tem certeza que deseja excluir o animal {animal.name}? Esta ação não pode ser desfeita.
+            Tem certeza que deseja excluir o cadastro do animal {animal.name}? Esta ação não pode ser desfeita.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

@@ -36,6 +36,8 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import Image from "next/image"
+import { uploadImage } from "@/app/services/image-upload"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -73,8 +75,10 @@ interface UpdateAnimalFormProps {
 }
 
 export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
-  
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false) // Estado para controlar o dialog
+  const [isUploading, setIsUploading] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>(animal?.image || "")
 
   const defaultValues = {
     ong_id: animal?.ong_id || "",
@@ -108,6 +112,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
         image: animal.image || "",
         description: animal.description || "",
       })
+      setImagePreview(animal.image || "")
     }
   }, [animal, form])
 
@@ -128,15 +133,68 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
-  function onSubmit(data: AnimalFormValues) {
-    const payload = {
-      ...data,
-      image: data.image?.trim() || "Campo vazio",
-      description: data.description?.trim() || "Campo vazio"
+  // Função para lidar com seleção de arquivo
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Verificar se é uma imagem
+      if (!file.type.startsWith('image/')) {
+        toast.error("Por favor, selecione um arquivo de imagem")
+        return
+      }
+
+      // Verificar tamanho do arquivo (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("A imagem deve ter no máximo 5MB")
+        return
+      }
+
+      setSelectedImage(file)
+      
+      // Criar preview da imagem
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-    
-    console.log("Dados sendo enviados:", payload)
-    updateAnimal(payload)
+  }
+
+  // Função para fazer upload da imagem
+  const uploadImageToServer = async (file: File): Promise<string> => {
+    setIsUploading(true)
+    try {
+      const imageUrl = await uploadImage(file)
+      setIsUploading(false)
+      return imageUrl
+    } catch (error) {
+      setIsUploading(false)
+      throw new Error("Falha no upload da imagem")
+    }
+  }
+
+  async function onSubmit(data: AnimalFormValues) {
+    try {
+      let finalImageUrl = data.image
+
+      // Se uma nova imagem foi selecionada, fazer upload
+      if (selectedImage) {
+        finalImageUrl = await uploadImageToServer(selectedImage)
+      }
+
+      const payload = {
+        ...data,
+        image: finalImageUrl?.trim() || "",
+        description: data.description?.trim() || ""
+      }
+      
+      console.log("Dados sendo enviados:", payload)
+      updateAnimal(payload)
+      
+    } catch (error) {
+      toast.error("Erro ao processar imagem")
+      console.error(error)
+    }
   }
 
   return (
@@ -296,9 +354,48 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
             name="image"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>URL da imagem</FormLabel>
+                <FormLabel>Imagem do Animal</FormLabel>
                 <FormControl>
-                  <Input placeholder="https://..." {...field} />
+                  <div>
+                    <div className="flex flex-row items-center gap-2">                    
+                      {/* Preview da imagem */}
+                      {imagePreview && (
+                        <div className="">
+                          <Image
+                            className="w-30 h-30 object-cover rounded-full border-1 border-aborder"
+                            alt={animal.name}
+                            src={animal.image || '/placeholder-animal.jpg'}
+                            width={120}
+                            height={120}
+                            unoptimized
+                          />
+                        </div>
+                      )}
+
+                      {/* Input de arquivo para upload */}
+                      <Input 
+                        className="w-fit"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                        disabled={isUploading}
+                      />
+                    </div>
+
+                    {/* Ou continuar usando URL manual */}
+                    <div className="mt-4">
+                      <p className="text-sm text-muted-foreground mb-2">Ou informe uma URL:</p>
+                      <Input 
+                        placeholder="https://..."
+                        {...field}
+                        value={field.value || ""}
+                        onChange={(e) => {
+                          field.onChange(e)
+                          setImagePreview(e.target.value)
+                        }}
+                      />
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -319,8 +416,10 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
             )}
           />
 
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Atualizando..." : "Atualizar Animal"}
+          <Button 
+            type="submit" 
+            disabled={isPending}>
+              {isPending ? "Atualizando..." : "Atualizar Animal"}
           </Button>
         </form>
       </Form>

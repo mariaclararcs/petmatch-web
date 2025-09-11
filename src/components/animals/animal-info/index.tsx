@@ -123,9 +123,11 @@ export default function AnimalInfo() {
                                     <MapPinHouse />
                                     ONG:
                                 </span>
-                                <span className="text-lg text-muted-foreground ml-8">
+                                <Link 
+                                    href={`/ongs/perfil/${animal?.ong.id}`}
+                                    className="text-lg text-muted-foreground ml-8 hover:cursor-pointer hover:underline">
                                     {animal.ong?.name_institution}
-                                </span>
+                                </Link>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="flex flex-row items-center gap-2 text-xl font-medium">

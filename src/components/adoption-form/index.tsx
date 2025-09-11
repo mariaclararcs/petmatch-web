@@ -1,9 +1,31 @@
+"use client"
+
+import * as React from "react"
+import { ChevronDownIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 export default function AdoptionForm () {
+    const [open, setOpen] = React.useState(false)
+    const [date, setDate] = React.useState<Date | undefined>(undefined)
+
     return (
-        <div className="flex flex-col mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
+        <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
             <div className="flex flex-col items-center">
                     <h1 className="text-lg font-bold">Formulário de Adoção</h1>
-                    <form action="" className="flex flex-col py-4 w-full">
+                    <form action="" className="flex flex-col px-20 py-4">
                         <label className="mb-6">O formulário será enviado para a ONG: 
                             <span className="font-bold text-asecondary ml-1">Petss</span>
                         </label>
@@ -19,10 +41,29 @@ export default function AdoptionForm () {
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Data de Nascimento *</label>
-                                <input 
-                                    type="date"
-                                    className="rounded-xl border-2 border-aborder px-4 py-2 mb-6"
-                                />
+                                <Popover open={open} onOpenChange={setOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            id="date"
+                                            className="justify-between rounded-xl h-fit border-2 border-aborder text-md px-4 py-2 mb-6 hover:bg-aborder hover:border-aborder"
+                                        >
+                                            {date ? date.toLocaleDateString() : "00/00/0000"}
+                                            <ChevronDownIcon />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                        setDate(date)
+                                        setOpen(false)
+                                        }}
+                                    />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Celular *</label>
@@ -47,11 +88,36 @@ export default function AdoptionForm () {
 
                         <span className="font-bold mt-4 mb-6">Questionário</span>
                         <label className="mb-1">1. Você está adotando este animal para ser:</label>
-                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                            <Select>
+                                <SelectTrigger className="w-full rounded-xl border-2 border-aborder text-md px-4 py-2 mb-6">
+                                    <SelectValue placeholder="Selecione" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="companhia" className="text-md">Companhia</SelectItem>
+                                    <SelectItem value="guarda" className="text-md">Guarda</SelectItem>
+                                    <SelectItem value="outro" className="text-md">Outro</SelectItem>
+                                </SelectContent>
+                            </Select>
                         <label className="mb-1">2. Mora em casa ou apartamento?</label>
-                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                            <Select>
+                                <SelectTrigger className="w-full rounded-xl border-2 border-aborder text-md px-4 py-2 mb-6">
+                                    <SelectValue placeholder="Selecione" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="casa" className="text-md">Casa</SelectItem>
+                                    <SelectItem value="apartamento" className="text-md">Apartamento</SelectItem>
+                                </SelectContent>
+                            </Select>
                         <label className="mb-1">3. Você tem certeza que é permitido animais no imóvel?</label>
-                            <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
+                            <Select>
+                                <SelectTrigger className="w-full rounded-xl border-2 border-aborder text-md px-4 py-2 mb-6">
+                                    <SelectValue placeholder="Selecione" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="nao" className="text-md">Não</SelectItem>
+                                    <SelectItem value="sim" className="text-md">Sim, já verifiquei</SelectItem>
+                                </SelectContent>
+                            </Select>
                         <label className="mb-1">4. Caso more em uma casa, o quintal é cercado? O animal terá acesso à rua?</label>
                             <textarea className="w-full rounded-xl border-2 border-aborder px-4 py-2 mb-6"/>
                         <label className="mb-1">5. O animal terá livre acesso ao interior da residência?</label>
