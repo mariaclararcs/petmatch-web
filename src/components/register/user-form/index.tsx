@@ -1,11 +1,19 @@
-'use client'
+"use client"
 
 import { useState } from "react"
+import * as React from "react"
 import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Eye, EyeClosed } from "lucide-react"
+import { ChevronDownIcon, Eye, EyeClosed } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
 
 // Schema de validação
 const registerSchema = z.object({
@@ -29,6 +37,8 @@ export default function RegisterUser() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [apiError, setApiError] = useState<string | null>(null)
     const [showPassword, setShowPassword] = useState(false)
+    const [open, setOpen] = React.useState(false)
+    const [date, setDate] = React.useState<Date | undefined>(undefined)
 
     const {
         register,
@@ -168,16 +178,29 @@ export default function RegisterUser() {
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Data de Nascimento *</label>
-                                <input 
-                                    type="date"
-                                    {...register('birthDate')}
-                                    className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
-                                        errors.birthDate ? 'border-red-500' : 'border-aborder'
-                                    }`}
-                                />
-                                {errors.birthDate && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.birthDate.message}</p>
-                                )}
+                                <Popover open={open} onOpenChange={setOpen}>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            id="date"
+                                            className="justify-between rounded-xl h-fit border-2 border-aborder text-md px-4 py-2 mb-6 hover:bg-aborder hover:border-aborder"
+                                        >
+                                            {date ? date.toLocaleDateString() : "00/00/0000"}
+                                            <ChevronDownIcon />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        captionLayout="dropdown"
+                                        onSelect={(date) => {
+                                        setDate(date)
+                                        setOpen(false)
+                                        }}
+                                    />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Celular *</label>
