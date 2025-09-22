@@ -150,7 +150,7 @@ export default function AdoptionForm() {
                                         className="w-full rounded-xl border-2 border-aborder px-4 py-2"
                                         value={formData.nome}
                                         onChange={(e) => handleInputChange('nome', e.target.value)}
-                                        required
+                                        //required
                                     />
                                 </div>
 
@@ -161,7 +161,7 @@ export default function AdoptionForm() {
                                         className="w-full rounded-xl border-2 border-aborder px-4 py-2"
                                         value={formData.email}
                                         onChange={(e) => handleInputChange('email', e.target.value)}
-                                        required
+                                        //required
                                     />
                                 </div>
 
@@ -174,7 +174,7 @@ export default function AdoptionForm() {
                                                     variant="outline"
                                                     className="justify-between w-full rounded-xl h-fit border-2 border-aborder text-md px-4 py-2 hover:bg-aborder hover:border-aborder"
                                                 >
-                                                    {date ? date.toLocaleDateString() : "Selecione a data"}
+                                                    {date ? date.toLocaleDateString() : "00/00/0000"}
                                                     <ChevronDownIcon />
                                                 </Button>
                                             </PopoverTrigger>
@@ -203,7 +203,7 @@ export default function AdoptionForm() {
                                             value={formData.celular}
                                             onChange={(e) => handlePhoneChange(e.target.value)}
                                             maxLength={15}
-                                            required
+                                            //required
                                         />
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@ export default function AdoptionForm() {
                                         className="w-full rounded-xl border-2 border-aborder px-4 py-2"
                                         value={formData.endereco}
                                         onChange={(e) => handleInputChange('endereco', e.target.value)}
-                                        required
+                                        //required
                                     />
                                 </div>
 
@@ -228,7 +228,7 @@ export default function AdoptionForm() {
                                         value={formData.cep}
                                         onChange={(e) => handleCEPChange(e.target.value)}
                                         maxLength={9}
-                                        required
+                                        //required
                                     />
                                 </div>
                             </div>
@@ -260,7 +260,7 @@ export default function AdoptionForm() {
                                     { number: 9, question: "Se houver outros animais atualmente, haverá espaço para fazer a adaptação e previnir uma briga territorial?" },
                                     { number: 10, question: "Você ou alguém da sua família possuem alergia a pelos de animais? O que faria caso descobrisse que alguém da família possui alergia após a adoção do animal?" },
                                     { number: 11, question: "O que faria com o animal em caso de viagem?" }
-                                ].map((item, index) => (
+                                ].map((item) => (
                                     <div key={item.number} className="space-y-2">
                                         <label className="block font-medium">
                                             {item.number}. {item.question}
