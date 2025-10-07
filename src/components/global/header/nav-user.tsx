@@ -20,6 +20,15 @@ type UserWithAvatar = User & { avatar?: string }
 
 export function NavUser({ user }: { user: UserWithAvatar }) {
 
+  const formatType = (type: string) => {
+    switch(type) {
+      case 'ong': return 'ONG'
+      case 'adopter': return 'ADOTANTE'
+      case 'admin': return 'ADMIN'
+      default: return type
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,20 +36,21 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
           variant="ghost"
           className="w-full justify-start p-1 h-fit gap-2 data-[state=open]:bg-accent"
         >
-          <div className="grid flex-1 text-left text-sm leading-tight">
+          <div className="grid flex-1 text-right text-sm leading-tight">
             <span className="truncate font-medium">{user.name}</span>
+            <span className="truncate text-xs">{formatType(user.type_user)}</span>
           </div>
-            <Avatar className="h-10 w-10 rounded-lg">
-                <AvatarFallback className="h-10 w-10 rounded-xg">
-                    <Image
-                        src={user.image || "/images/default-avatar.jpg"}
-                        alt={user.name ? `${user.name} avatar` : "Default avatar"}
-                        width={40}
-                        height={40}
-                        className="size-full object-cover rounded-full"
-                        priority
-                    />
-                </AvatarFallback>
+          <Avatar className="h-10 w-10 rounded-lg">
+              <AvatarFallback className="h-10 w-10 rounded-xg">
+                  <Image
+                      src={user.image || "/images/default-avatar.jpg"}
+                      alt={user.name ? `${user.name} avatar` : "Default avatar"}
+                      width={40}
+                      height={40}
+                      className="size-full object-cover rounded-full"
+                      priority
+                  />
+              </AvatarFallback>
             </Avatar>
           <ChevronDown className="ml-auto size-5" />
         </Button>
