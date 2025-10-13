@@ -25,7 +25,7 @@ export function PaginationFull({
 }: PaginationProps) {
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full md:items-center md:justify-between">
-      <span className="text-sm text-muted-foreground">Total de {totalCount} item(s)</span>
+      <span className="text-sm text-muted-foreground">Total de {totalCount} cadastro(s)</span>
 
       <div className="flex justify-between md:justify-start items-center gap-6 lg:gap-8">
         <div className="text-sm font-medium">

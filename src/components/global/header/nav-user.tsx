@@ -16,7 +16,11 @@ import type { User } from "next-auth"
 import { signOut } from "next-auth/react"
 import Image from "next/image"
 
-type UserWithAvatar = User & { avatar?: string }
+type UserWithAvatar = User & { 
+  avatar?: string 
+  type_user?: string
+}
+
 
 export function NavUser({ user }: { user: UserWithAvatar }) {
 
@@ -24,10 +28,13 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
     switch(type) {
       case 'ong': return 'ONG'
       case 'adopter': return 'ADOTANTE'
-      case 'admin': return 'ADMIN'
+      case 'admin': return 'ADM'
       default: return type
     }
   }
+
+  const shouldShowUserType = user.type_user && 
+    (user.type_user === 'admin' || user.type_user === 'ong')
 
   return (
     <DropdownMenu>
@@ -38,7 +45,9 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
         >
           <div className="grid flex-1 text-right text-sm leading-tight">
             <span className="truncate font-medium">{user.name}</span>
-            <span className="truncate text-xs">{formatType(user.type_user)}</span>
+            {shouldShowUserType && (
+              <span className="truncate text-xs">{formatType(user.type_user)}</span>
+            )}
           </div>
           <Avatar className="h-10 w-10 rounded-lg">
               <AvatarFallback className="h-10 w-10 rounded-xg">
