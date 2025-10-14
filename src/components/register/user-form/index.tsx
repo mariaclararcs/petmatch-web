@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 // Schema de validação
 const registerSchema = z.object({
@@ -311,6 +312,13 @@ export default function RegisterUser() {
                         {isSubmitting ? 'Cadastrando...' : 'Cadastrar'}
                         </button>
                     </form>
+
+                    <div className="flex fles-row text-sm gap-1">
+                        <span>Quer se cadastrar como ONG?</span>
+                        <Link href="/cadastro/ong" className="font-bold text-asecondary hover:underline">
+                            Cadastre-se agora!
+                        </Link>
+                    </div>
                 </div>
             </main>
         </div>

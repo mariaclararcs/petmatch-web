@@ -6,6 +6,7 @@ import * as React from "react"
 import { useSession } from "next-auth/react"
 import { NavUser } from "./nav-user"
 import { NavAnimals } from "./nav-animals"
+import { NavOngs } from "./nav-ongs"
 
 export default function Header() {
     const { data: session } = useSession()
@@ -21,7 +22,11 @@ export default function Header() {
             </div>
 
             <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
-                <Link href="/ongs" className="hover:underline">ONGs</Link>
+                {session ? <NavOngs /> : 
+                    <Link href="/ongs" className="hover:underline">
+                        ONGs
+                    </Link>
+                }
                 {session ? <NavAnimals /> : 
                     <Link href="/animais" className="hover:underline">
                         Animais

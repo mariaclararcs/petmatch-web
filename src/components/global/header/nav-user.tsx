@@ -27,7 +27,6 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
   const formatType = (type: string) => {
     switch(type) {
       case 'ong': return 'ONG'
-      case 'adopter': return 'ADOTANTE'
       case 'admin': return 'ADM'
       default: return type
     }

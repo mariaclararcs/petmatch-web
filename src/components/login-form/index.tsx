@@ -128,7 +128,7 @@ export default function LoginForm() {
 
           <div className="flex fles-row text-sm gap-1">
             <span>Ainda não possui cadastro?</span>
-            <Link href="#" className="font-bold text-asecondary hover:underline">
+            <Link href="/cadastro/usuario" className="font-bold text-asecondary hover:underline">
               Cadastre-se agora!
             </Link>
           </div>

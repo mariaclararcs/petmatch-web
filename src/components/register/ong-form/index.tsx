@@ -1,6 +1,7 @@
 'use client'
 
 import { Eye, EyeClosed } from "lucide-react"
+import Link from "next/link"
 import { useState } from "react"
 
 export default function RegisterONG() {
@@ -149,6 +150,13 @@ export default function RegisterONG() {
                             Cadastrar
                         </button>
                     </form>
+
+                    <div className="flex fles-row text-sm gap-1">
+                        <span>Quer se cadastrar como usuário?</span>
+                            <Link href="/cadastro/usuario" className="font-bold text-asecondary hover:underline">
+                                Cadastre-se agora!
+                            </Link>
+                    </div>
                 </div>
             </main>
         </div>
