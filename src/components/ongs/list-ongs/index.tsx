@@ -44,6 +44,8 @@ export default function ListOngs() {
 
   return (
     <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
+      <h2 className="text-2xl font-medium">Gerenciar ONGs</h2>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -62,7 +64,7 @@ export default function ListOngs() {
               <TableCell>{ong.name_responsible}</TableCell>
               <TableCell>{ong.cnpj}</TableCell>
               <TableCell>{ong.phone}</TableCell>
-              <TableCell>{ong.address}</TableCell>
+              <TableCell className="overflow-hidden whitespace-nowrap">{ong.address}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm">
