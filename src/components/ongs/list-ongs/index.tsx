@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table"
 import { useGetOngs } from "@/hooks/ongs/useGetOngs"
 import { IOng } from "@/interfaces/ong"
-import { Pencil, Trash2 } from "lucide-react"
+import { LoaderCircle, Pencil, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
@@ -38,7 +38,7 @@ export default function ListOngs() {
     router.push(`?${params.toString()}`)
   }
 
-  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Carregando...</div>
+  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen"><LoaderCircle className="h-12 w-12 text-aborder animate-spin"/></div>
 
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONGs</div>
 

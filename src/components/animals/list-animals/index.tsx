@@ -18,6 +18,7 @@ import { CreateAnimalSheet } from "../create-animal"
 import { UpdateAnimal } from "../update-animal"
 import { DeleteAnimal } from "../delete-animal"
 import { PaginationFull } from "../../pagination"
+import { LoaderCircle } from "lucide-react"
 
 export default function ListAnimals() {
   const searchParams = useSearchParams()
@@ -41,7 +42,7 @@ export default function ListAnimals() {
     router.push(`?${params.toString()}`)
   }
 
-  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Carregando...</div>
+  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen"><LoaderCircle className="h-12 w-12 text-aborder animate-spin"/></div>
   
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar animais</div>
 

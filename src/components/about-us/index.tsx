@@ -60,10 +60,6 @@ export default function AboutUs() {
               </li>
               <li className="flex items-start gap-2">
                 <Check />
-                <span>Receba doações diretamente pela plataforma</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Check />
                 <span>Ferramentas para gerenciar seus animais</span>
               </li>
             </ul>
