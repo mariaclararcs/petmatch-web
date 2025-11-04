@@ -4,7 +4,6 @@ import { IAnimalSearchParams } from "@/interfaces/api";
 
 export async function getAnimals(params: IAnimalSearchParams) {
   try {
-    // Remove undefined and empty values
     const queryParams = Object.entries(params).reduce((acc, [key, value]) => {
       if (value !== undefined && value !== '') {
         acc[key] = value;
@@ -12,7 +11,7 @@ export async function getAnimals(params: IAnimalSearchParams) {
       return acc;
     }, {} as Record<string, any>);
 
-    const response = await api.get(`http://localhost:8000/api/animals`, {
+    const response = await api.get(`http://localhost:8000/api/animals/my-animals`, {
       params: queryParams,
     });
 

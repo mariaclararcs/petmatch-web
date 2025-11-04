@@ -7,9 +7,13 @@ import { useSession } from "next-auth/react"
 import { NavUser } from "./nav-user"
 import { NavAnimals } from "./nav-animals"
 import { NavOngs } from "./nav-ongs"
+import { NavUsers } from "./nav-users"
+import { getUserPermissions } from "@/lib/permissions"
 
 export default function Header() {
     const { data: session } = useSession()
+    const userType = session?.user?.type_user
+    const permissions = getUserPermissions(userType)
 
     return (
         <header className="w-full bg-aprimary py-6">
@@ -22,16 +26,22 @@ export default function Header() {
             </div>
 
             <nav className="hidden md:flex flex-row items-center gap-10 lg:gap-20 text-lg">
-                {session ? <NavOngs /> : 
-                    <Link href="/ongs" className="hover:underline">
-                        ONGs
-                    </Link>
-                }
-                {session ? <NavAnimals /> : 
-                    <Link href="/animais" className="hover:underline">
-                        Animais
-                    </Link>
-                }
+                {session ? (
+                    <>
+                        {permissions.canViewOngs && <NavOngs />}
+                        {permissions.canViewAnimals && <NavAnimals />}
+                        {permissions.canManageUsers && <NavUsers />}
+                    </>
+                ) : (
+                    <>
+                        <Link href="/ongs" className="hover:underline">
+                            ONGs
+                        </Link>
+                        <Link href="/animais" className="hover:underline">
+                            Animais
+                        </Link>
+                    </>
+                )}
                 <Link href="/sobre-nos" className="hover:underline">Sobre Nós</Link>
             </nav>
             </div>

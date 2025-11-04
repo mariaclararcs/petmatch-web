@@ -16,7 +16,7 @@ export interface IOng extends ITimestamps {
 }
 
 export interface IGetOngs extends IApiRoot {
-  date: IPaginate & {
+  data: IPaginate & {
     data: IOng[]
   }
 }

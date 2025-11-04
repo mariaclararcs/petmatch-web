@@ -123,9 +123,47 @@ export default function Home() {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-red-500">Error loading animals</p>
+      <div className="flex flex-col items-center gap-12 mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-6 xl:py-8 min-h-screen">
+      <BannerSlider />
+
+      {/* Seção de animais a mais tempo no abrigo */}
+      <div className="flex flex-col w-full gap-6">
+        <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center gap-2">
+            <CalendarHeart className="text-primary" />
+            <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
+          </div>
+          <Link 
+            href="#" 
+            className="font-bold text-md text-asecondary hover:underline"
+          >
+            Ver mais
+          </Link>
+        </div>
+        <div className="flex items-center justify-center">
+          <p className="text-red-500">Error loading animals</p>
+        </div>
       </div>
+
+      {/* Seção de animais recentemente abrigados */}
+      <div className="flex flex-col w-full gap-6">
+        <div className="flex flex-row justify-between items-center">
+          <div className="flex flex-row items-center gap-2">
+            <CalendarCheck2 className="text-primary" />
+            <h2 className="text-lg font-bold">Animais recém abrigados</h2>
+          </div>
+          <Link 
+            href="#" 
+            className="font-bold text-md text-asecondary hover:underline"
+          >
+            Ver mais
+          </Link>
+        </div>
+        <div className="flex items-center justify-center">
+          <p className="text-red-500">Error loading animals</p>
+        </div>
+      </div>
+    </div>
     )
   }
 

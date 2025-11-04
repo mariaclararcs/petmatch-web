@@ -10,9 +10,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
+import { getUserPermissions } from "@/lib/permissions"
 
 export function NavAnimals() {
   const router = useRouter()
+  const { data: session } = useSession()
+  const userType = session?.user?.type_user
+  const permissions = getUserPermissions(userType)
 
   return (
     <DropdownMenu>
@@ -25,17 +30,21 @@ export function NavAnimals() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-40 rounded-lg">
-        <DropdownMenuItem asChild>
-          <Link href="/animais" className="w-full cursor-pointer">
-            Animais para Adoção
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => router.push("/listagem-animais")}
-        >
-          Gerenciar Animais
-        </DropdownMenuItem>
+        {permissions.canViewAnimals && (
+          <DropdownMenuItem asChild>
+            <Link href="/animais" className="w-full cursor-pointer">
+              Animais para Adoção
+            </Link>
+          </DropdownMenuItem>
+        )}
+        {permissions.canManageAnimals && (
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => router.push("/listagem-animais")}
+          >
+            Gerenciar Animais
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -9,7 +9,6 @@ import { useState } from "react"
 import { z } from "zod"
 import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
 import { useGetOng } from "@/hooks/ongs/useGetOng"
-import Link from "next/link"
 
 export default function ProfileOng() {
     const searchParams = useSearchParams()
@@ -141,12 +140,6 @@ export default function ProfileOng() {
                                 </span>
                             </div>
                         </div>
-                        <Link 
-                            href="#"
-                            className="font-bold text-asecondary hover:underline text-lg"
-                        >
-                            Fazer uma doação
-                        </Link>
                     </div>
                 </div>
 

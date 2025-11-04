@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+// Removido import do serviço de API
 
 // Schema de validação
 const registerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('E-mail inválido'),
-  birthDate: z.string().refine(val => !isNaN(Date.parse(val)), 'Data inválida'),
+  birthDate: z.string().min(1, 'Data de nascimento é obrigatória'),
   phone: z.string().min(14, 'Telefone incompleto').max(15, 'Telefone inválido'),
   address: z.string().min(5, 'Endereço muito curto'),
   cep: z.string().length(9, 'CEP inválido'),
@@ -86,53 +87,48 @@ export default function RegisterUser() {
     }
 
     const onSubmit = async (data: RegisterFormData) => {
-    setIsSubmitting(true);
-    setApiError(null);
+        console.log('Form data:', data); // Debug log
+        setIsSubmitting(true);
+        setApiError(null);
 
-    try {
-        const response = await fetch('http://localhost:8000/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
+        try {
+            const userData = {
                 name: data.name,
                 email: data.email,
                 password: data.password,
                 password_confirmation: data.confirmPassword,
+                type_user: 'adopter',
                 birth_date: data.birthDate,
                 phone: data.phone.replace(/\D/g, ''),
                 address: data.address,
                 cep: data.cep.replace(/\D/g, '')
-            })
-        })
+            };
 
-        const contentType = response.headers.get('content-type');
-        
-        // Verifica se a resposta é JSON
-        if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        throw new Error(text.includes('<!DOCTYPE html>') 
-            ? 'Erro interno do servidor' 
-            : text)
-        }
+            console.log('Sending to API:', userData); // Debug log
+            
+            const response = await fetch('http://localhost:8000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
 
-        const responseData = await response.json()
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Erro no cadastro');
+            }
 
-        if (!response.ok) {
-        throw new Error(
-            responseData.message || 
-            responseData.errors?.join(', ') || 
-            'Erro no cadastro'
-        )
-        }
-
-        router.push('/') // Redireciona após sucesso
+            const result = await response.json();
+            console.log('Registration success:', result);
+            router.push('/login'); // Redireciona para login após sucesso
+            
         } catch (error: any) {
+            console.error('Registration error:', error); // Debug log
             setApiError(
-            error.message || 
-            'Erro durante o cadastro. Tente novamente.'
+                error.message || 
+                'Erro durante o cadastro. Tente novamente.'
             );
         } finally {
             setIsSubmitting(false);
@@ -184,7 +180,9 @@ export default function RegisterUser() {
                                         <Button
                                             variant="outline"
                                             id="date"
-                                            className="justify-between rounded-xl h-fit border-2 border-aborder text-md px-4 py-2 mb-6 hover:bg-aborder hover:border-aborder"
+                                            className={`justify-between rounded-xl h-fit border-2 text-md px-4 py-2 mb-6 hover:bg-aborder hover:border-aborder ${
+                                                errors.birthDate ? 'border-red-500' : 'border-aborder'
+                                            }`}
                                         >
                                             {date ? date.toLocaleDateString() : "00/00/0000"}
                                             <ChevronDownIcon />
@@ -195,13 +193,21 @@ export default function RegisterUser() {
                                         mode="single"
                                         selected={date}
                                         captionLayout="dropdown"
-                                        onSelect={(date) => {
-                                        setDate(date)
-                                        setOpen(false)
+                                        onSelect={(selectedDate) => {
+                                            setDate(selectedDate)
+                                            if (selectedDate) {
+                                                setValue('birthDate', selectedDate.toISOString().split('T')[0])
+                                            } else {
+                                                setValue('birthDate', '')
+                                            }
+                                            setOpen(false)
                                         }}
                                     />
                                     </PopoverContent>
                                 </Popover>
+                                {errors.birthDate && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.birthDate.message}</p>
+                                )}
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Celular *</label>

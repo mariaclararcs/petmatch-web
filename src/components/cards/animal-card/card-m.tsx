@@ -58,11 +58,13 @@ export default function CardM({ animal, className }: CardMProps) {
         
         <CardContent className="flex flex-col w-full h-fit gap-2 px-4">
           {/* div para nome da ONG */}
-          <div className="w-full overflow-hidden">
-            <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
-              {animal.ong.name_institution}
-            </span>
-          </div>
+          {animal.ong && (
+            <div className="w-full overflow-hidden">
+              <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
+                {animal.ong.name_institution || 'ONG não informada'}
+              </span>
+            </div>
+          )}
             
             <div className="flex flex-row w-full justify-between items-center gap-2">
                 <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">

@@ -7,7 +7,6 @@ export const useGetAnimals = (params: IAnimalSearchParams) => {
     queryKey: ["get-animals", params],
     queryFn: () => getAnimals(params),
     select: (data) => {
-      // Garante que data.data seja um array
       return {
         ...data,
         data: {

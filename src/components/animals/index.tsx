@@ -2,7 +2,7 @@
 
 import CardM from "@/components/cards/animal-card/card-m"
 import { AnimalsFilter } from "@/components/filters/animals-filter"
-import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals"
 import { IAnimal } from "@/interfaces/animal"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
@@ -19,8 +19,8 @@ export default function Animals() {
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   // Estados para os filtros (agora usando string | null)
-  const [animalType, setAnimalType] = useState<string | null>(null)
-  const [gender, setGender] = useState<string | null>(null)
+  const [animalType, setAnimalType] = useState<string | null>("")
+  const [gender, setGender] = useState<string | null>("")
   const [nameOrder, setNameOrder] = useState<string>("")
   const [shelterTime, setShelterTime] = useState<string>("")
   const [ageRange, setAgeRange] = useState<number[]>([0, 15])
@@ -42,7 +42,7 @@ export default function Animals() {
     data: animalsResponse,
     isLoading,
     isError,
-  } = useGetAnimals({
+  } = useGetAllAnimals({
     page: currentPage,
     per_page: itemsPerPage,
     search: debouncedSearchTerm,
@@ -78,8 +78,8 @@ export default function Animals() {
         <div className="flex flex-row justify-center gap-10 mb-8">
           {/* Área de filtros */}
           <AnimalsFilter
-            animalTypes={null}
-            genders={null}
+            animalTypes={animalType}
+            genders={gender}
             onTypeChange={handleTypeChange}
             onGenderChange={handleGenderChange}
             onNameOrderChange={setNameOrder}
@@ -136,7 +136,7 @@ export default function Animals() {
           <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {animals.map((animal: IAnimal) => (
               <div key={animal.id} className="group">
-                <CardM key={animal.id} animal={animal} className="w-full" />
+                <CardM animal={animal} className="w-full" />
               </div>
             ))}
           </div>

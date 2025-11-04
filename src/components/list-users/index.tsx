@@ -14,6 +14,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { PaginationFull } from "../pagination"
+import EditUserModal from "../users/edit-user-modal"
+import DeleteUserModal from "../users/delete-user-modal"
 
 export default function ListUsers() {
   const searchParams = useSearchParams()
@@ -21,6 +23,11 @@ export default function ListUsers() {
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
   const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
+  
+  // Estados para controlar os modais
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
 
   const { data: usersResponse, isLoading, isError } = useGetUsers({
     page,
@@ -37,6 +44,32 @@ export default function ListUsers() {
     router.push(`?${params.toString()}`)
   }
 
+  // Funções para abrir os modais
+  const handleEditClick = (user: IUser) => {
+    setSelectedUser(user)
+    setEditModalOpen(true)
+  }
+
+  const handleDeleteClick = (user: IUser) => {
+    setSelectedUser(user)
+    setDeleteModalOpen(true)
+  }
+
+  const handleCloseModals = () => {
+    setEditModalOpen(false)
+    setDeleteModalOpen(false)
+    setSelectedUser(null)
+  }
+
+  const formatTypeUser = (type: string) => {
+    switch(type?.toLowerCase()) {
+      case 'admin': return 'Administrador'
+      case 'ong': return 'ONG'
+      case 'adopter': return 'Adotante'
+      default: return type
+    }
+  }
+
   if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen"><LoaderCircle className="h-12 w-12 text-aborder animate-spin"/></div>
 
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar usuários</div>
@@ -48,7 +81,7 @@ export default function ListUsers() {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>E-mail</TableHead>
-            <TableHead>Tipo de usuário</TableHead>
+            <TableHead>Tipo de Usuário</TableHead>
             <TableHead>Criado em</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
@@ -58,15 +91,26 @@ export default function ListUsers() {
             <TableRow key={user.id}>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>{user.type_user}</TableCell>
-              <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+              <TableCell>{formatTypeUser(user.type_user)}</TableCell>
+              <TableCell>{new Date(user.created_at).toLocaleDateString('pt-BR')}</TableCell>
               <TableCell>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEditClick(user)}
+                    title="Editar usuário"
+                  >
                     <Pencil className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="h-4 w-4" />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleDeleteClick(user)}
+                    className="hover:bg-red-50 hover:border-red-300"
+                    title="Deletar usuário"
+                  >
+                    <Trash2 className="h-4 w-4 text-red-600" />
                   </Button>
                 </div>
               </TableCell>
@@ -87,6 +131,19 @@ export default function ListUsers() {
           onPageChange={handlePageChange}
         />
       )}
+
+      {/* Modais */}
+      <EditUserModal
+        isOpen={editModalOpen}
+        onClose={handleCloseModals}
+        user={selectedUser}
+      />
+
+      <DeleteUserModal
+        isOpen={deleteModalOpen}
+        onClose={handleCloseModals}
+        user={selectedUser}
+      />
     </section>
   )
 }
