@@ -9,6 +9,7 @@ import { NavAnimals } from "./nav-animals"
 import { NavOngs } from "./nav-ongs"
 import { NavUsers } from "./nav-users"
 import { getUserPermissions } from "@/lib/permissions"
+import { NavForm } from "./nav-form"
 
 export default function Header() {
     const { data: session } = useSession()
@@ -30,6 +31,7 @@ export default function Header() {
                     <>
                         {permissions.canViewOngs && <NavOngs />}
                         {permissions.canViewAnimals && <NavAnimals />}
+                        {permissions.canManageAnimals && <NavForm/>}
                         {permissions.canManageUsers && <NavUsers />}
                     </>
                 ) : (
