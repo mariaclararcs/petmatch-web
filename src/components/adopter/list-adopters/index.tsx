@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useGetAdoptions } from "@/hooks/adoption/useGetAdoptions"
 import { IAdoption } from "@/interfaces/adoption"
 import { PaginationFull } from "@/components/pagination"
+import LoadingComponent from "@/components/loading"
 
 const formatDate = (date: Date | string) => {
   if (typeof date === 'string') {
@@ -42,13 +43,7 @@ export default function ListAdopters() {
   const adoptions = adoptionsResponse?.data?.data || []
   const pagination = adoptionsResponse?.data
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-lg">Carregando...</div>
-      </div>
-    )
-  }
+  if (isLoading) return <LoadingComponent />
 
   if (isError) {
     return (

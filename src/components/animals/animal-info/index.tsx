@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { AlarmClock, CalendarFold, MapPinHouse, NotebookPen, PawPrint, Ruler, VenusAndMars } from "lucide-react"
 import Link from "next/link"
+import LoadingComponent from "@/components/loading"
 
 const getSizeInPortuguese = (size: string) => {
     const sizes = {
@@ -24,20 +25,7 @@ export default function AnimalInfo() {
     const { data: animalResponse, isLoading, isError } = useGetAnimal(animalId)
     const animal = animalResponse?.data
 
-    if (isLoading) {
-        return (
-            <div className="flex flex-col mx-auto px-20 py-6 xl:py-8 min-h-screen">
-                <div className="animate-pulse">
-                    <div className="w-full h-[248px] rounded-lg bg-border" />
-                    <div className="mt-4 space-y-2">
-                        <div className="h-4 bg-border rounded w-1/4" />
-                        <div className="h-4 bg-border rounded w-1/4" />
-                        <div className="h-4 bg-border rounded w-1/4" />
-                    </div>
-                </div>
-            </div>
-        )
-    }
+    if (isLoading) return <LoadingComponent />
 
     if (isError) {
         return (

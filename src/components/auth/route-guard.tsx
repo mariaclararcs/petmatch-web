@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { getUserPermissions, UserPermissions } from '@/lib/permissions'
+import LoadingComponent from '../loading'
 
 interface RouteGuardProps {
   children: React.ReactNode
@@ -52,10 +53,7 @@ export function RouteGuard({
 
   if (status === 'loading') {
     return (
-      <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-        <p>Verificando permissões...</p>
-      </div>
+      <LoadingComponent />
     )
   }
 

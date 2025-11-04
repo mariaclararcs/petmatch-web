@@ -9,13 +9,14 @@ import {
 } from "@/components/ui/table"
 import { useGetUsers } from "@/hooks/users/useGetUsers"
 import { IUser } from "@/interfaces/user"
-import { LoaderCircle, Pencil, Trash2 } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { PaginationFull } from "../pagination"
 import EditUserModal from "../users/edit-user-modal"
 import DeleteUserModal from "../users/delete-user-modal"
+import LoadingComponent from "../loading"
 
 export default function ListUsers() {
   const searchParams = useSearchParams()
@@ -70,7 +71,7 @@ export default function ListUsers() {
     }
   }
 
-  if (isLoading) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen"><LoaderCircle className="h-12 w-12 text-aborder animate-spin"/></div>
+  if (isLoading) return <LoadingComponent />
 
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar usuários</div>
 

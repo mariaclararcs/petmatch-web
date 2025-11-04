@@ -6,7 +6,7 @@ import { IAnimal } from "@/interfaces/animal"
 import { useRouter, useSearchParams } from "next/navigation"
 import { z } from "zod"
 import { PaginationFull } from "../../pagination"
-import { LoaderCircle } from "lucide-react"
+import LoadingComponent from "@/components/loading"
 
 export default function AnimalsListSimple() {
   const searchParams = useSearchParams()
@@ -34,13 +34,7 @@ export default function AnimalsListSimple() {
     router.push(`?${params.toString()}`)
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
-        <LoaderCircle className="h-12 w-12 text-aborder animate-spin"/>
-      </div>
-    )
-  }
+  if (isLoading) return <LoadingComponent />
 
   if (isError) {
     return (
