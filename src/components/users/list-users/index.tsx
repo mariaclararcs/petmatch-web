@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -9,13 +8,12 @@ import {
 } from "@/components/ui/table"
 import { useGetUsers } from "@/hooks/users/useGetUsers"
 import { IUser } from "@/interfaces/user"
-import { Pencil, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { PaginationFull } from "../../pagination"
-import EditUserModal from "../edit-user-modal"
-import DeleteUserModal from "../delete-user-modal"
+import { UpdateUser } from "../update-user"
+import { DeleteUser } from "../delete-user"
 import LoadingComponent from "../../loading"
 
 export default function ListUsers() {
@@ -24,11 +22,6 @@ export default function ListUsers() {
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
   const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
-  
-  // Estados para controlar os modais
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
 
   const { data: usersResponse, isLoading, isError } = useGetUsers({
     page,
@@ -43,23 +36,6 @@ export default function ListUsers() {
     const params = new URLSearchParams(searchParams.toString())
     params.set("page", page.toString())
     router.push(`?${params.toString()}`)
-  }
-
-  // Funções para abrir os modais
-  const handleEditClick = (user: IUser) => {
-    setSelectedUser(user)
-    setEditModalOpen(true)
-  }
-
-  const handleDeleteClick = (user: IUser) => {
-    setSelectedUser(user)
-    setDeleteModalOpen(true)
-  }
-
-  const handleCloseModals = () => {
-    setEditModalOpen(false)
-    setDeleteModalOpen(false)
-    setSelectedUser(null)
   }
 
   const formatTypeUser = (type: string) => {
@@ -99,10 +75,10 @@ export default function ListUsers() {
                 <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={user.name}>
                   {user.name}
                 </TableCell>
-                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={user.email}>
+                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={user.email}>
                   {user.email}
                 </TableCell>
-                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={user.type_user}>
+                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate">
                   {formatTypeUser(user.type_user)}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={user.created_at}>
@@ -110,24 +86,11 @@ export default function ListUsers() {
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
                   <div className="flex gap-2 justify-center">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEditClick(user)}
-                      title="Editar Usuário"
-                      className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-aforeground"
-                    >
-                      <Pencil className="h-3 w-3" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleDeleteClick(user)}
-                      title="Deletar Usuário"
-                      className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-red-600"
-                    >
-                      <Trash2 className="h-3 w-3 text-red-600" />
-                    </Button>
+                    {/* Componente de edição */}
+                    <UpdateUser user={user} />
+                    
+                    {/* Componente de delete - agora seguindo o padrão do Ong */}
+                    <DeleteUser user={user} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -148,19 +111,6 @@ export default function ListUsers() {
           onPageChange={handlePageChange}
         />
       )}
-
-      {/* Modais */}
-      <EditUserModal
-        isOpen={editModalOpen}
-        onClose={handleCloseModals}
-        user={selectedUser}
-      />
-
-      <DeleteUserModal
-        isOpen={deleteModalOpen}
-        onClose={handleCloseModals}
-        user={selectedUser}
-      />
     </section>
   )
 }

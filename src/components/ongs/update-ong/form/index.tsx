@@ -38,7 +38,6 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
     handleSubmit,
     setValue,
     watch,
-    reset,
     formState: { errors }
   } = useForm<EditONGFormData>({
     resolver: zodResolver(editONGSchema)
