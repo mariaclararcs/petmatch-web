@@ -47,7 +47,7 @@ export default function ListAnimals() {
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar animais</div>
 
   return (
-    <section className="flex flex-col mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">
+    <section className="flex flex-col mx-auto gap-6 px-14 py-6 xl:py-8 min-h-screen">
       <div className="flex flex-row justify-between items-center">
         <h2 className="text-2xl font-medium">Gerenciar Animais</h2>
         <div className="flex justify-end">
@@ -55,58 +55,67 @@ export default function ListAnimals() {
         </div>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Foto</TableHead>
-            <TableHead>Nome</TableHead>
-            <TableHead>Idade</TableHead>
-            <TableHead>Genêro</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead>Porte</TableHead>
-            <TableHead>Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {animals.map((animal: IAnimal) => (
-            <TableRow key={animal.id}>
-              <TableCell>
-                <Avatar>
-                  <AvatarImage src={animal.image} alt={animal.name} />
-                  <AvatarFallback>
-                    {animal.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </TableCell>
-              <TableCell>{animal.name}</TableCell>
-              <TableCell>{animal.age} anos</TableCell>
-              <TableCell>
-                {animal.gender === "male" ? "Macho" : "Fêmea"}
-              </TableCell>
-              <TableCell>
-                {animal.type === "dog"
-                  ? "Cachorro"
-                  : animal.type === "cat"
-                  ? "Gato"
-                  : "Outro"}
-              </TableCell>
-              <TableCell>
-                {animal.size === "small"
-                  ? "Pequeno"
-                  : animal.size === "medium"
-                  ? "Médio"
-                  : "Grande"}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <UpdateAnimal animal={animal} />
-                  <DeleteAnimal animal={animal} />
-                </div>
-              </TableCell>
+      {/* Container com overflow para a tabela - igual ao das ONGs */}
+      <div className="border rounded-lg overflow-hidden">
+        <Table className="w-full">
+          <TableHeader>
+            <TableRow>
+              {/* Defina larguras fixas para cada coluna */}
+              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Foto</TableHead>
+              <TableHead className="w-[150px] min-w-[150px] max-w-[150px] font-semibold">Nome</TableHead>
+              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold">Idade</TableHead>
+              <TableHead className="w-[100px] min-w-[100px] max-w-[100px] font-semibold">Genêro</TableHead>
+              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Tipo</TableHead>
+              <TableHead className="w-[100px] min-w-[100px] max-w-[100px] font-semibold">Porte</TableHead>
+              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold text-center">Ações</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {animals.map((animal: IAnimal) => (
+              <TableRow key={animal.id} className="hover:bg-muted/50">
+                {/* Aplica as mesmas classes de largura nas células */}
+                <TableCell className="w-[80px] min-w-[80px] max-w-[80px] text-center">
+                  <Avatar className="h-10 w-10 mx-auto">
+                    <AvatarImage src={animal.image} alt={animal.name} />
+                    <AvatarFallback className="text-xs">
+                      {animal.name.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </TableCell>
+                <TableCell className="w-[150px] min-w-[150px] max-w-[150px] truncate" title={animal.name}>
+                  {animal.name}
+                </TableCell>
+                <TableCell className="w-[80px] min-w-[80px] max-w-[80px]">
+                  {animal.age} anos
+                </TableCell>
+                <TableCell className="w-[100px] min-w-[100px] max-w-[100px]">
+                  {animal.gender === "male" ? "Macho" : "Fêmea"}
+                </TableCell>
+                <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
+                  {animal.type === "dog"
+                    ? "Cachorro"
+                    : animal.type === "cat"
+                    ? "Gato"
+                    : "Outro"}
+                </TableCell>
+                <TableCell className="w-[100px] min-w-[100px] max-w-[100px]">
+                  {animal.size === "small"
+                    ? "Pequeno"
+                    : animal.size === "medium"
+                    ? "Médio"
+                    : "Grande"}
+                </TableCell>
+                <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
+                  <div className="flex gap-2 justify-center">
+                    <UpdateAnimal animal={animal} />
+                    <DeleteAnimal animal={animal} />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* Adicionando a paginação */}
       {paginationData && (

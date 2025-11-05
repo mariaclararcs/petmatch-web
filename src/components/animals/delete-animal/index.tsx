@@ -45,8 +45,13 @@ export function DeleteAnimal({ animal }: DeleteAnimalProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Trash2 className="h-4 w-4" />
+        <Button 
+          variant="outline" 
+          size="sm"
+          title="Deletar Animal"
+          className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-red-600"
+        >
+          <Trash2 className="h-3 w-3 text-red-600" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

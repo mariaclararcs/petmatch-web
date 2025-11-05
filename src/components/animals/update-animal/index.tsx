@@ -18,8 +18,13 @@ export function UpdateAnimal({ animal }: UpdateAnimalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Pencil className="h-4 w-4" />
+        <Button
+          variant="outline" 
+          size="sm"
+          title="Editar Animal"
+          className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-aforeground"
+        >
+          <Pencil className="h-3 w-3" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] xl:w-[50vw] overflow-y-auto">

@@ -357,8 +357,8 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                 <FormLabel>Imagem do Animal</FormLabel>
                 <FormControl>
                   <div>
-                    <div className="flex flex-row items-center gap-2">                    
-                      {/* Preview da imagem */}
+                    {/* <div className="flex flex-row items-center gap-2">                    
+                      Preview da imagem 
                       {imagePreview && (
                         <div className="">
                           <Image
@@ -372,7 +372,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                         </div>
                       )}
 
-                      {/* Input de arquivo para upload */}
+                      Input de arquivo para upload
                       <Input 
                         className="w-fit"
                         type="file"
@@ -380,11 +380,12 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                         onChange={handleImageSelect}
                         disabled={isUploading}
                       />
-                    </div>
+                    </div>*/}
 
-                    {/* Ou continuar usando URL manual */}
+                    {/* Ou continuar usando URL manual
                     <div className="mt-4">
-                      <p className="text-sm text-muted-foreground mb-2">Ou informe uma URL:</p>
+                      <p className="text-sm text-muted-foreground mb-2">Ou informe uma URL:</p> */}
+                    <div>
                       <Input 
                         placeholder="https://..."
                         {...field}

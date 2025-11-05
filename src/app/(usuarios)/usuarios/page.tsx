@@ -1,7 +1,7 @@
 "use client"
 
 import Layout from "@/app/_layouts/root"
-import ListUsers from "@/components/list-users"
+import ListUsers from "@/components/users/list-users"
 import { RouteGuard } from "@/components/auth/route-guard"
 
 export default function Page() {

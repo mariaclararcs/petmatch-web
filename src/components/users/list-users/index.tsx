@@ -7,18 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { useGetOngs } from "@/hooks/ongs/useGetOngs"
-import { IOng } from "@/interfaces/ong"
+import { useGetUsers } from "@/hooks/users/useGetUsers"
+import { IUser } from "@/interfaces/user"
 import { Pencil, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { PaginationFull } from "../../pagination"
-import EditONGModal from "../edit-ong-modal"
-import DeleteONGModal from "../delete-ong-modal"
-import LoadingComponent from "@/components/loading"
+import EditUserModal from "../edit-user-modal"
+import DeleteUserModal from "../delete-user-modal"
+import LoadingComponent from "../../loading"
 
-export default function ListOngs() {
+export default function ListUsers() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
@@ -28,19 +28,16 @@ export default function ListOngs() {
   // Estados para controlar os modais
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [selectedOng, setSelectedOng] = useState<IOng | null>(null)
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
 
-  const { data: ongsResponse, isLoading, isError } = useGetOngs({
+  const { data: usersResponse, isLoading, isError } = useGetUsers({
     page,
     per_page,
     search: debouncedSearchTerm,
   })
 
-  const ongs = ongsResponse?.data?.data || ongsResponse?.data || []
-  
-  const paginationData = ongsResponse?.data?.data 
-    ? ongsResponse?.data
-    : ongsResponse?.data
+  const users = usersResponse?.data?.data || []
+  const paginationData = usersResponse?.data
 
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -48,29 +45,39 @@ export default function ListOngs() {
     router.push(`?${params.toString()}`)
   }
 
-  const handleEditClick = (ong: IOng) => {
-    setSelectedOng(ong)
+  // Funções para abrir os modais
+  const handleEditClick = (user: IUser) => {
+    setSelectedUser(user)
     setEditModalOpen(true)
   }
 
-  const handleDeleteClick = (ong: IOng) => {
-    setSelectedOng(ong)
+  const handleDeleteClick = (user: IUser) => {
+    setSelectedUser(user)
     setDeleteModalOpen(true)
   }
 
   const handleCloseModals = () => {
     setEditModalOpen(false)
     setDeleteModalOpen(false)
-    setSelectedOng(null)
+    setSelectedUser(null)
+  }
+
+  const formatTypeUser = (type: string) => {
+    switch(type?.toLowerCase()) {
+      case 'admin': return 'Administrador'
+      case 'ong': return 'ONG'
+      case 'adopter': return 'Adotante'
+      default: return type
+    }
   }
 
   if (isLoading) return <LoadingComponent />
 
-  if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONGs</div>
+  if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar usuários</div>
 
   return (
     <section className="flex flex-col mx-auto gap-6 px-14 py-6 xl:py-8 min-h-screen">
-      <h2 className="text-2xl font-medium">Gerenciar ONGs</h2>
+      <h2 className="text-2xl font-medium">Gerenciar Usuários</h2>
 
       {/* Container com overflow para a tabela */}
       <div className="border rounded-lg overflow-hidden">
@@ -78,40 +85,36 @@ export default function ListOngs() {
           <TableHeader>
             <TableRow>
               {/* Defina larguras fixas para cada coluna */}
-              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome Instituição</TableHead>
-              <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome do Responsável</TableHead>
-              <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">CNPJ</TableHead>
-              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Telefone</TableHead>
-              <TableHead className="w-[250px] min-w-[250px] max-w-[250px] font-semibold">Endereço</TableHead>
+              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome</TableHead>
+              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">E-mail</TableHead>
+              <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">Tipo de Usuário</TableHead>
+              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Criado Em</TableHead>
               <TableHead className="w-[120px] min-w-[120px] max-w-[120px] text-center font-semibold">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ongs.map((ong: IOng) => (
-              <TableRow key={ong.id} className="hover:bg-muted/50">
+            {users.map((user: IUser) => (
+              <TableRow key={user.id} className="hover:bg-muted/50">
                 {/* Aplica as mesmas classes de largura nas células */}
-                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={ong.name_institution}>
-                  {ong.name_institution}
+                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={user.name}>
+                  {user.name}
                 </TableCell>
-                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={ong.name_responsible}>
-                  {ong.name_responsible}
+                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={user.email}>
+                  {user.email}
                 </TableCell>
-                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={ong.cnpj}>
-                  {ong.cnpj}
+                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={user.type_user}>
+                  {formatTypeUser(user.type_user)}
                 </TableCell>
-                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.phone}>
-                  {ong.phone}
-                </TableCell>
-                <TableCell className="w-[250px] min-w-[250px] max-w-[250px] truncate" title={ong.address}>
-                  {ong.address}
+                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={user.created_at}>
+                  {new Date(user.created_at).toLocaleDateString('pt-BR')}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
                   <div className="flex gap-2 justify-center">
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleEditClick(ong)}
-                      title="Editar ONG"
+                      onClick={() => handleEditClick(user)}
+                      title="Editar Usuário"
                       className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-aforeground"
                     >
                       <Pencil className="h-3 w-3" />
@@ -119,8 +122,8 @@ export default function ListOngs() {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleDeleteClick(ong)}
-                      title="Deletar ONG"
+                      onClick={() => handleDeleteClick(user)}
+                      title="Deletar Usuário"
                       className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-red-600"
                     >
                       <Trash2 className="h-3 w-3 text-red-600" />
@@ -147,16 +150,16 @@ export default function ListOngs() {
       )}
 
       {/* Modais */}
-      <EditONGModal
+      <EditUserModal
         isOpen={editModalOpen}
         onClose={handleCloseModals}
-        ong={selectedOng}
+        user={selectedUser}
       />
 
-      <DeleteONGModal
+      <DeleteUserModal
         isOpen={deleteModalOpen}
         onClose={handleCloseModals}
-        ong={selectedOng}
+        user={selectedUser}
       />
     </section>
   )
