@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -9,13 +8,12 @@ import {
 } from "@/components/ui/table"
 import { useGetOngs } from "@/hooks/ongs/useGetOngs"
 import { IOng } from "@/interfaces/ong"
-import { Pencil, Trash2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
 import { PaginationFull } from "../../pagination"
-import EditONGModal from "../edit-ong-modal"
-import DeleteONGModal from "../delete-ong-modal"
+import { UpdateOng } from "../update-ong"
+import { DeleteOng } from "../delete-ong"
 import LoadingComponent from "@/components/loading"
 
 export default function ListOngs() {
@@ -24,11 +22,6 @@ export default function ListOngs() {
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
   const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
-  
-  // Estados para controlar os modais
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [selectedOng, setSelectedOng] = useState<IOng | null>(null)
 
   const { data: ongsResponse, isLoading, isError } = useGetOngs({
     page,
@@ -48,22 +41,6 @@ export default function ListOngs() {
     router.push(`?${params.toString()}`)
   }
 
-  const handleEditClick = (ong: IOng) => {
-    setSelectedOng(ong)
-    setEditModalOpen(true)
-  }
-
-  const handleDeleteClick = (ong: IOng) => {
-    setSelectedOng(ong)
-    setDeleteModalOpen(true)
-  }
-
-  const handleCloseModals = () => {
-    setEditModalOpen(false)
-    setDeleteModalOpen(false)
-    setSelectedOng(null)
-  }
-
   if (isLoading) return <LoadingComponent />
 
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONGs</div>
@@ -72,12 +49,10 @@ export default function ListOngs() {
     <section className="flex flex-col mx-auto gap-6 px-14 py-6 xl:py-8 min-h-screen">
       <h2 className="text-2xl font-medium">Gerenciar ONGs</h2>
 
-      {/* Container com overflow para a tabela */}
       <div className="border rounded-lg overflow-hidden">
         <Table className="w-full">
           <TableHeader>
             <TableRow>
-              {/* Defina larguras fixas para cada coluna */}
               <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome Instituição</TableHead>
               <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome do Responsável</TableHead>
               <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">CNPJ</TableHead>
@@ -89,7 +64,6 @@ export default function ListOngs() {
           <TableBody>
             {ongs.map((ong: IOng) => (
               <TableRow key={ong.id} className="hover:bg-muted/50">
-                {/* Aplica as mesmas classes de largura nas células */}
                 <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={ong.name_institution}>
                   {ong.name_institution}
                 </TableCell>
@@ -107,24 +81,11 @@ export default function ListOngs() {
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
                   <div className="flex gap-2 justify-center">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEditClick(ong)}
-                      title="Editar ONG"
-                      className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-aforeground"
-                    >
-                      <Pencil className="h-3 w-3" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleDeleteClick(ong)}
-                      title="Deletar ONG"
-                      className="h-8 w-8 p-0 hover:bg-amuted hover:border-amuted hover:text-red-600"
-                    >
-                      <Trash2 className="h-3 w-3 text-red-600" />
-                    </Button>
+                    {/* Componente de edição */}
+                    <UpdateOng ong={ong} />
+                    
+                    {/* Componente de delete - agora seguindo o padrão do Animal */}
+                    <DeleteOng ong={ong} />
                   </div>
                 </TableCell>
               </TableRow>
@@ -145,19 +106,6 @@ export default function ListOngs() {
           onPageChange={handlePageChange}
         />
       )}
-
-      {/* Modais */}
-      <EditONGModal
-        isOpen={editModalOpen}
-        onClose={handleCloseModals}
-        ong={selectedOng}
-      />
-
-      <DeleteONGModal
-        isOpen={deleteModalOpen}
-        onClose={handleCloseModals}
-        ong={selectedOng}
-      />
     </section>
   )
 }

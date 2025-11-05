@@ -81,7 +81,7 @@ export default function Home() {
               <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
             </div>
             <Link
-              href="#" 
+              href="/animais" 
               className="font-bold text-md text-asecondary hover:underline"
             >
               Ver mais 
@@ -103,7 +103,7 @@ export default function Home() {
               <h2 className="text-lg font-bold">Animais recém abrigados</h2>
             </div>
             <Link 
-              href="#" 
+              href="/animais" 
               className="font-bold text-md text-asecondary hover:underline"
             >
               Ver mais
@@ -179,7 +179,7 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
           </div>
           <Link 
-            href="#" 
+            href="/animais" 
             className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais
@@ -209,7 +209,7 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais recém abrigados</h2>
           </div>
           <Link 
-            href="#" 
+            href="/animais" 
             className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais

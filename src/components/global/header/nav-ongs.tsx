@@ -45,12 +45,12 @@ export function NavOngs() {
             >
               Gerenciar ONGs
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/*<DropdownMenuItem
               className="cursor-pointer"
               onClick={() => router.push("/solicitacoes-adocoes")}
             >
               Solicitação de Adoções
-            </DropdownMenuItem>
+            </DropdownMenuItem>*/}
           </>
         )}
       </DropdownMenuContent>
