@@ -34,16 +34,16 @@ export default function Ongs() {
 
     if (isLoading) return <LoadingComponent />
 
-    if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar ONGs</div>
+    if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-12 py-6 xl:py-8 min-h-screen">Erro ao carregar ONGs</div>
 
     return (
-        <div className="flex flex-col mx-auto px-20 py-6 xl:py-8 max-h-auto">
+        <div className="flex flex-col mx-auto py-6 xl:py-8 max-h-auto">
             <div className="flex flex-row justify-center gap-10 mb-8">
                 {/* Área de listagem de cards */}
-                <div className="flex flex-col mt-4 w-3/4">
+                <div className="flex flex-col mt-4">
                     <h2 className="text-2xl font-medium">ONGs Cadastradas</h2>
 
-                    <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                    <div className="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
                         {ongs.map((ong: IOng) => (
                             <div key={ong.id} className="group">
                             <CardOng key={ong.id} ong={ong} className="w-full" />
@@ -52,17 +52,19 @@ export default function Ongs() {
                     </div>
                 </div>
             </div>
-            {paginationData && (
-                <PaginationFull
-                pageIndex={paginationData.current_page}
-                totalCount={paginationData.total}
-                perPage={paginationData.per_page}
-                totalPages={paginationData.last_page}
-                hasNextPage={!!paginationData.next_page_url}
-                hasPreviousPage={!!paginationData.prev_page_url}
-                onPageChange={handlePageChange}
-                />
-            )}
+            <div className="mx-24">
+                {paginationData && (
+                    <PaginationFull
+                    pageIndex={paginationData.current_page}
+                    totalCount={paginationData.total}
+                    perPage={paginationData.per_page}
+                    totalPages={paginationData.last_page}
+                    hasNextPage={!!paginationData.next_page_url}
+                    hasPreviousPage={!!paginationData.prev_page_url}
+                    onPageChange={handlePageChange}
+                    />
+                )}
+            </div>
         </div>
     )
 }

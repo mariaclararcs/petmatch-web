@@ -10,6 +10,26 @@ import { z } from "zod"
 import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
 import { useGetOng } from "@/hooks/ongs/useGetOng"
 
+// Função de formatação de telefone
+const formatPhoneNumber = (phone: string): string => {
+  if (!phone) return ''
+  
+  // Remove todos os caracteres não numéricos
+  const cleaned = phone.replace(/\D/g, '')
+  
+  // Aplica a formatação baseada no tamanho do número
+  if (cleaned.length === 11) {
+    // Formato para celular: (11) 99999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`
+  } else if (cleaned.length === 10) {
+    // Formato para telefone fixo: (11) 9999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
+  } else {
+    // Retorna o número original se não for um formato conhecido
+    return phone
+  }
+}
+
 export default function ProfileOng() {
     const searchParams = useSearchParams()
     const params = useParams()
@@ -51,6 +71,9 @@ export default function ProfileOng() {
 
     const isLoading = isLoadingOng || isLoadingAnimals
     const isError = isErrorOng || isErrorAnimals
+
+    // Formata o telefone da ONG
+    const formattedPhone = ong ? formatPhoneNumber(ong.phone) : ''
 
     if (isLoading) { 
         return (
@@ -136,7 +159,7 @@ export default function ProfileOng() {
                             <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                 <Phone />
                                 <span className="text-muted-foreground">
-                                    {ong.phone}
+                                    {formattedPhone} {/* ← Telefone formatado */}
                                 </span>
                             </div>
                         </div>

@@ -16,6 +16,26 @@ import { UpdateOng } from "../update-ong"
 import { DeleteOng } from "../delete-ong"
 import LoadingComponent from "@/components/loading"
 
+// Função de formatação de telefone
+const formatPhoneNumber = (phone: string): string => {
+  if (!phone) return ''
+  
+  // Remove todos os caracteres não numéricos
+  const cleaned = phone.replace(/\D/g, '')
+  
+  // Aplica a formatação baseada no tamanho do número
+  if (cleaned.length === 11) {
+    // Formato para celular: (11) 99999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`
+  } else if (cleaned.length === 10) {
+    // Formato para telefone fixo: (11) 9999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
+  } else {
+    // Retorna o número original se não for um formato conhecido
+    return phone
+  }
+}
+
 export default function ListOngs() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -74,7 +94,7 @@ export default function ListOngs() {
                   {ong.cnpj}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.phone}>
-                  {ong.phone}
+                  {formatPhoneNumber(ong.phone)} {/* ← Telefone formatado */}
                 </TableCell>
                 <TableCell className="w-[250px] min-w-[250px] max-w-[250px] truncate" title={ong.address}>
                   {ong.address}

@@ -10,7 +10,29 @@ interface CardOngProps {
   className?: string
 }
 
+// Função de formatação de telefone
+const formatPhoneNumber = (phone: string): string => {
+  if (!phone) return ''
+  
+  // Remove todos os caracteres não numéricos
+  const cleaned = phone.replace(/\D/g, '')
+  
+  // Aplica a formatação baseada no tamanho do número
+  if (cleaned.length === 11) {
+    // Formato para celular: (11) 99999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`
+  } else if (cleaned.length === 10) {
+    // Formato para telefone fixo: (11) 9999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
+  } else {
+    // Retorna o número original se não for um formato conhecido
+    return phone
+  }
+}
+
 export default function CardOng({ ong, className }: CardOngProps) {
+  const formattedPhone = formatPhoneNumber(ong.phone)
+
   return (
     <div className={`${className}`}>
         <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-62 h-fit gap-4 p-4 overflow-hidden">
@@ -34,7 +56,7 @@ export default function CardOng({ ong, className }: CardOngProps) {
                         <Phone />
                         <span>Telefone</span>
                     </div>
-                    <span className="text-muted-foreground">{ong.phone}</span>
+                    <span className="text-muted-foreground">{formattedPhone}</span>
                 </div>
             </CardContent>
             
