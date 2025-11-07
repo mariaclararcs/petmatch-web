@@ -36,6 +36,22 @@ const formatPhoneNumber = (phone: string): string => {
   }
 }
 
+// Função de formatação de CNPJ
+const formatCNPJ = (cnpj: string): string => {
+  if (!cnpj) return ''
+  
+  // Remove todos os caracteres não numéricos
+  const cleaned = cnpj.replace(/\D/g, '')
+  
+  // Aplica a formatação no formato 00.000.000/0000-00
+  if (cleaned.length === 14) {
+    return `${cleaned.substring(0, 2)}.${cleaned.substring(2, 5)}.${cleaned.substring(5, 8)}/${cleaned.substring(8, 12)}-${cleaned.substring(12)}`
+  } else {
+    // Retorna o CNPJ original se não tiver 14 dígitos
+    return cnpj
+  }
+}
+
 export default function ListOngs() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -91,7 +107,7 @@ export default function ListOngs() {
                   {ong.name_responsible}
                 </TableCell>
                 <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={ong.cnpj}>
-                  {ong.cnpj}
+                  {formatCNPJ(ong.cnpj)} {/* ← CNPJ formatado */}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.phone}>
                   {formatPhoneNumber(ong.phone)} {/* ← Telefone formatado */}
