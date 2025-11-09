@@ -7,7 +7,7 @@ import { PaginationFull } from "@/components/pagination"
 import { useSearchParams, useParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
-import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals" // ← Use o hook público
+import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals"
 import { useGetOng } from "@/hooks/ongs/useGetOng"
 
 // Função de formatação de telefone

@@ -15,9 +15,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-// Removido import do serviço de API
 
-// Schema de validação
 const registerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('E-mail inválido'),
@@ -26,7 +24,8 @@ const registerSchema = z.object({
   address: z.string().min(5, 'Endereço muito curto'),
   cep: z.string().length(9, 'CEP inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
-  confirmPassword: z.string()
+  confirmPassword: z.string(),
+  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
 }).refine(data => data.password === data.confirmPassword, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"]
@@ -58,7 +57,8 @@ export default function RegisterUser() {
             address: '',
             cep: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            avatar: '' // Valor padrão vazio para avatar
         }
     })
 
@@ -101,7 +101,8 @@ export default function RegisterUser() {
                 birth_date: data.birthDate,
                 phone: data.phone.replace(/\D/g, ''),
                 address: data.address,
-                cep: data.cep.replace(/\D/g, '')
+                cep: data.cep.replace(/\D/g, ''),
+                avatar: data.avatar || null // Inclui o avatar (pode ser null)
             };
 
             console.log('Sending to API:', userData); // Debug log
@@ -147,7 +148,26 @@ export default function RegisterUser() {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col py-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col py-4 w-full max-w-2xl">
+                        {/* Campo Avatar - Adicionado no topo */}
+                        <div className="mb-6">
+                            <label className="block mb-1">Avatar (URL da imagem)</label>
+                            <input
+                                type="url"
+                                {...register('avatar')}
+                                placeholder="https://exemplo.com/imagem.jpg"
+                                className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                    errors.avatar ? 'border-red-500' : 'border-aborder'
+                                }`}
+                            />
+                            {errors.avatar && (
+                                <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
+                            )}
+                            <p className="text-sm text-muted-foreground mt-1">
+                                Opcional - Cole a URL de uma imagem para seu perfil
+                            </p>
+                        </div>
+
                         <label className="mb-1">Nome *</label>
                         <input
                             type="text"

@@ -434,7 +434,7 @@ export default function RegisterONG() {
                                     )}
                                 </div>
                                 <div className="flex flex-col w-full">
-                                    <label className="mb-1">Celular *</label>
+                                    <label className="mb-1">Celular para Contato *</label>
                                     <input
                                         type="text"
                                         {...ongForm.register('phone')}
