@@ -4,7 +4,7 @@ import CardS from "@/components/cards/animal-card/card-s"
 import BannerSlider from "@/components/banner-slider"
 import { CalendarCheck2, CalendarHeart } from 'lucide-react'
 import Link from "next/link"
-import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals"
 import { IAnimal } from "@/interfaces/animal"
 import { useEffect, useState } from "react"
 
@@ -19,12 +19,12 @@ export default function Home() {
   const [longestStayAnimals, setLongestStayAnimals] = useState<AnimalWithFormattedDate[]>([])
   const [newestAnimals, setNewestAnimals] = useState<AnimalWithFormattedDate[]>([])
   
-  // Busca TODOS os animais (sem ordenação inicial)
+  // Busca TODOS os animais usando o hook público (igual à tela de animais para adoção)
   const { 
     data: animalsResponse, 
     isLoading, 
     isError 
-  } = useGetAnimals({
+  } = useGetAllAnimals({
     page: 1,
     per_page: 100 // Número grande para pegar todos
   })
@@ -134,14 +134,14 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais a mais tempo em abrigo</h2>
           </div>
           <Link 
-            href="#" 
+            href="/animais" 
             className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais
           </Link>
         </div>
         <div className="flex items-center justify-center">
-          <p className="text-red-500">Error loading animals</p>
+          <p className="text-red-500">Erro ao carregar animais</p>
         </div>
       </div>
 
@@ -153,14 +153,14 @@ export default function Home() {
             <h2 className="text-lg font-bold">Animais recém abrigados</h2>
           </div>
           <Link 
-            href="#" 
+            href="/animais" 
             className="font-bold text-md text-asecondary hover:underline"
           >
             Ver mais
           </Link>
         </div>
         <div className="flex items-center justify-center">
-          <p className="text-red-500">Error loading animals</p>
+          <p className="text-red-500">Erro ao carregar animais</p>
         </div>
       </div>
     </div>

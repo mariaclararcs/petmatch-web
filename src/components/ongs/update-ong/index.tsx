@@ -36,7 +36,7 @@ export function UpdateOng({ ong }: UpdateOngProps) {
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] w-[90vw] sm:w-[80vw] md:w-[70vw] lg:w-[60vw] xl:w-[50vw] overflow-y-auto">
         <DialogHeader className="sticky top-0 z-10">
-          <DialogTitle>Editar ONG</DialogTitle>
+          <DialogTitle>Atualizar cadastro da ONG</DialogTitle>
         </DialogHeader>
         <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
           <UpdateOngForm ong={ong} onSuccess={handleSuccess} />

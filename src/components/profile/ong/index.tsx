@@ -7,7 +7,7 @@ import { PaginationFull } from "@/components/pagination"
 import { useSearchParams, useParams } from "next/navigation"
 import { useState } from "react"
 import { z } from "zod"
-import { useGetAnimals } from "@/hooks/animal/useGetAnimals"
+import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals" // ← Use o hook público
 import { useGetOng } from "@/hooks/ongs/useGetOng"
 
 // Função de formatação de telefone
@@ -53,7 +53,7 @@ export default function ProfileOng() {
         data: animalsResponse,
         isLoading: isLoadingAnimals,
         isError: isErrorAnimals,
-    } = useGetAnimals({
+    } = useGetAllAnimals({
         page: currentPage,
         per_page: itemsPerPage,
         search: debouncedSearchTerm,
@@ -159,7 +159,7 @@ export default function ProfileOng() {
                             <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                 <Phone />
                                 <span className="text-muted-foreground">
-                                    {formattedPhone} {/* ← Telefone formatado */}
+                                    {formattedPhone}
                                 </span>
                             </div>
                         </div>
@@ -171,14 +171,22 @@ export default function ProfileOng() {
 
                     {/* Área de listagem de cards */}
                     <div className="my-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-                        {animals.map((animal: IAnimal) => (
-                            <div key={animal.id} className="group">
-                                <CardM key={animal.id} animal={animal} className="w-full" />
+                        {animals.length > 0 ? (
+                            animals.map((animal: IAnimal) => (
+                                <div key={animal.id} className="group">
+                                    <CardM key={animal.id} animal={animal} className="w-full" />
+                                </div>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-8">
+                                <p className="text-muted-foreground">
+                                    Nenhum animal encontrado nesta ONG
+                                </p>
                             </div>
-                        ))}
+                        )}
                     </div>
                     
-                    {paginationData && (
+                    {paginationData && paginationData.last_page > 1 && (
                         <PaginationFull
                             pageIndex={paginationData.current_page}
                             totalCount={paginationData.total}
