@@ -51,12 +51,13 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
           <Avatar className="h-10 w-10 rounded-lg">
               <AvatarFallback className="h-10 w-10 rounded-xg">
                   <Image
-                      src={user.image || "/images/default-avatar.jpg"}
+                      src={user.avatar || "/images/default-avatar.jpg"}
                       alt={user.name ? `${user.name} avatar` : "Default avatar"}
                       width={40}
                       height={40}
                       className="size-full object-cover rounded-full"
                       priority
+                      unoptimized
                   />
               </AvatarFallback>
             </Avatar>
@@ -74,12 +75,13 @@ export function NavUser({ user }: { user: UserWithAvatar }) {
               <Avatar className="h-10 w-10 rounded-xg">
                 <AvatarFallback className="h-10 w-10 rounded-xg">
                   <Image
-                    src={user.image || "/images/default-avatar.jpg"}
+                    src={user.avatar || "/images/default-avatar.jpg"}
                     alt={user.name ? `${user.name} avatar` : "Default avatar"}
                     width={40}
                     height={40}
                     className="size-full object-cover rounded-full"
                     priority
+                    unoptimized
                   />
                 </AvatarFallback>
               </Avatar>
