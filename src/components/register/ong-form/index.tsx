@@ -14,7 +14,8 @@ const userStepSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
   email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
-  confirmPassword: z.string()
+  confirmPassword: z.string(),
+  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
 }).refine(data => data.password === data.confirmPassword, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"]
@@ -23,7 +24,6 @@ const userStepSchema = z.object({
 // Schema para Step 2 - Dados da ONG
 const ongStepSchema = z.object({
   name_institution: z.string().min(3, 'Nome da instituição deve ter pelo menos 3 caracteres'),
-  name_responsible: z.string().min(3, 'Nome do responsável deve ter pelo menos 3 caracteres'),
   document_responsible: z.string().min(11, 'CPF deve ter 11 dígitos'),
   cnpj: z.string().min(18, 'CNPJ incompleto').max(18, 'CNPJ inválido'),
   phone: z.string().min(14, 'Telefone incompleto').max(15, 'Telefone inválido'),
@@ -51,7 +51,8 @@ export default function RegisterONG() {
             name: '',
             email: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            avatar: ''
         }
     })
 
@@ -60,7 +61,6 @@ export default function RegisterONG() {
         resolver: zodResolver(ongStepSchema),
         defaultValues: {
             name_institution: '',
-            name_responsible: '',
             document_responsible: '',
             cnpj: '',
             phone: '',
@@ -141,7 +141,8 @@ export default function RegisterONG() {
                 email: data.email,
                 password: data.password,
                 password_confirmation: data.confirmPassword,
-                type_user: 'ong'
+                type_user: 'ong',
+                avatar: data.avatar || null
             };
 
             console.log('Creating user:', userData);
@@ -200,7 +201,6 @@ export default function RegisterONG() {
             const ongData = {
                 user_id: createdUserId,
                 name_institution: data.name_institution,
-                name_responsible: data.name_responsible,
                 document_responsible: data.document_responsible.replace(/\D/g, ''),
                 cnpj: data.cnpj.replace(/\D/g, ''),
                 phone: data.phone.replace(/\D/g, ''),
@@ -277,6 +277,26 @@ export default function RegisterONG() {
                     {/* Step 1 - Dados do Usuário */}
                     {currentStep === 1 && (
                         <form onSubmit={userForm.handleSubmit(onSubmitUserStep)} className="flex flex-col py-4 w-full">
+                            {/* Campo Avatar - Adicionado no topo */}
+                            <div className="mb-6">
+                                <label className="block mb-1">Avatar (URL da imagem)</label>
+                                <input
+                                    type="url"
+                                    {...userForm.register('avatar')}
+                                    placeholder="https://exemplo.com/imagem.jpg"
+                                    className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                        userForm.formState.errors.avatar ? 'border-red-500' : 'border-aborder'
+                                    }`}
+                                    disabled={isSubmitting}
+                                />
+                                {userForm.formState.errors.avatar && (
+                                    <p className="text-red-500 text-sm mt-1">{userForm.formState.errors.avatar.message}</p>
+                                )}
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    Opcional - Cole a URL de uma imagem para seu perfil
+                                </p>
+                            </div>
+
                             <label className="mb-1">Nome do Responsável *</label>
                             <input 
                                 type="text" 
@@ -380,20 +400,6 @@ export default function RegisterONG() {
                             )}
 
                             <div className="flex flex-row gap-8 w-full">
-                                <div className="flex flex-col w-full">
-                                    <label className="mb-1">Nome do Responsável *</label>
-                                    <input 
-                                        type="text" 
-                                        {...ongForm.register('name_responsible')}
-                                        className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
-                                            ongForm.formState.errors.name_responsible ? 'border-red-500' : 'border-aborder'
-                                        }`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {ongForm.formState.errors.name_responsible && (
-                                        <p className="text-red-500 text-sm mt-1 mb-4">{ongForm.formState.errors.name_responsible.message}</p>
-                                    )}
-                                </div>
                                 <div className="flex flex-col w-full">
                                     <label className="mb-1">CPF do Responsável *</label>
                                     <input

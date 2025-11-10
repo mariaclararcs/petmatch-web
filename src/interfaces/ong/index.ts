@@ -4,7 +4,6 @@ import { IUser } from "../user"
 export interface IOng extends ITimestamps {
   user_id: string
   name_institution: string
-  name_responsible: string
   document_responsible: string
   cnpj: string
   phone: string
