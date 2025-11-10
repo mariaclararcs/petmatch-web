@@ -35,8 +35,9 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { useState } from "react"
-import { useSession } from "next-auth/react" // IMPORT ADICIONADO
-import { getUserPermissions } from "@/lib/permissions" // IMPORT ADICIONADO
+import { useSession } from "next-auth/react"
+import { getUserPermissions } from "@/lib/permissions"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // IMPORT ADICIONADO
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -69,15 +70,23 @@ const animalFormSchema = z.object({
 
 type AnimalFormValues = z.infer<typeof animalFormSchema>
 
+// Função para obter as iniciais do nome do animal
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+
 export function CreateAnimalForm() {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   
-  // ADICIONADO: Obter sessão e permissões
   const { data: session } = useSession()
   const userType = session?.user?.type_user
   const permissions = getUserPermissions(userType)
   
-  // ADICIONADO: Verificar se usuário pode gerenciar ONGs (admin)
   const canManageOngs = permissions.canManageAnimals && permissions.canManageUsers
 
   const form = useForm<AnimalFormValues>({
@@ -95,10 +104,14 @@ export function CreateAnimalForm() {
     },
   })
 
+  // Watch para o campo image para preview em tempo real
+  const image = form.watch('image')
+  const name = form.watch('name')
+
   const { mutate: createAnimal, isPending } = useMutation({
     mutationFn: (data: AnimalFormValues) => api.post("http://localhost:8000/api/animals", data),
     onSuccess: () => {
-      setIsSuccessDialogOpen(true) // Abre o dialog de sucesso
+      setIsSuccessDialogOpen(true)
       queryClient.invalidateQueries({ queryKey: ["get-animals"] })
       form.reset()
     },
@@ -111,26 +124,24 @@ export function CreateAnimalForm() {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
-  // Se for ONG, definir automaticamente a ONG do usuário logado
   const userOngId = session?.user?.ong_id
 
   function onSubmit(data: AnimalFormValues) {
     const payload = {
       ...data,
-      // Se for ONG, usar a ONG do usuário logado
       ong_id: canManageOngs ? data.ong_id : (userOngId || data.ong_id),
       image: data.image?.trim() || "Campo vazio",
       description: data.description?.trim() || "Campo vazio"
     }
     
-    console.log("Dados sendo enviados:", payload) // Para verificação
+    console.log("Dados sendo enviados:", payload)
     createAnimal(payload)
   }
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Campo ONG - Só mostra se usuário pode gerenciar ONGs */}
           {canManageOngs ? (
             <FormField
@@ -181,6 +192,48 @@ export function CreateAnimalForm() {
               )}
             />
           )}
+
+          {/* Campo Image - MODIFICADO para seguir o padrão de preview */}
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem do Animal (URL)</FormLabel>
+                <div className="flex flex-row items-center gap-4 w-full">
+                  {/* Preview da imagem */}
+                  <div className="flex flex-col justify-center items-center">
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage 
+                        src={image || ""} 
+                        alt={name || "Animal"}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                        {getInitials(name || "An")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Preview da imagem
+                    </p>
+                  </div>
+
+                  {/* Campo de input */}
+                  <div className="flex-grow">
+                    <FormControl>
+                      <Input
+                        type="url"
+                        placeholder="https://exemplo.com/imagem-animal.jpg"
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </div>
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -293,20 +346,6 @@ export function CreateAnimalForm() {
                 <FormLabel>Data de abrigo</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>URL da imagem</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

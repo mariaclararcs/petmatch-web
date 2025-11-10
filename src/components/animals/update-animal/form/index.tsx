@@ -36,10 +36,10 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import Image from "next/image"
 import { uploadImage } from "@/app/services/image-upload"
-import { useSession } from "next-auth/react" // IMPORT ADICIONADO
-import { getUserPermissions } from "@/lib/permissions" // IMPORT ADICIONADO
+import { useSession } from "next-auth/react"
+import { getUserPermissions } from "@/lib/permissions"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // IMPORT ADICIONADO
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -72,6 +72,16 @@ const animalFormSchema = z.object({
 
 type AnimalFormValues = z.infer<typeof animalFormSchema>
 
+// Função para obter as iniciais do nome do animal
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+
 interface UpdateAnimalFormProps {
   animal: IAnimal
 }
@@ -82,12 +92,11 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>(animal?.image || "")
   
-  // ADICIONADO: Obter sessão e permissões
   const { data: session } = useSession()
   const userType = session?.user?.type_user
   const permissions = getUserPermissions(userType)
   
-  // ADICIONADO: Verificar se usuário pode gerenciar ONGs (admin)
+  // Verificar se usuário pode gerenciar ONGs (admin)
   const canManageOngs = permissions.canManageAnimals && permissions.canManageUsers
 
   const defaultValues = {
@@ -108,6 +117,10 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     resolver: zodResolver(animalFormSchema),
     defaultValues,
   })
+
+  // Watch para o campo image para preview em tempo real
+  const image = form.watch('image')
+  const name = form.watch('name')
 
   useEffect(() => {
     if (animal) {
@@ -142,30 +155,6 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
 
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
-
-  // Função para lidar com seleção de arquivo
-  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      if (!file.type.startsWith('image/')) {
-        toast.error("Por favor, selecione um arquivo de imagem")
-        return
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("A imagem deve ter no máximo 5MB")
-        return
-      }
-
-      setSelectedImage(file)
-      
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
 
   // Função para fazer upload da imagem
   const uploadImageToServer = async (file: File): Promise<string> => {
@@ -209,7 +198,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Campo ONG - Só mostra se usuário pode gerenciar ONGs */}
           {canManageOngs ? (
             <FormField
@@ -243,7 +232,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
               )}
             />
           ) : (
-            // Mostra a ONG atual como informação (somente leitura)
+            // Mostra a ONG atual como informação (somente leitura para usuário do tipo ONG)
             <FormItem>
               <FormLabel>ONG</FormLabel>
               <FormControl>
@@ -255,6 +244,52 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
               </FormControl>
             </FormItem>
           )}
+
+          {/* Campo Image */}
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem do Animal (URL)</FormLabel>
+                <div className="flex flex-row items-center gap-4 w-full">
+                  {/* Preview da imagem */}
+                  <div className="flex flex-col justify-center items-center">
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage 
+                        src={image || ""} 
+                        alt={name || animal.name}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                        {getInitials(name || animal.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Preview da imagem
+                    </p>
+                  </div>
+
+                  {/* Campo de input */}
+                  <div className="flex-grow">
+                    <FormControl>
+                      <Input
+                        type="url"
+                        placeholder="https://exemplo.com/imagem-animal.jpg"
+                        {...field}
+                        value={field.value || ""}
+                        onChange={(e) => {
+                          field.onChange(e)
+                          setImagePreview(e.target.value)
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </div>
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}
@@ -367,32 +402,6 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                 <FormLabel>Data de abrigo</FormLabel>
                 <FormControl>
                   <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Imagem do Animal</FormLabel>
-                <FormControl>
-                  <div>
-                    <div>
-                      <Input 
-                        placeholder="https://..."
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          setImagePreview(e.target.value)
-                        }}
-                      />
-                    </div>
-                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

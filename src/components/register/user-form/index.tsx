@@ -58,7 +58,7 @@ export default function RegisterUser() {
             cep: '',
             password: '',
             confirmPassword: '',
-            avatar: '' // Valor padrão vazio para avatar
+            avatar: ''
         }
     })
 
@@ -102,7 +102,7 @@ export default function RegisterUser() {
                 phone: data.phone.replace(/\D/g, ''),
                 address: data.address,
                 cep: data.cep.replace(/\D/g, ''),
-                avatar: data.avatar || null // Inclui o avatar (pode ser null)
+                avatar: data.avatar || null
             };
 
             console.log('Sending to API:', userData); // Debug log
