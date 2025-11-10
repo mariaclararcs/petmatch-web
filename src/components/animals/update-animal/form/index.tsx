@@ -39,7 +39,7 @@ import { z } from "zod"
 import { uploadImage } from "@/app/services/image-upload"
 import { useSession } from "next-auth/react"
 import { getUserPermissions } from "@/lib/permissions"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // IMPORT ADICIONADO
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },

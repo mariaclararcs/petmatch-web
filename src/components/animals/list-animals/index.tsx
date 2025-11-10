@@ -63,6 +63,7 @@ export default function ListAnimals() {
               {/* Defina larguras fixas para cada coluna */}
               <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Foto</TableHead>
               <TableHead className="w-[150px] min-w-[150px] max-w-[150px] font-semibold">Nome</TableHead>
+              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">ONG</TableHead>
               <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold">Idade</TableHead>
               <TableHead className="w-[100px] min-w-[100px] max-w-[100px] font-semibold">Genêro</TableHead>
               <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Tipo</TableHead>
@@ -84,6 +85,9 @@ export default function ListAnimals() {
                 </TableCell>
                 <TableCell className="w-[150px] min-w-[150px] max-w-[150px] truncate" title={animal.name}>
                   {animal.name}
+                </TableCell>
+                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={animal.ong?.name_institution || "N/A"}>
+                  {animal.ong?.name_institution || "N/A"}
                 </TableCell>
                 <TableCell className="w-[80px] min-w-[80px] max-w-[80px]">
                   {animal.age} anos
