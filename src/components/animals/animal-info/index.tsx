@@ -44,10 +44,10 @@ export default function AnimalInfo() {
     }
 
     return (
-        <div className="flex flex-col mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
+        <div className="flex flex-col mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen mb-4">
             <h2 className="text-2xl font-medium">Informações do Animal</h2>
             <div className="flex flex-row justify-center gap-10">
-                <div className="w-100 h-120">
+                <div className="flex flex-col w-100 h-120">
                     <Image
                         className="rounded-lg bg-aprimary object-cover"
                         alt={animal.name}
@@ -60,6 +60,12 @@ export default function AnimalInfo() {
                         }}
                         unoptimized
                     />
+                    <Link 
+                        href="/formulario-adocao"
+                        className="bg-aprimary rounded-xl border-2 border-asecondary my-6 py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
+                    >
+                        Formulário de Adoção
+                    </Link>
                 </div>
 
                 <div className="flex flex-col w-fit">
@@ -139,12 +145,6 @@ export default function AnimalInfo() {
                             {animal.description}
                         </span>
                     </div>
-                    <Link 
-                        href="/formulario-adocao"
-                        className="bg-aprimary rounded-xl border-2 border-asecondary my-6 py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
-                    >
-                        Formulário de Adoção
-                    </Link>
                 </div>
             </div>
         </div>

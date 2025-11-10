@@ -31,7 +31,7 @@ export default function Header() {
                     <>
                         {permissions.canViewOngs && <NavOngs />}
                         {permissions.canViewAnimals && <NavAnimals />}
-                        {permissions.canManageAnimals && <NavForm/>}
+                        {/* {permissions.canManageAnimals && <NavForm/>} */}
                         {permissions.canManageUsers && <NavUsers />}
                     </>
                 ) : (
