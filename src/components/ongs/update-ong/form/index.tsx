@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
+import Image from "next/image"
 
 const editONGSchema = z.object({
   name_institution: z.string().min(3, 'Nome da instituição deve ter pelo menos 3 caracteres'),
@@ -25,6 +26,7 @@ const editONGSchema = z.object({
   address: z.string().min(5, 'Endereço muito curto'),
   cep: z.string().min(8, 'CEP deve ter 8 dígitos'),
   description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
+  ong_image: z.string().url('URL da imagem inválida').optional().or(z.literal('')), // CAMPO ADICIONADO
 })
 
 type EditONGFormData = z.infer<typeof editONGSchema>
@@ -48,6 +50,8 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
   } = useForm<EditONGFormData>({
     resolver: zodResolver(editONGSchema)
   })
+
+  const ong_image = watch('ong_image') // PARA PREVIEW
 
   // Formatadores (mantidos iguais)
   const formatPhone = (value: string) => {
@@ -114,6 +118,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       setValue('address', ong.address)
       setValue('cep', ong.cep)
       setValue('description', ong.description)
+      setValue('ong_image', ong.ong_image || '') // CARREGA A IMAGEM DA ONG
       setApiError(null)
     }
   }, [ong, setValue])
@@ -128,6 +133,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
         cnpj: data.cnpj.replace(/\D/g, ''),
         phone: data.phone.replace(/\D/g, ''),
         cep: data.cep.replace(/\D/g, ''),
+        ong_image: data.ong_image || null, // INCLUI A IMAGEM DA ONG
         status: ong.status
       }
 
@@ -157,6 +163,43 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Campo ONG Image - Adicionado no topo */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Imagem da ONG (URL)</label>
+          <Input
+            type="url"
+            {...register('ong_image')}
+            placeholder="https://exemplo.com/imagem-ong.jpg"
+            className={errors.ong_image ? 'border-red-500' : ''}
+            disabled={updateOngMutation.isPending}
+          />
+          {errors.ong_image && (
+            <p className="text-red-500 text-sm mt-1">{errors.ong_image.message}</p>
+          )}
+          <p className="text-sm text-muted-foreground mt-1">
+            Opcional - Cole a URL de uma imagem para representar sua ONG
+          </p>
+          
+          {/* Preview da imagem */}
+          {ong_image && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-600 mb-1">Preview:</p>
+              <Image 
+                src={ong_image} 
+                alt="Preview da imagem da ONG" 
+                className="w-20 h-20 rounded-full object-cover border"
+                width={80}
+                height={80}
+                unoptimized 
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Nome da Instituição *</label>
           <Input
@@ -278,7 +321,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
         </div>
       </form>
 
-      {/* Dialog de sucesso - agora com onOpenChange correto */}
+      {/* Dialog de sucesso */}
       <Dialog open={isSuccessDialogOpen} onOpenChange={handleSuccessDialogClose}>
         <DialogContent>
           <DialogHeader>

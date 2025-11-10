@@ -163,6 +163,11 @@ export default function ProfileOng() {
                                     {formattedPhone}
                                 </span>
                             </div>
+                            <div className="flex items-center gap-2 text-lg overflow-hidden">
+                                <span className="text-muted-foreground">
+                                    {ong.description}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
