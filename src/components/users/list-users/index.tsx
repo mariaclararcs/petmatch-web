@@ -72,7 +72,7 @@ export default function ListUsers() {
           <TableHeader>
             <TableRow>
               {/* Coluna Avatar adicionada - mesma largura dos animais */}
-              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Avatar</TableHead>
+              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Foto</TableHead>
               {/* Ajustei as larguras das outras colunas para compensar a nova coluna */}
               <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome</TableHead>
               <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">E-mail</TableHead>
@@ -115,8 +115,8 @@ export default function ListUsers() {
                   <div className="flex gap-2 justify-center">
                     {/* Componente de edição */}
                     <UpdateUser user={user} />
-                    
-                    {/* Componente de delete - agora seguindo o padrão do Ong */}
+                                        
+                    {/* Componente de delete */}
                     <DeleteUser user={user} />
                   </div>
                 </TableCell>

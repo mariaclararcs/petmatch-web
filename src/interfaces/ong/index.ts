@@ -10,6 +10,7 @@ export interface IOng extends ITimestamps {
   address: string
   cep: string
   description: string
+  ong_image: string
   status: string
   user: IUser
 }

@@ -15,6 +15,7 @@ import { PaginationFull } from "../../pagination"
 import { UpdateOng } from "../update-ong"
 import { DeleteOng } from "../delete-ong"
 import LoadingComponent from "@/components/loading"
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar" // IMPORT ADICIONADO
 
 // Função de formatação de telefone
 const formatPhoneNumber = (phone: string): string => {
@@ -50,6 +51,16 @@ const formatCNPJ = (cnpj: string): string => {
     // Retorna o CNPJ original se não tiver 14 dígitos
     return cnpj
   }
+}
+
+// Função para obter as iniciais do nome da instituição
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
 }
 
 export default function ListOngs() {
@@ -89,26 +100,44 @@ export default function ListOngs() {
         <Table className="w-full">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome Instituição</TableHead>
-              <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">CNPJ</TableHead>
-              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Telefone</TableHead>
-              <TableHead className="w-[250px] min-w-[250px] max-w-[250px] font-semibold">Endereço</TableHead>
+              {/* Coluna Imagem da ONG - mesma largura dos usuários */}
+              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Foto</TableHead>
+              {/* Ajustei as larguras das outras colunas para compensar a nova coluna */}
+              <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome Instituição</TableHead>
+              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">CNPJ</TableHead>
+              <TableHead className="w-[100px] min-w-[100px] max-w-[100px] font-semibold">Telefone</TableHead>
+              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Endereço</TableHead>
               <TableHead className="w-[120px] min-w-[120px] max-w-[120px] text-center font-semibold">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {ongs.map((ong: IOng) => (
               <TableRow key={ong.id} className="hover:bg-muted/50">
-                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={ong.name_institution}>
+                {/* Coluna Imagem da ONG - mesma implementação dos usuários */}
+                <TableCell className="w-[80px] min-w-[80px] max-w-[80px] text-center">
+                  <Avatar className="h-10 w-10 mx-auto">
+                    <AvatarImage 
+                      src={ong.ong_image || ""} 
+                      alt={ong.name_institution}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="text-xs bg-gray-200">
+                      {getInitials(ong.name_institution)}
+                    </AvatarFallback>
+                  </Avatar>
+                </TableCell>
+                
+                {/* Aplica as mesmas classes de largura nas células (ajustadas) */}
+                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={ong.name_institution}>
                   {ong.name_institution}
                 </TableCell>
-                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={ong.cnpj}>
+                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.cnpj}>
                   {formatCNPJ(ong.cnpj)}
                 </TableCell>
-                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.phone}>
+                <TableCell className="w-[100px] min-w-[100px] max-w-[100px] truncate" title={ong.phone}>
                   {formatPhoneNumber(ong.phone)}
                 </TableCell>
-                <TableCell className="w-[250px] min-w-[250px] max-w-[250px] truncate" title={ong.address}>
+                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={ong.address}>
                   {ong.address}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
