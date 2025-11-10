@@ -38,6 +38,8 @@ import { toast } from "sonner"
 import { z } from "zod"
 import Image from "next/image"
 import { uploadImage } from "@/app/services/image-upload"
+import { useSession } from "next-auth/react" // IMPORT ADICIONADO
+import { getUserPermissions } from "@/lib/permissions" // IMPORT ADICIONADO
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -75,10 +77,18 @@ interface UpdateAnimalFormProps {
 }
 
 export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
-  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false) // Estado para controlar o dialog
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>(animal?.image || "")
+  
+  // ADICIONADO: Obter sessão e permissões
+  const { data: session } = useSession()
+  const userType = session?.user?.type_user
+  const permissions = getUserPermissions(userType)
+  
+  // ADICIONADO: Verificar se usuário pode gerenciar ONGs (admin)
+  const canManageOngs = permissions.canManageAnimals && permissions.canManageUsers
 
   const defaultValues = {
     ong_id: animal?.ong_id || "",
@@ -121,7 +131,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     mutationFn: (data: AnimalFormValues) =>
       api.put(`http://localhost:8000/api/animals/${animal.id}`, data),
     onSuccess: () => {
-      setIsSuccessDialogOpen(true) // Abre o dialog de sucesso
+      setIsSuccessDialogOpen(true)
       queryClient.invalidateQueries({ queryKey: ["get-animals"] })
     },
     onError: error => {
@@ -137,13 +147,11 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
   const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      // Verificar se é uma imagem
       if (!file.type.startsWith('image/')) {
         toast.error("Por favor, selecione um arquivo de imagem")
         return
       }
 
-      // Verificar tamanho do arquivo (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("A imagem deve ter no máximo 5MB")
         return
@@ -151,7 +159,6 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
 
       setSelectedImage(file)
       
-      // Criar preview da imagem
       const reader = new FileReader()
       reader.onload = (e) => {
         setImagePreview(e.target?.result as string)
@@ -184,6 +191,8 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
 
       const payload = {
         ...data,
+        // Se não for admin, mantém a ONG original do animal
+        ong_id: canManageOngs ? data.ong_id : animal.ong_id,
         image: finalImageUrl?.trim() || "",
         description: data.description?.trim() || ""
       }
@@ -201,36 +210,51 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto">
-          <FormField
-            control={form.control}
-            name="ong_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ONG</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma ONG" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {ongs && ongs.length > 0 ? (
-                      ongs.map((ong: IOng) => (
-                        <SelectItem key={ong.id} value={ong.id}>
-                          {ong.name_institution}
+          {/* Campo ONG - Só mostra se usuário pode gerenciar ONGs */}
+          {canManageOngs ? (
+            <FormField
+              control={form.control}
+              name="ong_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ONG</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma ONG" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ongs && ongs.length > 0 ? (
+                        ongs.map((ong: IOng) => (
+                          <SelectItem key={ong.id} value={ong.id}>
+                            {ong.name_institution}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-ongs" disabled>
+                          Nenhuma ONG disponível
                         </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="no-ongs" disabled>
-                        Nenhuma ONG disponível
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) : (
+            // Mostra a ONG atual como informação (somente leitura)
+            <FormItem>
+              <FormLabel>ONG</FormLabel>
+              <FormControl>
+                <Input 
+                  value={animal.ong?.name_institution || "ONG não encontrada"} 
+                  disabled 
+                  className="bg-gray-50"
+                />
+              </FormControl>
+            </FormItem>
+          )}
 
           <FormField
             control={form.control}
@@ -357,34 +381,6 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                 <FormLabel>Imagem do Animal</FormLabel>
                 <FormControl>
                   <div>
-                    {/* <div className="flex flex-row items-center gap-2">                    
-                      Preview da imagem 
-                      {imagePreview && (
-                        <div className="">
-                          <Image
-                            className="w-30 h-30 object-cover rounded-full border-1 border-aborder"
-                            alt={animal.name}
-                            src={animal.image || '/placeholder-animal.jpg'}
-                            width={120}
-                            height={120}
-                            unoptimized
-                          />
-                        </div>
-                      )}
-
-                      Input de arquivo para upload
-                      <Input 
-                        className="w-fit"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageSelect}
-                        disabled={isUploading}
-                      />
-                    </div>*/}
-
-                    {/* Ou continuar usando URL manual
-                    <div className="mt-4">
-                      <p className="text-sm text-muted-foreground mb-2">Ou informe uma URL:</p> */}
                     <div>
                       <Input 
                         placeholder="https://..."

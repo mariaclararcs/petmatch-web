@@ -24,7 +24,7 @@ export default function ListAnimals() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "10")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "20")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: animalsResponse, isLoading, isError } = useGetAnimals({

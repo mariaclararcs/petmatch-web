@@ -35,6 +35,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { useState } from "react"
+import { useSession } from "next-auth/react" // IMPORT ADICIONADO
+import { getUserPermissions } from "@/lib/permissions" // IMPORT ADICIONADO
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -69,6 +71,14 @@ type AnimalFormValues = z.infer<typeof animalFormSchema>
 
 export function CreateAnimalForm() {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  
+  // ADICIONADO: Obter sessão e permissões
+  const { data: session } = useSession()
+  const userType = session?.user?.type_user
+  const permissions = getUserPermissions(userType)
+  
+  // ADICIONADO: Verificar se usuário pode gerenciar ONGs (admin)
+  const canManageOngs = permissions.canManageAnimals && permissions.canManageUsers
 
   const form = useForm<AnimalFormValues>({
     resolver: zodResolver(animalFormSchema),
@@ -101,9 +111,14 @@ export function CreateAnimalForm() {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
+  // Se for ONG, definir automaticamente a ONG do usuário logado
+  const userOngId = session?.user?.ong_id
+
   function onSubmit(data: AnimalFormValues) {
     const payload = {
       ...data,
+      // Se for ONG, usar a ONG do usuário logado
+      ong_id: canManageOngs ? data.ong_id : (userOngId || data.ong_id),
       image: data.image?.trim() || "Campo vazio",
       description: data.description?.trim() || "Campo vazio"
     }
@@ -116,36 +131,56 @@ export function CreateAnimalForm() {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 px-4 py-4 max-h-[calc(80vh-100px)] overflow-y-auto">
-          <FormField
-            control={form.control}
-            name="ong_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>ONG</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione uma ONG" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {ongs && ongs.length > 0 ? (
-                      ongs.map((ong: IOng) => (
-                        <SelectItem key={ong.id} value={ong.id}>
-                          {ong.name_institution}
+          {/* Campo ONG - Só mostra se usuário pode gerenciar ONGs */}
+          {canManageOngs ? (
+            <FormField
+              control={form.control}
+              name="ong_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ONG</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma ONG" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ongs && ongs.length > 0 ? (
+                        ongs.map((ong: IOng) => (
+                          <SelectItem key={ong.id} value={ong.id}>
+                            {ong.name_institution}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="no-ongs" disabled>
+                          Nenhuma ONG disponível
                         </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="no-ongs" disabled>
-                        Nenhuma ONG disponível
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) : (
+            // Campo oculto com a ONG do usuário logado
+            <FormField
+              control={form.control}
+              name="ong_id"
+              render={({ field }) => (
+                <FormItem className="hidden">
+                  <FormControl>
+                    <Input 
+                      type="hidden" 
+                      {...field} 
+                      value={userOngId || ""} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          )}
 
           <FormField
             control={form.control}
