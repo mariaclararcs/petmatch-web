@@ -131,9 +131,9 @@ export default function RegisterONG() {
 
     // Submit Step 1 - Criar usuário
     const onSubmitUserStep = async (data: UserStepData) => {
-        console.log('User Step data:', data);
-        setIsSubmitting(true);
-        setApiError(null);
+        console.log('User Step data:', data)
+        setIsSubmitting(true)
+        setApiError(null)
 
         try {
             const userData = {
@@ -143,9 +143,9 @@ export default function RegisterONG() {
                 password_confirmation: data.confirmPassword,
                 type_user: 'ong',
                 avatar: data.avatar || null
-            };
+            }
 
-            console.log('Creating user:', userData);
+            console.log('Creating user:', userData)
 
             const response = await fetch('http://localhost:8000/api/users', {
                 method: 'POST',
@@ -154,48 +154,48 @@ export default function RegisterONG() {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(userData)
-            });
+            })
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao criar usuário');
+                const errorData = await response.json()
+                throw new Error(errorData.message || 'Erro ao criar usuário')
             }
 
-            const result = await response.json();
-            console.log('User created successfully:', result);
-            console.log('Trying to extract user ID from:', result);
+            const result = await response.json()
+            console.log('User created successfully:', result)
+            console.log('Trying to extract user ID from:', result)
             
             // Diferentes possibilidades de estrutura da resposta Laravel
-            const userId = result.id || result.user?.id || result.data?.id || result.user_id;
-            console.log('Extracted user ID:', userId);
+            const userId = result.id || result.user?.id || result.data?.id || result.user_id
+            console.log('Extracted user ID:', userId)
             
             if (!userId) {
-                console.error('No user ID found in response:', result);
-                throw new Error('ID do usuário não foi retornado pela API');
+                console.error('No user ID found in response:', result)
+                throw new Error('ID do usuário não foi retornado pela API')
             }
             
-            setCreatedUserId(userId);
-            setUserStepData(data);
-            setCurrentStep(2);
+            setCreatedUserId(userId)
+            setUserStepData(data)
+            setCurrentStep(2)
             
         } catch (error: any) {
-            console.error('User creation error:', error);
-            setApiError(error.message || 'Erro ao criar usuário. Tente novamente.');
+            console.error('User creation error:', error)
+            setApiError(error.message || 'Erro ao criar usuário. Tente novamente.')
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false)
         }
-    };
+    }
 
     // Submit Step 2 - Criar ONG
     const onSubmitONGStep = async (data: ONGStepData) => {
-        if (!createdUserId) {
-            setApiError('Erro: ID do usuário não encontrado');
-            return;
+        if (!createdUserId || !userStepData) {
+            setApiError('Erro: Dados do usuário não encontrados')
+            return
         }
 
-        console.log('ONG Step data:', data);
-        setIsSubmitting(true);
-        setApiError(null);
+        console.log('ONG Step data:', data)
+        setIsSubmitting(true)
+        setApiError(null)
 
         try {
             const ongData = {
@@ -207,10 +207,11 @@ export default function RegisterONG() {
                 address: data.address,
                 cep: data.cep.replace(/\D/g, ''),
                 description: data.description,
-                status: '1' // Tentando com '1' primeiro
-            };
+                ong_image: userStepData.avatar || null, // USA O AVATAR DO STEP 1 COMO ONG_IMAGE
+                status: '1'
+            }
 
-            console.log('Creating ONG:', ongData);
+            console.log('Creating ONG:', ongData)
 
             const response = await fetch('http://localhost:8000/api/ongs', {
                 method: 'POST',
@@ -219,29 +220,29 @@ export default function RegisterONG() {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(ongData)
-            });
+            })
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao criar ONG');
+                const errorData = await response.json()
+                throw new Error(errorData.message || 'Erro ao criar ONG')
             }
 
-            const result = await response.json();
-            console.log('ONG created successfully:', result);
-            router.push('/login');
+            const result = await response.json()
+            console.log('ONG created successfully:', result)
+            router.push('/login')
             
         } catch (error: any) {
-            console.error('ONG creation error:', error);
-            setApiError(error.message || 'Erro ao criar ONG. Tente novamente.');
+            console.error('ONG creation error:', error)
+            setApiError(error.message || 'Erro ao criar ONG. Tente novamente.')
         } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false)
         }
-    };
+    }
 
     const goBack = () => {
-        setCurrentStep(1);
-        setApiError(null);
-    };
+        setCurrentStep(1)
+        setApiError(null)
+    }
 
     return (
         <div>

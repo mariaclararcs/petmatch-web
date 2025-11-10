@@ -60,9 +60,11 @@ export default function CardM({ animal, className }: CardMProps) {
           {/* div para nome da ONG */}
           {animal.ong && (
             <div className="w-full overflow-hidden">
-              <span className="text-sm text-asecondary overflow-hidden whitespace-nowrap">
+              <Link
+                href={`/ongs/perfil/${animal?.ong.id}`}
+                className="text-sm text-asecondary overflow-hidden whitespace-nowrap hover:cursor-pointer hover:underline">
                 {animal.ong.name_institution || 'ONG não informada'}
-              </span>
+              </Link>
             </div>
           )}
             

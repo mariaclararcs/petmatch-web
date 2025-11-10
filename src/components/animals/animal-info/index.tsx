@@ -114,7 +114,7 @@ export default function AnimalInfo() {
                                 <Link 
                                     href={`/ongs/perfil/${animal?.ong.id}`}
                                     className="text-lg text-muted-foreground ml-8 hover:cursor-pointer hover:underline">
-                                    {animal.ong?.name_institution}
+                                    {animal.ong.name_institution}
                                 </Link>
                             </div>
                             <div className="flex flex-col gap-1">

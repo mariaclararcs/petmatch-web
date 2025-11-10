@@ -135,7 +135,7 @@ export default function ProfileOng() {
                     <Avatar className="h-38 w-38 rounded-full">
                         <AvatarFallback className="h-38 w-38 rounded-xg">
                             <Image
-                                src={ong.user_id.avatar || "/images/default-avatar.jpg"}
+                                src={ong.ong_image || "/images/default-avatar.jpg"}
                                 alt={ong.name_institution ? `${ong.name_institution} avatar` : "Default avatar"}
                                 width={152}
                                 height={152}
