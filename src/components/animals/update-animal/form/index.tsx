@@ -269,7 +269,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Selecione o gênero" />
+                      <SelectValue placeholder="Selecione o sexo" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

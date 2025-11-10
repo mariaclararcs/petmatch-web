@@ -58,7 +58,7 @@ export function DeleteOng({ ong }: DeleteOngProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Excluir Cadastro da ONG</AlertDialogTitle>
           <AlertDialogDescription>
-            Tem certeza que deseja excluir o cadastro da ONG {ong.name_institution}? 
+            Tem certeza que deseja excluir o cadastro da ONG <strong>{ong.name_institution}</strong>? 
             Esta ação não pode ser desfeita e todos os dados relacionados serão permanentemente removidos.
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -67,7 +67,6 @@ export function DeleteOng({ ong }: DeleteOngProps) {
           <AlertDialogAction 
             onClick={handleDelete} 
             disabled={isDeleting}
-            className="bg-red-600 hover:bg-red-700"
           >
             {isDeleting ? "Excluindo..." : "Excluir"}
           </AlertDialogAction>

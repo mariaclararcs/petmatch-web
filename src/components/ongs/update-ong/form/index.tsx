@@ -9,11 +9,16 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { IOng } from "@/interfaces/ong"
 import { useUpdateOng } from "@/hooks/ongs/useUpdateOng"
-import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
 const editONGSchema = z.object({
   name_institution: z.string().min(3, 'Nome da instituição deve ter pelo menos 3 caracteres'),
-  name_responsible: z.string().min(3, 'Nome do responsável deve ter pelo menos 3 caracteres'),
   document_responsible: z.string().min(11, 'CPF deve ter 11 dígitos'),
   cnpj: z.string().min(14, 'CNPJ deve ter 14 dígitos'),
   phone: z.string().min(10, 'Telefone deve ter pelo menos 10 dígitos'),
@@ -31,6 +36,7 @@ interface UpdateOngFormProps {
 
 export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
   const [apiError, setApiError] = useState<string | null>(null)
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   const updateOngMutation = useUpdateOng()
 
   const {
@@ -43,7 +49,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
     resolver: zodResolver(editONGSchema)
   })
 
-  // Formatadores
+  // Formatadores (mantidos iguais)
   const formatPhone = (value: string) => {
     value = value.replace(/\D/g, '')
     if (value.length > 11) value = value.substring(0, 11)
@@ -102,7 +108,6 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
   useEffect(() => {
     if (ong) {
       setValue('name_institution', ong.name_institution)
-      setValue('name_responsible', ong.name_responsible)
       setValue('document_responsible', ong.document_responsible)
       setValue('cnpj', ong.cnpj)
       setValue('phone', ong.phone)
@@ -123,16 +128,24 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
         cnpj: data.cnpj.replace(/\D/g, ''),
         phone: data.phone.replace(/\D/g, ''),
         cep: data.cep.replace(/\D/g, ''),
-        status: ong.status // Mantém o status atual
+        status: ong.status
       }
 
       await updateOngMutation.mutateAsync({ id: ong.id, data: updateData })
-      toast.success("ONG atualizada com sucesso!")
-      onSuccess?.()
+      
+      // APENAS abre o dialog de sucesso, sem chamar onSuccess imediatamente
+      setIsSuccessDialogOpen(true)
+      
     } catch (error: any) {
       setApiError(error.message || 'Erro ao atualizar ONG')
-      toast.error("Erro ao atualizar ONG")
     }
+  }
+
+  // Função para lidar com o fechamento do dialog de sucesso
+  const handleSuccessDialogClose = () => {
+    setIsSuccessDialogOpen(false)
+    // Chama onSuccess apenas quando o usuário fecha o dialog manualmente
+    onSuccess?.()
   }
 
   return (
@@ -157,39 +170,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Nome do Responsável *</label>
-            <Input
-              type="text"
-              {...register('name_responsible')}
-              className={errors.name_responsible ? 'border-red-500' : ''}
-              disabled={updateOngMutation.isPending}
-            />
-            {errors.name_responsible && (
-              <p className="text-red-500 text-sm mt-1">{errors.name_responsible.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">CPF do Responsável *</label>
-            <Input
-              type="text"
-              {...register('document_responsible')}
-              onChange={(e) => formatCPF(e.target.value)}
-              value={watch('document_responsible')}
-              placeholder="000.000.000-00"
-              className={errors.document_responsible ? 'border-red-500' : ''}
-              maxLength={14}
-              disabled={updateOngMutation.isPending}
-            />
-            {errors.document_responsible && (
-              <p className="text-red-500 text-sm mt-1">{errors.document_responsible.message}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
+        <div className="">
           <div>
             <label className="block text-sm font-medium mb-1">CNPJ *</label>
             <Input
@@ -204,6 +185,25 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
             />
             {errors.cnpj && (
               <p className="text-red-500 text-sm mt-1">{errors.cnpj.message}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">CPF do Responsável *</label>
+            <Input
+              type="text"
+              {...register('document_responsible')}
+              onChange={(e) => formatCPF(e.target.value)}
+              value={watch('document_responsible')}
+              placeholder="000.000.000-00"
+              className={errors.document_responsible ? 'border-red-500' : ''}
+              maxLength={14}
+              disabled={updateOngMutation.isPending}
+            />
+            {errors.document_responsible && (
+              <p className="text-red-500 text-sm mt-1">{errors.document_responsible.message}</p>
             )}
           </div>
 
@@ -272,12 +272,23 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
           <Button
             type="submit"
             disabled={updateOngMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700"
           >
             {updateOngMutation.isPending ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
       </form>
+
+      {/* Dialog de sucesso - agora com onOpenChange correto */}
+      <Dialog open={isSuccessDialogOpen} onOpenChange={handleSuccessDialogClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cadastro de ONG atualizado com sucesso!</DialogTitle>
+            <DialogDescription>
+              As informações da ONG foram atualizadas no sistema.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

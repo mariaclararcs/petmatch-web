@@ -90,7 +90,6 @@ export default function ListOngs() {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome Instituição</TableHead>
-              <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome do Responsável</TableHead>
               <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">CNPJ</TableHead>
               <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Telefone</TableHead>
               <TableHead className="w-[250px] min-w-[250px] max-w-[250px] font-semibold">Endereço</TableHead>
@@ -103,14 +102,11 @@ export default function ListOngs() {
                 <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={ong.name_institution}>
                   {ong.name_institution}
                 </TableCell>
-                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={ong.name_responsible}>
-                  {ong.name_responsible}
-                </TableCell>
                 <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate" title={ong.cnpj}>
-                  {formatCNPJ(ong.cnpj)} {/* ← CNPJ formatado */}
+                  {formatCNPJ(ong.cnpj)}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={ong.phone}>
-                  {formatPhoneNumber(ong.phone)} {/* ← Telefone formatado */}
+                  {formatPhoneNumber(ong.phone)}
                 </TableCell>
                 <TableCell className="w-[250px] min-w-[250px] max-w-[250px] truncate" title={ong.address}>
                   {ong.address}

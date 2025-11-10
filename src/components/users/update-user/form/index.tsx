@@ -8,7 +8,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { IUser } from "@/interfaces/user"
 import { useUpdateUser } from "@/hooks/users/useUpdateUser"
-import { toast } from "sonner"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 import { Eye, EyeClosed } from "lucide-react"
 
 const editUserSchema = z.object({
@@ -17,6 +23,7 @@ const editUserSchema = z.object({
   type_user: z.enum(['admin', 'ong', 'adopter'], {
     errorMap: () => ({ message: 'Tipo de usuário inválido' })
   }),
+  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')), // CAMPO ADICIONADO
   password: z.string().optional(),
   password_confirmation: z.string().optional(),
 }).refine((data) => {
@@ -46,6 +53,7 @@ interface UpdateUserFormProps {
 export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const [apiError, setApiError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   const updateUserMutation = useUpdateUser()
 
   const {
@@ -59,6 +67,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   })
 
   const password = watch('password')
+  const avatar = watch('avatar')
 
   // Carrega dados do usuário no formulário quando o componente monta
   useEffect(() => {
@@ -67,6 +76,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
         name: user.name,
         email: user.email,
         type_user: user.type_user as 'admin' | 'ong' | 'adopter',
+        avatar: user.avatar || '', // CARREGA O AVATAR EXISTENTE
         password: '',
         password_confirmation: ''
       })
@@ -81,7 +91,8 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       const updateData: any = {
         name: data.name,
         email: data.email,
-        type_user: data.type_user
+        type_user: data.type_user,
+        avatar: data.avatar || null // INCLUI O AVATAR (pode ser null)
       }
 
       // Só inclui senha se foi fornecida
@@ -91,12 +102,20 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       }
 
       await updateUserMutation.mutateAsync({ id: user.id, data: updateData })
-      toast.success("Usuário atualizado com sucesso!")
-      onSuccess?.()
+      
+      // Abre o dialog de sucesso
+      setIsSuccessDialogOpen(true)
+      
     } catch (error: any) {
       setApiError(error.message || 'Erro ao atualizar usuário')
-      toast.error("Erro ao atualizar usuário")
     }
+  }
+
+  // Função para lidar com o fechamento do dialog de sucesso
+  const handleSuccessDialogClose = () => {
+    setIsSuccessDialogOpen(false)
+    // Chama onSuccess apenas quando o usuário fecha o dialog manualmente
+    onSuccess?.()
   }
 
   return (
@@ -108,6 +127,24 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Campo Avatar - Adicionado no topo */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Avatar (URL da imagem)</label>
+          <Input
+            type="url"
+            {...register('avatar')}
+            placeholder="https://exemplo.com/imagem.jpg"
+            className={errors.avatar ? 'border-red-500' : ''}
+            disabled={updateUserMutation.isPending}
+          />
+          {errors.avatar && (
+            <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
+          )}
+          <p className="text-sm text-muted-foreground mt-1">
+            Opcional - Cole a URL de uma imagem para seu perfil
+          </p>
+        </div>
+
         <div>
           <label className="block text-sm font-medium mb-1">Nome *</label>
           <Input
@@ -138,7 +175,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
           <label className="block text-sm font-medium mb-1">Tipo de Usuário *</label>
           <select
             {...register('type_user')}
-            className={`w-full rounded-md border-2 px-4 py-2 ${
+            className={`w-full text-sm rounded-md border-2 px-2 py-2 ${
               errors.type_user ? 'border-red-500' : 'border-gray-300'
             }`}
             disabled={updateUserMutation.isPending}
@@ -209,13 +246,24 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
         <div className="flex justify-end gap-4 pt-4">
           <Button
             type="submit"
-            disabled={updateUserMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700"
+            disabled={updateUserMutation.isPending} 
           >
             {updateUserMutation.isPending ? 'Salvando...' : 'Salvar Alterações'}
           </Button>
         </div>
       </form>
+
+      {/* Dialog de sucesso */}
+      <Dialog open={isSuccessDialogOpen} onOpenChange={handleSuccessDialogClose}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Cadastro de usuário atualizado com sucesso!</DialogTitle>
+            <DialogDescription>
+              As informações do usuário foram atualizadas no sistema.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -67,7 +67,7 @@ export function DeleteUser({ user }: DeleteUserProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Excluir Cadastro do Usuário</AlertDialogTitle>
           <AlertDialogDescription>
-            Tem certeza que deseja excluir o cadastro do usuário {user.name} ({user.email})?
+            Tem certeza que deseja excluir o cadastro do usuário <strong>{user.name}</strong> ({user.email})?
             <br />
             <br />
             <strong>Tipo:</strong> {formatTypeUser(user.type_user)}
@@ -81,7 +81,6 @@ export function DeleteUser({ user }: DeleteUserProps) {
           <AlertDialogAction 
             onClick={handleDelete} 
             disabled={isDeleting}
-            className="bg-red-600 hover:bg-red-700"
           >
             {isDeleting ? "Excluindo..." : "Excluir"}
           </AlertDialogAction>
