@@ -15,6 +15,7 @@ import { PaginationFull } from "../../pagination"
 import { UpdateUser } from "../update-user"
 import { DeleteUser } from "../delete-user"
 import LoadingComponent from "../../loading"
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar" // IMPORT ADICIONADO
 
 export default function ListUsers() {
   const searchParams = useSearchParams()
@@ -47,6 +48,16 @@ export default function ListUsers() {
     }
   }
 
+  // Função para obter as iniciais do nome
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
   if (isLoading) return <LoadingComponent />
 
   if (isError) return <div className="flex flex-col justify-center items-center mx-auto gap-6 px-20 py-6 xl:py-8 min-h-screen">Erro ao carregar usuários</div>
@@ -60,28 +71,44 @@ export default function ListUsers() {
         <Table className="w-full">
           <TableHeader>
             <TableRow>
-              {/* Defina larguras fixas para cada coluna */}
-              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">Nome</TableHead>
-              <TableHead className="w-[200px] min-w-[200px] max-w-[200px] font-semibold">E-mail</TableHead>
-              <TableHead className="w-[140px] min-w-[140px] max-w-[140px] font-semibold">Tipo de Usuário</TableHead>
-              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Criado Em</TableHead>
+              {/* Coluna Avatar adicionada - mesma largura dos animais */}
+              <TableHead className="w-[80px] min-w-[80px] max-w-[80px] font-semibold text-center">Avatar</TableHead>
+              {/* Ajustei as larguras das outras colunas para compensar a nova coluna */}
+              <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">Nome</TableHead>
+              <TableHead className="w-[180px] min-w-[180px] max-w-[180px] font-semibold">E-mail</TableHead>
+              <TableHead className="w-[120px] min-w-[120px] max-w-[120px] font-semibold">Tipo de Usuário</TableHead>
+              <TableHead className="w-[100px] min-w-[100px] max-w-[100px] font-semibold">Criado Em</TableHead>
               <TableHead className="w-[120px] min-w-[120px] max-w-[120px] text-center font-semibold">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {users.map((user: IUser) => (
               <TableRow key={user.id} className="hover:bg-muted/50">
-                {/* Aplica as mesmas classes de largura nas células */}
-                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={user.name}>
+                {/* Coluna Avatar - mesma implementação dos animais */}
+                <TableCell className="w-[80px] min-w-[80px] max-w-[80px] text-center">
+                  <Avatar className="h-10 w-10 mx-auto">
+                    <AvatarImage 
+                      src={user.avatar || ""} 
+                      alt={user.name}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="text-xs bg-gray-200">
+                      {getInitials(user.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                </TableCell>
+                
+                {/* Aplica as mesmas classes de largura nas células (ajustadas) */}
+                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={user.name}>
                   {user.name}
                 </TableCell>
-                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={user.email}>
+                <TableCell className="w-[180px] min-w-[180px] max-w-[180px] truncate" title={user.email}>
                   {user.email}
                 </TableCell>
-                <TableCell className="w-[140px] min-w-[140px] max-w-[140px] truncate">
+                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate">
                   {formatTypeUser(user.type_user)}
                 </TableCell>
-                <TableCell className="w-[120px] min-w-[120px] max-w-[120px] truncate" title={user.created_at}>
+                <TableCell className="w-[100px] min-w-[100px] max-w-[100px] truncate" title={user.created_at}>
                   {new Date(user.created_at).toLocaleDateString('pt-BR')}
                 </TableCell>
                 <TableCell className="w-[120px] min-w-[120px] max-w-[120px]">
