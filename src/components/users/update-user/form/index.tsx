@@ -16,6 +16,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { Eye, EyeClosed } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const editUserSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -23,7 +24,7 @@ const editUserSchema = z.object({
   type_user: z.enum(['admin', 'ong', 'adopter'], {
     errorMap: () => ({ message: 'Tipo de usuário inválido' })
   }),
-  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')), // CAMPO ADICIONADO
+  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
   password: z.string().optional(),
   password_confirmation: z.string().optional(),
 }).refine((data) => {
@@ -50,6 +51,16 @@ interface UpdateUserFormProps {
   onSuccess?: () => void
 }
 
+// Função para obter as iniciais do nome do usuário
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+
 export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const [apiError, setApiError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -59,30 +70,27 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const {
     register,
     handleSubmit,
-    reset,
+    setValue,
     watch,
     formState: { errors }
   } = useForm<EditUserFormData>({
     resolver: zodResolver(editUserSchema)
   })
 
-  const password = watch('password')
-  const avatar = watch('avatar')
+  const avatar = watch('avatar') // PARA PREVIEW
+  const name = watch('name') // PARA AS INICIAIS
 
-  // Carrega dados do usuário no formulário quando o componente monta
   useEffect(() => {
     if (user) {
-      reset({
-        name: user.name,
-        email: user.email,
-        type_user: user.type_user as 'admin' | 'ong' | 'adopter',
-        avatar: user.avatar || '', // CARREGA O AVATAR EXISTENTE
-        password: '',
-        password_confirmation: ''
-      })
+      setValue('name', user.name)
+      setValue('email', user.email)
+      setValue('type_user', user.type_user as 'admin' | 'ong' | 'adopter')
+      setValue('avatar', user.avatar || '')
+      setValue('password', '')
+      setValue('password_confirmation', '')
       setApiError(null)
     }
-  }, [user, reset])
+  }, [user, setValue])
 
   const onSubmit = async (data: EditUserFormData) => {
     setApiError(null)
@@ -92,7 +100,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
         name: data.name,
         email: data.email,
         type_user: data.type_user,
-        avatar: data.avatar || null // INCLUI O AVATAR (pode ser null)
+        avatar: data.avatar || null
       }
 
       // Só inclui senha se foi fornecida
@@ -111,10 +119,8 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
     }
   }
 
-  // Função para lidar com o fechamento do dialog de sucesso
   const handleSuccessDialogClose = () => {
     setIsSuccessDialogOpen(false)
-    // Chama onSuccess apenas quando o usuário fecha o dialog manualmente
     onSuccess?.()
   }
 
@@ -127,22 +133,42 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Campo Avatar - Adicionado no topo */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Avatar (URL da imagem)</label>
-          <Input
-            type="url"
-            {...register('avatar')}
-            placeholder="https://exemplo.com/imagem.jpg"
-            className={errors.avatar ? 'border-red-500' : ''}
-            disabled={updateUserMutation.isPending}
-          />
-          {errors.avatar && (
-            <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
-          )}
-          <p className="text-sm text-muted-foreground mt-1">
-            Opcional - Cole a URL de uma imagem para seu perfil
-          </p>
+        {/* Campo Avatar */}
+        <div className="flex flex-col">
+          <label className="block text-sm font-medium mb-1">Imagem de perfil (URL)</label>
+
+          <div className="flex flex-row items-center gap-4 w-full">
+            {/* Preview da imagem */}
+            <div className="flex flex-col justify-center items-center">
+              <Avatar className="h-20 w-20">
+                <AvatarImage 
+                  src={avatar || ""} 
+                  alt={name || user.name}
+                  className="object-cover"
+                />
+                <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                  {getInitials(name || user.name)}
+                </AvatarFallback>
+              </Avatar>
+              <p className="text-xs text-muted-foreground mt-1">
+                Preview da imagem
+              </p>
+            </div>
+
+            {/* Campo de input */}
+            <div className="flex-grow">
+              <Input
+                type="url"
+                {...register('avatar')}
+                placeholder="https://exemplo.com/imagem.jpg"
+                className={errors.avatar ? 'border-red-500' : ''}
+                disabled={updateUserMutation.isPending}
+              />
+              {errors.avatar && (
+                <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
+              )}
+            </div>
+          </div>
         </div>
 
         <div>
