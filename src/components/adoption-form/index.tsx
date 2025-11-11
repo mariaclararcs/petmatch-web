@@ -16,13 +16,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useSession } from "next-auth/react"
+import { useRouter, useParams } from "next/navigation"
+import { useGetAnimal } from "@/hooks/animal/useGetAnimal"
+import { useGetOng } from "@/hooks/ongs/useGetOng"
+import LoadingComponent from "@/components/loading"
+
+// Função de formatação de telefone
+const formatPhoneNumber = (phone: string): string => {
+  if (!phone) return ''
+  
+  // Remove todos os caracteres não numéricos
+  const cleaned = phone.replace(/\D/g, '')
+  
+  // Aplica a formatação baseada no tamanho do número
+  if (cleaned.length === 11) {
+    // Formato para celular: (11) 99999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`
+  } else if (cleaned.length === 10) {
+    // Formato para telefone fixo: (11) 9999-9999
+    return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
+  } else {
+    // Retorna o número original se não for um formato conhecido
+    return phone
+  }
+}
 
 export default function AdoptionForm() {
+    const { data: session } = useSession()
+    const router = useRouter()
+    const params = useParams()
+    const animalId = params.id as string
+    
+    // Buscar dados do animal - SEMPRE chamado, independente da sessão
+    const { data: animalResponse, isLoading: isLoadingAnimal, isError: isErrorAnimal } = useGetAnimal(animalId)
+    const animal = animalResponse?.data
+
+    // Buscar dados completos da ONG usando o ID da ONG do animal
+    const { data: ongResponse, isLoading: isLoadingOng, isError: isErrorOng } = useGetOng(animal?.ong_id || '')
+    const ong = ongResponse?.data
+
+    // Estados do formulário - SEMPRE chamados
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
     const [currentStep, setCurrentStep] = React.useState(1) // 1 = Dados, 2 = Questionário
 
-    // Dados do formulário
+    // Dados do formulário - SEMPRE chamado
     const [formData, setFormData] = React.useState({
         nome: "",
         email: "",
@@ -44,6 +83,55 @@ export default function AdoptionForm() {
         pergunta11: "",
     })
 
+    // Verificar se o usuário está logado - AGORA DEPOIS DOS HOOKS
+    if (!session) {
+        return (
+            <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
+                <div className="flex flex-col items-center w-full max-w-2xl text-center">
+                    <h1 className="text-2xl font-bold mb-6">Formulário de Adoção</h1>
+                    <p className="text-lg text-gray-600 mb-6">
+                        Você precisa estar logado para enviar o formulário de adoção.
+                    </p>
+                    <Button
+                        onClick={() => router.push('/login')}
+                        className="bg-asecondary text-white hover:bg-asecondary/90"
+                    >
+                        Fazer Login
+                    </Button>
+                </div>
+            </div>
+        )
+    }
+
+    // Loading enquanto carrega os dados do animal e da ONG
+    const isLoading = isLoadingAnimal || isLoadingOng
+    if (isLoading) return <LoadingComponent />
+
+    // Erro ao carregar animal ou ONG
+    const isError = isErrorAnimal || isErrorOng
+    if (isError || !animal || !ong) {
+        return (
+            <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
+                <div className="flex flex-col items-center w-full max-w-2xl text-center">
+                    <h1 className="text-2xl font-bold mb-6">Formulário de Adoção</h1>
+                    <p className="text-lg text-red-500 mb-6">
+                        {!animal ? "Erro ao carregar informações do animal." : "Erro ao carregar informações da ONG."} Tente novamente mais tarde.
+                    </p>
+                    <Button
+                        onClick={() => router.push('/')}
+                        className="bg-asecondary text-white hover:bg-asecondary/90"
+                    >
+                        Voltar para Home
+                    </Button>
+                </div>
+            </div>
+        )
+    }
+
+    // Formata o telefone da ONG
+    const formattedPhone = formatPhoneNumber(ong.phone)
+
+    // Resto das funções...
     const formatPhone = (value: string) => {
         value = value.replace(/\D/g, '')
         if (value.length > 11) value = value.substring(0, 11)
@@ -103,6 +191,8 @@ export default function AdoptionForm() {
         e.preventDefault()
         // Lógica para enviar o formulário
         console.log("Formulário enviado:", formData)
+        console.log("Animal:", animal.name)
+        console.log("ONG:", ong.name_institution)
 
         setCurrentStep(3)
     }
@@ -133,10 +223,10 @@ export default function AdoptionForm() {
                         <div className="flex flex-col space-y-6">
                             <div className="flex flex-col justify-center items-center text-center mb-6">
                                 <label className="mb-6 block">O formulário será enviado para a ONG: 
-                                    <span className="font-bold text-asecondary ml-1">Petss</span>
+                                    <span className="font-bold text-asecondary ml-1">{ong.name_institution}</span>
                                 </label>
                                 <label className="mb-6 block">Animal a ser adotado: 
-                                    <span className="font-bold text-asecondary ml-1">Estela</span>
+                                    <span className="font-bold text-asecondary ml-1">{animal.name}</span>
                                 </label>
                             </div>
 
@@ -354,12 +444,12 @@ export default function AdoptionForm() {
                                 <div className="text-left space-y-3">
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">ONG Destinatária:</span>
-                                        <span className="font-medium">Petss</span>
+                                        <span className="font-medium">{ong.name_institution}</span>
                                     </div>
                                     
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Animal:</span>
-                                        <span className="font-medium">Estela</span>
+                                        <span className="font-medium">{animal.name}</span>
                                     </div>
                                     
                                     <div className="flex justify-between">
@@ -413,18 +503,17 @@ export default function AdoptionForm() {
                             <div className="bg-blue-50 rounded-xl p-6 space-y-3 max-w-md">
                                 <h3 className="font-semibold text-lg">Contato da ONG</h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Caso tenha dúvidas, entre em contato diretamente com a ONG Petss:
+                                    Caso tenha dúvidas, entre em contato diretamente com a ONG {ong.name_institution}:
                                 </p>
                                 <div className="space-y-1 text-sm">
-                                    <div>📧 email@petss.org.br</div>
-                                    <div>📞 (11) 99999-9999</div>
-                                    <div>📍 São Paulo, SP</div>
+                                    <div>📧 {ong.email || "email@ong.org.br"}</div>
+                                    <div>📞 {formattedPhone || "(00) 00000-0000"}</div>
+                                    <div>📍 {ong.address || "Endereço da ONG"}</div>
                                 </div>
                             </div>
 
                             {/* Botões de ação */}
                             <div className="flex gap-4 pt-6">
-                                
                                 <Button
                                     onClick={() => window.location.href = '/'}
                                     className="bg-asecondary text-white hover:bg-asecondary/90"

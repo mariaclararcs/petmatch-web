@@ -61,7 +61,7 @@ export default function AnimalInfo() {
                         unoptimized
                     />
                     <Link 
-                        href="/formulario-adocao"
+                        href={`/formulario-adocao/${animal.id}`}
                         className="bg-aprimary rounded-xl border-2 border-asecondary my-6 py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
                     >
                         Formulário de Adoção
@@ -139,7 +139,7 @@ export default function AnimalInfo() {
                     <div className="flex flex-col gap-1">
                         <span className="flex flex-row items-center gap-2 text-xl font-medium">
                             <NotebookPen />
-                            Descrição:
+                            Sobre o animal:
                         </span>
                         <span className="text-lg text-muted-foreground ml-8">
                             {animal.description}
