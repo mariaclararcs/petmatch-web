@@ -3,6 +3,7 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { IOng } from "@/interfaces/ong"
 import { MapPin, Phone } from 'lucide-react'
+import Image from "next/image"
 import Link from "next/link"
 
 interface CardOngProps {
@@ -35,40 +36,45 @@ export default function CardOng({ ong, className }: CardOngProps) {
 
   return (
     <div className={`${className}`}>
-        <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-62 h-fit gap-4 p-4 overflow-hidden">
-            <CardHeader className="flex flex-col w-full p-0 overflow-hidden">
-                <CardTitle className="text-lg overflow-hidden whitespace-nowrap">
-                    {ong.name_institution}
-                </CardTitle>
-            </CardHeader>
+      <Card className="flex flex-col items-center rounded-xl border-2 border-aborder w-64 h-fit gap-4 p-0 overflow-hidden">
+        <CardHeader className="flex flex-col items-center w-full h-52 p-0">
+          <Image
+            className="rounded-t-lg bg-aprimary object-cover group-hover:opacity-75 w-full h-52"
+            alt={ong.name_institution}
+            src={ong.ong_image || '/placeholder-animal.jpg'}
+            width={248}
+            height={248}
+            style={{
+              width: '100%',
+              height: '208px'
+            }}
+            unoptimized
+          />
+        </CardHeader>
         
-            <CardContent className="flex flex-col w-full h-40 gap-4">
-                <div className="flex flex-col w-full gap-2">
-                    <div className="flex flex-row items-center gap-2 min-w-0 overflow-hidden">
-                        <MapPin />
-                        <span>Endereço</span>
-                    </div>
-                    <span className="text-muted-foreground">{ong.address}</span>
-                </div>
-
-                <div className="flex flex-col w-full gap-2">
-                    <div className="flex flex-row items-center gap-2 min-w-0 flex-1 overflow-hidden">
-                        <Phone />
-                        <span>Telefone</span>
-                    </div>
-                    <span className="text-muted-foreground">{formattedPhone}</span>
-                </div>
-            </CardContent>
-            
-            <CardFooter className="w-full">
-                <Link 
-                    href={`ongs/perfil/${ong.id}`}
-                    className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
-                >
-                    Detalhes
-                </Link>
-            </CardFooter>
-        </Card>
+        <CardContent className="flex flex-col w-full h-fit gap-2 px-4">
+          <CardTitle className="text-lg overflow-hidden whitespace-nowrap text-ellipsis">
+            {ong.name_institution}
+          </CardTitle>
+          <div className="min-h-[40px] max-h-[40px]">
+            <span 
+              className="text-muted-foreground text-sm line-clamp-2 overflow-hidden text-ellipsis break-words"
+              title={ong.address} // Mostra o endereço completo no hover
+            >
+              {ong.address}
+            </span>
+          </div>
+        </CardContent>
+        
+        <CardFooter className="w-full px-4 pb-4">
+          <Link 
+            href={`ongs/perfil/${ong.id}`}
+            className="bg-aprimary rounded-xl border-2 border-asecondary py-1 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
+          >
+            Detalhes
+          </Link>
+        </CardFooter>
+      </Card>
     </div>
   )
 }
