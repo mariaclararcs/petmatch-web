@@ -182,8 +182,8 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
         ...data,
         // Se não for admin, mantém a ONG original do animal
         ong_id: canManageOngs ? data.ong_id : animal.ong_id,
-        image: finalImageUrl?.trim() || "",
-        description: data.description?.trim() || ""
+        image: finalImageUrl?.trim() || "Campo vazio",
+        description: data.description?.trim() || "Campo vazio"
       }
       
       console.log("Dados sendo enviados:", payload)
@@ -424,8 +424,8 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
 
           <Button 
             type="submit" 
-            disabled={isPending}>
-              {isPending ? "Atualizando..." : "Atualizar Animal"}
+            disabled={isPending || isUploading}>
+              {isPending || isUploading ? "Atualizando..." : "Atualizar Animal"}
           </Button>
         </form>
       </Form>

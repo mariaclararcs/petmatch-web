@@ -86,7 +86,7 @@ export default function ListAnimals() {
                 <TableCell className="w-[150px] min-w-[150px] max-w-[150px] truncate" title={animal.name}>
                   {animal.name}
                 </TableCell>
-                <TableCell className="w-[200px] min-w-[200px] max-w-[200px] truncate" title={animal.ong?.name_institution || "N/A"}>
+                <TableCell className="w-[200px] min-w-[180px] max-w-[180px] truncate" title={animal.ong?.name_institution || "N/A"}>
                   {animal.ong?.name_institution || "N/A"}
                 </TableCell>
                 <TableCell className="w-[80px] min-w-[80px] max-w-[80px]">

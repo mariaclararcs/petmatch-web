@@ -34,10 +34,10 @@ import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useSession } from "next-auth/react"
 import { getUserPermissions } from "@/lib/permissions"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar" // IMPORT ADICIONADO
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -82,11 +82,13 @@ const getInitials = (name: string) => {
 
 export function CreateAnimalForm() {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  const [userOng, setUserOng] = useState<IOng | null>(null)
   
   const { data: session } = useSession()
   const userType = session?.user?.type_user
   const permissions = getUserPermissions(userType)
   
+  // Verificar se usuário pode gerenciar ONGs (admin)
   const canManageOngs = permissions.canManageAnimals && permissions.canManageUsers
 
   const form = useForm<AnimalFormValues>({
@@ -104,14 +106,14 @@ export function CreateAnimalForm() {
     },
   })
 
-  // Watch para o campo image para preview em tempo real
+  // Watch para o campo image e name para preview em tempo real
   const image = form.watch('image')
   const name = form.watch('name')
 
   const { mutate: createAnimal, isPending } = useMutation({
     mutationFn: (data: AnimalFormValues) => api.post("http://localhost:8000/api/animals", data),
     onSuccess: () => {
-      setIsSuccessDialogOpen(true)
+      setIsSuccessDialogOpen(true) // Abre o dialog de sucesso
       queryClient.invalidateQueries({ queryKey: ["get-animals"] })
       form.reset()
     },
@@ -124,16 +126,29 @@ export function CreateAnimalForm() {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
-  const userOngId = session?.user?.ong_id
+  // Encontrar a ONG do usuário logado
+  useEffect(() => {
+    if (session?.user?.id && ongs.length > 0) {
+      const userOngFound = ongs.find((ong: IOng) => ong.user_id === session.user.id)
+      if (userOngFound) {
+        setUserOng(userOngFound)
+        // Se o usuário não é admin, preenche automaticamente com a ONG dele
+        if (!canManageOngs) {
+          form.setValue('ong_id', userOngFound.id)
+        }
+      }
+    }
+  }, [session, ongs, canManageOngs, form])
 
   function onSubmit(data: AnimalFormValues) {
     const payload = {
       ...data,
-      ong_id: canManageOngs ? data.ong_id : (userOngId || data.ong_id),
+      // Se não for admin, usa a ONG do usuário logado
+      ong_id: canManageOngs ? data.ong_id : (userOng?.id || data.ong_id),
       image: data.image?.trim() || "Campo vazio",
       description: data.description?.trim() || "Campo vazio"
     }
-    
+
     console.log("Dados sendo enviados:", payload)
     createAnimal(payload)
   }
@@ -175,25 +190,23 @@ export function CreateAnimalForm() {
               )}
             />
           ) : (
-            // Campo oculto com a ONG do usuário logado
-            <FormField
-              control={form.control}
-              name="ong_id"
-              render={({ field }) => (
-                <FormItem className="hidden">
-                  <FormControl>
-                    <Input 
-                      type="hidden" 
-                      {...field} 
-                      value={userOngId || ""} 
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            // Mostra a ONG do usuário como informação (somente leitura para usuário do tipo ONG)
+            <FormItem>
+              <FormLabel>ONG</FormLabel>
+              <FormControl>
+                <Input 
+                  value={userOng?.name_institution || "Carregando..."} 
+                  disabled 
+                  className="bg-gray-50"
+                />
+              </FormControl>
+              <p className="text-sm text-muted-foreground">
+                O animal será cadastrado automaticamente na sua ONG
+              </p>
+            </FormItem>
           )}
 
-          {/* Campo Image - MODIFICADO para seguir o padrão de preview */}
+          {/* Campo Image com Preview */}
           <FormField
             control={form.control}
             name="image"
@@ -210,7 +223,7 @@ export function CreateAnimalForm() {
                         className="object-cover"
                       />
                       <AvatarFallback className="text-lg font-semibold bg-gray-200">
-                        {getInitials(name || "An")}
+                        {getInitials(name || "Animal")}
                       </AvatarFallback>
                     </Avatar>
                     <p className="text-xs text-muted-foreground mt-1">
