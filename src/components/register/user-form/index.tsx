@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const registerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -32,6 +33,16 @@ const registerSchema = z.object({
 })
 
 type RegisterFormData = z.infer<typeof registerSchema>
+
+// Função para obter as iniciais do nome do usuário
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
 
 export default function RegisterUser() {
     const router = useRouter()
@@ -61,6 +72,10 @@ export default function RegisterUser() {
             avatar: ''
         }
     })
+
+    // Watch para o campo avatar e name para preview em tempo real
+    const avatar = watch('avatar')
+    const name = watch('name')
 
     // Formatadores para telefone e CEP
     const formatPhone = (value: string) => {
@@ -149,23 +164,43 @@ export default function RegisterUser() {
                     )}
 
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col py-4 w-full max-w-2xl">
-                        {/* Campo Avatar - Adicionado no topo */}
+                        {/* Campo Avatar com Preview */}
                         <div className="mb-6">
                             <label className="block mb-1">Imagem de Perfil (URL)</label>
-                            <input
-                                type="url"
-                                {...register('avatar')}
-                                placeholder="https://exemplo.com/imagem.jpg"
-                                className={`rounded-xl border-2 px-4 py-2 w-full ${
-                                    errors.avatar ? 'border-red-500' : 'border-aborder'
-                                }`}
-                            />
-                            {errors.avatar && (
-                                <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
-                            )}
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Opcional - Cole a URL de uma imagem para seu perfil
-                            </p>
+                            <div className="flex flex-row items-center gap-4 w-full">
+                                {/* Preview da imagem */}
+                                <div className="flex flex-col justify-center items-center">
+                                    <Avatar className="h-24 w-24">
+                                        <AvatarImage 
+                                            src={avatar || ""} 
+                                            alt={name || "Usuário"}
+                                            className="object-cover"
+                                        />
+                                        <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                                            {getInitials(name || "Usuário")}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        Preview da imagem
+                                    </p>
+                                </div>
+
+                                {/* Campo de input */}
+                                <div className="flex-grow">
+                                    <input
+                                        type="url"
+                                        {...register('avatar')}
+                                        placeholder="https://exemplo.com/imagem.jpg"
+                                        className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                            errors.avatar ? 'border-red-500' : 'border-aborder'
+                                        }`}
+                                        disabled={isSubmitting}
+                                    />
+                                    {errors.avatar && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         <label className="mb-1">Nome *</label>
@@ -175,6 +210,7 @@ export default function RegisterUser() {
                             className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.name ? 'border-red-500' : 'border-aborder'
                             }`}
+                            disabled={isSubmitting}
                         />
                         {errors.name && (
                             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
@@ -187,6 +223,7 @@ export default function RegisterUser() {
                             className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.email ? 'border-red-500' : 'border-aborder'
                             }`}
+                            disabled={isSubmitting}
                         />
                         {errors.email && (
                             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -203,6 +240,7 @@ export default function RegisterUser() {
                                             className={`justify-between rounded-xl h-fit border-2 text-md px-4 py-2 mb-6 hover:bg-aborder hover:border-aborder ${
                                                 errors.birthDate ? 'border-red-500' : 'border-aborder'
                                             }`}
+                                            disabled={isSubmitting}
                                         >
                                             {date ? date.toLocaleDateString() : "00/00/0000"}
                                             <ChevronDownIcon />
@@ -222,6 +260,7 @@ export default function RegisterUser() {
                                             }
                                             setOpen(false)
                                         }}
+                                        disabled={isSubmitting}
                                     />
                                     </PopoverContent>
                                 </Popover>
@@ -241,6 +280,7 @@ export default function RegisterUser() {
                                         errors.phone ? 'border-red-500' : 'border-aborder'
                                     }`}
                                     maxLength={15}
+                                    disabled={isSubmitting}
                                 />
                                 {errors.phone && (
                                     <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
@@ -255,6 +295,7 @@ export default function RegisterUser() {
                             className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
                                 errors.address ? 'border-red-500' : 'border-aborder'
                             }`}
+                            disabled={isSubmitting}
                         />
                         {errors.address && (
                             <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
@@ -271,6 +312,7 @@ export default function RegisterUser() {
                                 errors.cep ? 'border-red-500' : 'border-aborder'
                              }`}
                             maxLength={9}
+                            disabled={isSubmitting}
                         />
                         {errors.cep && (
                             <p className="text-red-500 text-sm mt-1">{errors.cep.message}</p>
@@ -292,6 +334,7 @@ export default function RegisterUser() {
                                     type="button"
                                     className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                                     onClick={() => setShowPassword(!showPassword)}
+                                    disabled={isSubmitting}
                                     >
                                     {showPassword ? (
                                         <Eye className="h-5 w-5" />
@@ -300,6 +343,9 @@ export default function RegisterUser() {
                                     )}
                                     </button>
                                 </div>
+                                {errors.password && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                                )}
                             </div>
                             <div className="flex flex-col w-full">
                                 <label className="mb-1">Confirme sua senha *</label>
@@ -307,7 +353,7 @@ export default function RegisterUser() {
                                     <input
                                     type={showPassword ? "text" : "password"}
                                     className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
-                                        errors.password ? "border-red-500" : "border-aborder"
+                                        errors.confirmPassword ? "border-red-500" : "border-aborder"
                                     }`}
                                     {...register("confirmPassword")}
                                     disabled={isSubmitting}
@@ -316,6 +362,7 @@ export default function RegisterUser() {
                                     type="button"
                                     className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                                     onClick={() => setShowPassword(!showPassword)}
+                                    disabled={isSubmitting}
                                     >
                                     {showPassword ? (
                                         <Eye className="h-5 w-5" />
