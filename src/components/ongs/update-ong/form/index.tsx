@@ -172,7 +172,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Campo ONG Image */}
         <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-1">Imagem da ONG (URL)</label>
+          <label className="block text-sm font-medium mb-1">Imagem de Perfil (URL)</label>
 
           <div className="flex flex-row items-center gap-4 w-full">
             {/* Preview da imagem */}

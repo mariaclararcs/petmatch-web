@@ -200,9 +200,9 @@ export default function AdoptionForm() {
     return (
         <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
             <div className="flex flex-col items-center w-full max-w-4xl">
-                <h1 className="text-2xl font-bold mb-6">Formulário de Adoção</h1>
+                <h1 className="text-lg font-bold mb-6">Formulário de Adoção</h1>
                 
-                {/* Indicador de progresso */}
+                {/* Header com Steps - Indicador de progresso */}
                 <div className="flex items-center justify-center mb-8 w-full">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= 1 ? 'bg-asecondary text-white' : 'bg-gray-300 text-gray-600'}`}>
                         1

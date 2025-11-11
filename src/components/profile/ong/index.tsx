@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import CardM from "@/components/cards/animal-card/card-m"
 import { IAnimal } from "@/interfaces/animal"
@@ -98,6 +98,10 @@ export default function ProfileOng() {
                                     <div className="h-6 w-80 bg-gray-200 animate-pulse rounded"/>
                                 </div>
                                 <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
+                                    <Mail />
+                                    <div className="h-6 w-80 bg-gray-200 animate-pulse rounded"/>
+                                </div>
+                                <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
                                     <div className="h-6 w-80 bg-gray-200 animate-pulse rounded"/>
                                 </div>
                             </div>
@@ -161,6 +165,12 @@ export default function ProfileOng() {
                                 <Phone />
                                 <span className="text-muted-foreground">
                                     {formattedPhone}
+                                </span>
+                            </div>
+                            <div className="flex flex-row items-center gap-2 text-lg overflow-hidden">
+                                <Mail />
+                                <span className="text-muted-foreground">
+                                    {ong.ong_email}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-lg overflow-hidden">

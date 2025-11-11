@@ -151,7 +151,7 @@ export default function RegisterUser() {
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col py-4 w-full max-w-2xl">
                         {/* Campo Avatar - Adicionado no topo */}
                         <div className="mb-6">
-                            <label className="block mb-1">Avatar (URL da imagem)</label>
+                            <label className="block mb-1">Imagem de Perfil (URL)</label>
                             <input
                                 type="url"
                                 {...register('avatar')}

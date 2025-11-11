@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-// Removido import do serviço de API
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 // Schema para Step 1 - Dados do Usuário
 const userStepSchema = z.object({
@@ -34,6 +34,16 @@ const ongStepSchema = z.object({
 
 type UserStepData = z.infer<typeof userStepSchema>
 type ONGStepData = z.infer<typeof ongStepSchema>
+
+// Função para obter as iniciais do nome do usuário
+const getInitials = (name: string) => {
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
 
 export default function RegisterONG() {
     const router = useRouter()
@@ -69,6 +79,10 @@ export default function RegisterONG() {
             description: ''
         }
     })
+
+    // Watch para o campo avatar e name para preview em tempo real
+    const avatar = userForm.watch('avatar')
+    const name = userForm.watch('name')
 
     // Formatadores para telefone, CEP, CNPJ e CPF
     const formatPhone = (value: string) => {
@@ -207,7 +221,8 @@ export default function RegisterONG() {
                 address: data.address,
                 cep: data.cep.replace(/\D/g, ''),
                 description: data.description,
-                ong_image: userStepData.avatar || null, // USA O AVATAR DO STEP 1 COMO ONG_IMAGE
+                ong_image: userStepData.avatar || null,
+                ong_email: userStepData.email,
                 status: '1'
             }
 
@@ -248,13 +263,13 @@ export default function RegisterONG() {
         <div>
             <main className="flex flex-col justify-between items-center mx-auto px-12 py-6 xl:py-8 h-full">
                 <div className="flex flex-col items-center w-full max-w-2xl">
-                    {/* Header com Steps */}
+                    {/* Header com Steps - Indicador de progresso */}
                     <div className="flex flex-col items-center mb-6">
                         <h1 className="text-lg font-bold mb-4">Cadastro de Instituição</h1>
-                        <div className="flex items-center gap-4 mb-4">
+                        <div className="flex items-center mb-4">
                             <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
                                 currentStep >= 1 ? 'bg-asecondary text-white' : 'bg-gray-300 text-gray-600'
-                            }`}>
+                            }`}> 
                                 1
                             </div>
                             <div className={`w-16 h-1 ${currentStep >= 2 ? 'bg-asecondary' : 'bg-gray-300'}`}></div>
@@ -278,24 +293,43 @@ export default function RegisterONG() {
                     {/* Step 1 - Dados do Usuário */}
                     {currentStep === 1 && (
                         <form onSubmit={userForm.handleSubmit(onSubmitUserStep)} className="flex flex-col py-4 w-full">
-                            {/* Campo Avatar - Adicionado no topo */}
+                            {/* Campo Avatar com Preview */}
                             <div className="mb-6">
-                                <label className="block mb-1">Avatar (URL da imagem)</label>
-                                <input
-                                    type="url"
-                                    {...userForm.register('avatar')}
-                                    placeholder="https://exemplo.com/imagem.jpg"
-                                    className={`rounded-xl border-2 px-4 py-2 w-full ${
-                                        userForm.formState.errors.avatar ? 'border-red-500' : 'border-aborder'
-                                    }`}
-                                    disabled={isSubmitting}
-                                />
-                                {userForm.formState.errors.avatar && (
-                                    <p className="text-red-500 text-sm mt-1">{userForm.formState.errors.avatar.message}</p>
-                                )}
-                                <p className="text-sm text-muted-foreground mt-1">
-                                    Opcional - Cole a URL de uma imagem para seu perfil
-                                </p>
+                                <label className="block mb-1">Imagem de Perfil (URL)</label>
+                                <div className="flex flex-row items-center gap-4 w-full">
+                                    {/* Preview da imagem */}
+                                    <div className="flex flex-col justify-center items-center">
+                                        <Avatar className="h-24 w-24">
+                                            <AvatarImage 
+                                                src={avatar || ""} 
+                                                alt={name || "Usuário"}
+                                                className="object-cover"
+                                            />
+                                            <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                                                {getInitials(name || "Usuário")}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            Preview da imagem
+                                        </p>
+                                    </div>
+
+                                    {/* Campo de input */}
+                                    <div className="flex-grow">
+                                        <input
+                                            type="url"
+                                            {...userForm.register('avatar')}
+                                            placeholder="https://exemplo.com/imagem.jpg"
+                                            className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                                userForm.formState.errors.avatar ? 'border-red-500' : 'border-aborder'
+                                            }`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {userForm.formState.errors.avatar && (
+                                            <p className="text-red-500 text-sm mt-1">{userForm.formState.errors.avatar.message}</p>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
                             <label className="mb-1">Nome do Responsável *</label>
@@ -311,18 +345,23 @@ export default function RegisterONG() {
                                 <p className="text-red-500 text-sm mt-1 mb-4">{userForm.formState.errors.name.message}</p>
                             )}
 
-                            <label className="mb-1">E-mail *</label>
-                            <input 
-                                type="email" 
-                                {...userForm.register('email')}
-                                className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
-                                    userForm.formState.errors.email ? 'border-red-500' : 'border-aborder'
-                                }`}
-                                disabled={isSubmitting}
-                            />
-                            {userForm.formState.errors.email && (
-                                <p className="text-red-500 text-sm mt-1 mb-4">{userForm.formState.errors.email.message}</p>
-                            )}
+                            <div className="flex flex-col mb-6">
+                                <label className="mb-1">E-mail *</label>
+                                <input 
+                                    type="email" 
+                                    {...userForm.register('email')}
+                                    className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                        userForm.formState.errors.email ? 'border-red-500' : 'border-aborder'
+                                    }`}
+                                    disabled={isSubmitting}
+                                />
+                                {userForm.formState.errors.email && (
+                                    <p className="text-red-500 text-sm mt-1 mb-4">{userForm.formState.errors.email.message}</p>
+                                )}
+                                <span className="text-sm text-muted-foreground mt-1">
+                                    Escolha um e-mail que você tem acesso, esse e-mail ficará disponível no perfil como meio de contato com a sua ONG.
+                                </span>
+                            </div>
                             
                             <div className="flex flex-row gap-8 w-full">
                                 <div className="flex flex-col w-full">
