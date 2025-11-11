@@ -359,7 +359,7 @@ export default function RegisterONG() {
                                     <p className="text-red-500 text-sm mt-1 mb-4">{userForm.formState.errors.email.message}</p>
                                 )}
                                 <span className="text-sm text-muted-foreground mt-1">
-                                    Escolha um e-mail que você tem acesso, esse e-mail ficará disponível no perfil como meio de contato com a sua ONG.
+                                    Esse e-mail ficará disponível no perfil como meio de contato com a sua ONG.
                                 </span>
                             </div>
                             
@@ -480,7 +480,7 @@ export default function RegisterONG() {
                                     )}
                                 </div>
                                 <div className="flex flex-col w-full">
-                                    <label className="mb-1">Celular para Contato *</label>
+                                    <label className="mb-1">Telefone para Contato *</label>
                                     <input
                                         type="text"
                                         {...ongForm.register('phone')}

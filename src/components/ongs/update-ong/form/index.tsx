@@ -27,6 +27,7 @@ const editONGSchema = z.object({
   cep: z.string().min(8, 'CEP deve ter 8 dígitos'),
   description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
   ong_image: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
+  ong_email: z.string().email('E-mail inválido'), // ADICIONADO
 })
 
 type EditONGFormData = z.infer<typeof editONGSchema>
@@ -129,6 +130,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       setValue('cep', ong.cep)
       setValue('description', ong.description)
       setValue('ong_image', ong.ong_image || '')
+      setValue('ong_email', ong.ong_email || '') // ADICIONADO
       setApiError(null)
     }
   }, [ong, setValue])
@@ -144,6 +146,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
         phone: data.phone.replace(/\D/g, ''),
         cep: data.cep.replace(/\D/g, ''),
         ong_image: data.ong_image || null,
+        ong_email: data.ong_email, // ADICIONADO
         status: ong.status
       }
 
@@ -259,7 +262,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Telefone *</label>
+            <label className="block text-sm font-medium mb-1">Telefone para Contato *</label>
             <Input
               type="text"
               {...register('phone')}
@@ -274,6 +277,23 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
               <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
             )}
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">E-mail da Instituição *</label>
+          <Input
+            type="email"
+            {...register('ong_email')}
+            className={errors.ong_email ? 'border-red-500' : ''}
+            disabled={updateOngMutation.isPending}
+            placeholder="contato@instituicao.com"
+          />
+          {errors.ong_email && (
+            <p className="text-red-500 text-sm mt-1">{errors.ong_email.message}</p>
+          )}
+          <p className="text-sm text-muted-foreground mt-1">
+            Este e-mail ficará disponível no perfil como meio de contato com a ONG.
+          </p>
         </div>
 
         <div>
