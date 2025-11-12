@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronDownIcon, ArrowLeftIcon, Star } from "lucide-react"
+import { ChevronDownIcon, ArrowLeftIcon, Star, MapPin, Phone, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -22,6 +22,7 @@ import { useGetAnimal } from "@/hooks/animal/useGetAnimal"
 import { useGetOng } from "@/hooks/ongs/useGetOng"
 import LoadingComponent from "@/components/loading"
 import emailjs from '@emailjs/browser'
+import Link from "next/link"
 
 // Configuração do EmailJS (credenciais)
 const EMAILJS_CONFIG = {
@@ -545,98 +546,108 @@ export default function AdoptionForm() {
 
                     {/* ETAPA 3: Confirmação */}
                     {currentStep === 3 && (
-                        <div className="flex flex-col items-center justify-center text-center space-y-6 py-12">
-                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-                                <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex flex-col items-center justify-center text-center space-y-6 py-6 px-52">
+                            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg className="w-12 h-12 text-asecondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
 
-                            <h2 className="text-3xl font-bold text-green-600">Formulário Enviado com Sucesso!</h2>
+                            <h2 className="text-2xl font-bold text-asecondary">Formulário Enviado com Sucesso!</h2>
                             
-                            <div className="bg-gray-50 rounded-xl p-6 space-y-4 max-w-md">
+                            <div className="bg-aprimarymuted rounded-xl py-4 space-y-4 w-full">
                                 <h3 className="font-semibold text-lg">Detalhes do Envio</h3>
                                 
-                                <div className="text-left space-y-3">
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">ONG Destinatária:</span>
-                                        <span className="font-medium">{ong.name_institution}</span>
-                                    </div>
-                                    
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Animal:</span>
-                                        <span className="font-medium">{animal.name}</span>
-                                    </div>
-                                    
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Data de Envio:</span>
-                                        <span className="font-medium">{new Date().toLocaleDateString('pt-BR')}</span>
-                                    </div>
-                                    
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Hora:</span>
-                                        <span className="font-medium">{new Date().toLocaleTimeString('pt-BR')}</span>
+                                <div className="flex justify-center">
+                                    <div className="text-left space-y-3">
+                                        <div className="flex flex-row gap-2">
+                                            <span className="text-muted-foreground">ONG Destinatária:</span>
+                                            <span className="font-medium">{ong.name_institution}</span>
+                                        </div>
+                                        
+                                        <div className="flex flex-row gap-2">
+                                            <span className="text-muted-foreground">Animal:</span>
+                                            <span className="font-medium">{animal.name}</span>
+                                        </div>
+                                        
+                                        <div className="flex flex-row gap-2">
+                                            <span className="text-muted-foreground">Data de Envio:</span>
+                                            <span className="font-medium">{new Date().toLocaleDateString('pt-BR')}</span>
+                                        </div>
+                                        
+                                        <div className="flex flex-row gap-2">
+                                            <span className="text-muted-foreground">Hora:</span>
+                                            <span className="font-medium">{new Date().toLocaleTimeString('pt-BR')}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-4 max-w-md">
+                            <div className="p-4 space-y-4 w-full">
                                 <h3 className="font-semibold text-lg">Próximos Passos</h3>
                                 
-                                <div className="text-left space-y-2 text-sm text-muted-foreground">
+                                <div className="text-left space-y-2 text-sm">
                                     <div className="flex items-start gap-3">
                                         <div className="w-6 h-6 bg-asecondary rounded-full flex items-center justify-center text-white text-xs mt-1 flex-shrink-0">
                                             1
                                         </div>
-                                        <span>A ONG entrará em contato nos próximos dias</span>
+                                        <span>A ONG deve entrar em contato nos próximos dias</span>
                                     </div>
                                     
                                     <div className="flex items-start gap-3">
                                         <div className="w-6 h-6 bg-asecondary rounded-full flex items-center justify-center text-white text-xs mt-1 flex-shrink-0">
                                             2
                                         </div>
-                                        <span>Esteja disponível no celular {formData.celular}</span>
+                                        <span>Esteja disponível no telefone <strong>{formData.celular}</strong></span>
                                     </div>
                                     
                                     <div className="flex items-start gap-3">
                                         <div className="w-6 h-6 bg-asecondary rounded-full flex items-center justify-center text-white text-xs mt-1 flex-shrink-0">
                                             3
                                         </div>
-                                        <span>Verifique sua caixa de entrada e spam do e-mail {formData.email}</span>
-                                    </div>
-                                    
-                                    <div className="flex items-start gap-3">
-                                        <div className="w-6 h-6 bg-asecondary rounded-full flex items-center justify-center text-white text-xs mt-1 flex-shrink-0">
-                                            4
-                                        </div>
-                                        <span>Prepare-se para uma possível visita da ONG ao seu endereço</span>
+                                        <span>Verifique sua caixa de entrada e spam do e-mail <strong>{formData.email}</strong></span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-blue-50 rounded-xl p-6 space-y-3 max-w-md">
+                            <div className="bg-aprimarymuted rounded-xl p-4 space-y-3 w-full">
                                 <h3 className="font-semibold text-lg">Contato da ONG</h3>
-                                <p className="text-sm text-muted-foreground">
-                                    Caso tenha dúvidas, entre em contato diretamente com a ONG {ong.name_institution}:
+                                <p className="text-sm">
+                                    Caso tenha dúvidas, entre em contato diretamente com a ONG <strong>{ong.name_institution}</strong>:
                                 </p>
-                                <div className="space-y-1 text-sm">
-                                    <div>📧 {ong.ong_email || "email@ong.org.br"}</div>
-                                    <div>📞 {formattedPhone || "(00) 00000-0000"}</div>
-                                    <div>📍 {ong.address || "Endereço da ONG"}</div>
+                                <div className="flex flex-col gap-2 text-start">
+                                    <div className="flex flex-row items-center gap-2 text-sm">
+                                        <Phone />
+                                        <span className="">
+                                            {formattedPhone}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row items-center gap-2 text-sm">
+                                        <Mail />
+                                        <span className="">
+                                            {ong.ong_email}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-row items-center gap-2 text-sm">
+                                        <MapPin />
+                                        <span className="">
+                                            {ong.address}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 pt-6">
-                                <Button
-                                    onClick={() => window.location.href = '/'}
-                                    className="bg-asecondary text-white hover:bg-asecondary/90"
+                            <div className="mt-6">
+                                <Link 
+                                    href="/"
+                                    className="bg-aprimary rounded-xl border-2 border-asecondary py-2 px-6 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
                                 >
-                                    Voltar para Home
-                                </Button>
+                                    Voltar para Tela Inicial
+                                </Link>
                             </div>
 
                             <p className="text-sm text-muted-foreground italic max-w-md">
-                                Obrigado por escolher a adoção responsável! 💚
+                                Obrigado por escolher a adoção responsável! 💙
                             </p>
                         </div>
                     )}

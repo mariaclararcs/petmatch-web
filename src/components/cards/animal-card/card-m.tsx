@@ -45,7 +45,7 @@ export default function CardM({ animal, className }: CardMProps) {
           <Image
             className="rounded-t-lg bg-aprimary object-cover group-hover:opacity-75"
             alt={animal.name}
-            src={animal.image || '/placeholder-animal.jpg'}
+            src={animal.image || '/default-avatar.jpg'}
             width={248}
             height={248}
             style={{

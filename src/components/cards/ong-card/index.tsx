@@ -41,7 +41,7 @@ export default function CardOng({ ong, className }: CardOngProps) {
           <Image
             className="rounded-t-lg bg-aprimary object-cover group-hover:opacity-75 w-full h-52"
             alt={ong.name_institution}
-            src={ong.ong_image || '/placeholder-animal.jpg'}
+            src={ong.ong_image || '/default-avatar.jpg'}
             width={248}
             height={248}
             style={{

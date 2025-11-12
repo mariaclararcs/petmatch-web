@@ -28,7 +28,7 @@ export default function CardS({ animal, className }: CardSProps) {
           <Image
             className="rounded-lg bg-aprimary object-cover group-hover:opacity-75"
             alt={animal.name} 
-            src={animal.image || '/placeholder-animal.jpg'}
+            src={animal.image || '/default-avatar.jpg'}
             width={176}
             height={176}
             style={{

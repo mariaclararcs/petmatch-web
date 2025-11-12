@@ -21,7 +21,7 @@ export default function AboutUs() {
 
       <section className="px-8 pt-8">
         <p className="text-lg leading-relaxed">
-          O Pet Match nasceu da necessidade de conectar animais resgatados a lares amorosos de forma mais ágil e eficiente, enquanto apoia as ONGs e abrigos que dedicam seus esforços a essa causa. Sabemos que o processo de adoção pode ser burocrático e que muitas instituições enfrentam desafios para divulgar seus animais e arrecadar recursos. Por isso, criamos uma plataforma intuitiva e acessível, onde adotantes podem encontrar seu novo melhor amigo com facilidade, e ONGs podem ampliar seu alcance, garantindo mais adoções responsáveis e doações seguras.
+          O Pet Match nasceu da necessidade de conectar animais resgatados a lares amorosos de forma mais ágil e eficiente, enquanto apoia as ONGs e abrigos que dedicam seus esforços a essa causa. Sabemos que o processo de adoção pode ser burocrático e que muitas instituições enfrentam desafios para divulgar seus animais e arrecadar recursos. Por isso, criamos uma plataforma intuitiva e acessível, onde adotantes podem encontrar seu novo melhor amigo com facilidade, e ONGs podem ampliar seu alcance, garantindo mais adoções responsáveis.
         </p>
       </section>
       
@@ -33,7 +33,7 @@ export default function AboutUs() {
 
         {/* Cards de Destaque */}
         <div className="grid md:grid-cols-2 gap-6 p-8">
-          <div className="bg-aprimary p-6 rounded-lg">
+          <div className="bg-aprimarymuted p-6 rounded-lg">
             <h3 className="text-xl font-semibold mb-3">Para Adotantes</h3>
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
@@ -51,7 +51,7 @@ export default function AboutUs() {
             </ul>
           </div>
 
-          <div className="bg-aprimary p-6 rounded-lg">
+          <div className="bg-aprimarymuted p-6 rounded-lg">
             <h3 className="text-xl font-semibold mb-3">Para ONGs</h3>
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
@@ -61,6 +61,10 @@ export default function AboutUs() {
               <li className="flex items-start gap-2">
                 <Check />
                 <span>Ferramentas para gerenciar seus animais</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check />
+                <span>Requisições para adoção através do e-mail</span>
               </li>
             </ul>
           </div>

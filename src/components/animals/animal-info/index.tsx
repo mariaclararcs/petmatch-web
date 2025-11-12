@@ -51,7 +51,7 @@ export default function AnimalInfo() {
                     <Image
                         className="rounded-lg bg-aprimary object-cover"
                         alt={animal.name}
-                        src={animal.image || "/images/login-ong.svg"}
+                        src={animal.image || '/default-avatar.jpg'}
                         width={400}
                         height={480}
                         style={{

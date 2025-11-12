@@ -7,6 +7,7 @@
   --color-abackground: var(--abackground);
   --color-aforeground: var(--aforeground);
   --color-aprimary: var(--aprimary);
+  --color-aprimarymuted: var(--aprimarymuted);
   --color-asecondary: var(--asecondary);
   --color-atertiary: var(--atertiary);
   --color-aquaternary: var(--aquaternary);
@@ -58,6 +59,7 @@
   --abackground: #fcfcf2;
   --aforeground: #000000;
   --aprimary: #a0ebf1;
+  --aprimarymuted: #a0ecf152;
   --asecondary: #0b96ad;
   --atertiary: #FFC2C7;
   --aquaternary: #d1777f;
