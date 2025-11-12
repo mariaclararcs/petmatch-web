@@ -359,7 +359,7 @@ export default function RegisterONG() {
                                     <p className="text-red-500 text-sm mt-1 mb-4">{userForm.formState.errors.email.message}</p>
                                 )}
                                 <span className="text-sm text-muted-foreground mt-1">
-                                    Esse e-mail ficará disponível no perfil como meio de contato com a sua ONG.
+                                    Esse e-mail ficará disponível no perfil como um meio de contato com a sua ONG.
                                 </span>
                             </div>
                             
@@ -479,15 +479,15 @@ export default function RegisterONG() {
                                         <p className="text-red-500 text-sm mt-1 mb-4">{ongForm.formState.errors.cnpj.message}</p>
                                     )}
                                 </div>
-                                <div className="flex flex-col w-full">
-                                    <label className="mb-1">Telefone para Contato *</label>
+                                <div className="flex flex-col w-full mb-6">
+                                    <label className="mb-1">Celular *</label>
                                     <input
                                         type="text"
                                         {...ongForm.register('phone')}
                                         onChange={(e) => formatPhone(e.target.value)}
                                         value={ongForm.watch('phone')}
                                         placeholder="(00)00000-0000"
-                                        className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
+                                        className={`rounded-xl border-2 px-4 py-2 w-full ${
                                             ongForm.formState.errors.phone ? 'border-red-500' : 'border-aborder'
                                         }`}
                                         maxLength={15}
@@ -496,6 +496,9 @@ export default function RegisterONG() {
                                     {ongForm.formState.errors.phone && (
                                         <p className="text-red-500 text-sm mt-1 mb-4">{ongForm.formState.errors.phone.message}</p>
                                     )}
+                                    <span className="text-sm text-muted-foreground mt-1">
+                                        Esse número ficará disponível no perfil como um meio de contato com a sua ONG.
+                                    </span>
                                 </div>
                             </div>
 

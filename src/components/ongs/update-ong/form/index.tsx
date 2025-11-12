@@ -262,7 +262,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Telefone para Contato *</label>
+            <label className="block text-sm font-medium mb-1">Celular *</label>
             <Input
               type="text"
               {...register('phone')}
@@ -276,6 +276,9 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
             {errors.phone && (
               <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
             )}
+            <p className="text-sm text-muted-foreground mt-1">
+              Este número ficará disponível no perfil como meio de contato com a ONG.
+            </p>
           </div>
         </div>
 

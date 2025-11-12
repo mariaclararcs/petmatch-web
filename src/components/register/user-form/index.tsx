@@ -216,18 +216,23 @@ export default function RegisterUser() {
                             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
                         )}
                         
-                        <label className="mb-1">E-mail *</label>
-                        <input 
-                            type="email"
-                            {...register('email')}
-                            className={`rounded-xl border-2 px-4 py-2 mb-6 w-full ${
-                                errors.email ? 'border-red-500' : 'border-aborder'
-                            }`}
-                            disabled={isSubmitting}
-                        />
-                        {errors.email && (
-                            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                        )}
+                        <div className="flex flex-col mb-6">
+                            <label className="mb-1">E-mail *</label>
+                            <input 
+                                type="email"
+                                {...register('email')}
+                                className={`rounded-xl border-2 px-4 py-2 w-full ${
+                                    errors.email ? 'border-red-500' : 'border-aborder'
+                                }`}
+                                disabled={isSubmitting}
+                            />
+                            {errors.email && (
+                                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                            )}
+                            <span className="text-sm text-muted-foreground mt-1">
+                                Utilize um e-mail que você tenha acesso.
+                            </span> 
+                        </div>
                         
                         <div className="flex flex-row gap-8 w-full">
                             <div className="flex flex-col w-full">

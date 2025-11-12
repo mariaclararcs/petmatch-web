@@ -363,7 +363,7 @@ export default function AdoptionForm() {
                                     />
                                 </div>
 
-                                <div>
+                                <div className="flex flex-col mb-6">
                                     <label className="block mb-2 font-medium">E-mail *</label>
                                     <input 
                                         type="email" 
@@ -372,6 +372,9 @@ export default function AdoptionForm() {
                                         onChange={(e) => handleInputChange('email', e.target.value)}
                                         required
                                     />
+                                    <span className="text-sm text-muted-foreground mt-1">
+                                        Utilize um e-mail que você tenha acesso.
+                                    </span> 
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
