@@ -40,6 +40,7 @@ import { uploadImage } from "@/app/services/image-upload"
 import { useSession } from "next-auth/react"
 import { getUserPermissions } from "@/lib/permissions"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { normalizeImageUrl } from "@/lib/image-url"
 
 const GENDER_TYPES = [
   { label: "Macho", value: "male" },
@@ -89,7 +90,6 @@ interface UpdateAnimalFormProps {
 
 export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string>(animal?.image || "")
   
@@ -122,6 +122,47 @@ export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
   // Watch para o campo image para preview em tempo real
   const image = form.watch('image')
   const name = form.watch('name')
+
+  // Função para selecionar imagem (apenas preview, sem upload)
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validação do tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor, selecione um arquivo de imagem válido')
+      return
+    }
+
+    // Validação do tamanho (máximo 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      toast.error('A imagem deve ter no máximo 5MB')
+      return
+    }
+
+    // Armazena o arquivo para upload posterior
+    setSelectedImage(file)
+
+    // Cria preview local (base64 temporário apenas para visualização)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.onerror = () => {
+      toast.error('Erro ao carregar preview da imagem')
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Função para remover imagem selecionada
+  const handleRemoveImage = () => {
+    setSelectedImage(null)
+    setImagePreview(animal?.image || "")
+    form.setValue('image', '')
+    const fileInput = document.getElementById('update-animal-image-upload') as HTMLInputElement
+    if (fileInput) fileInput.value = ''
+  }
 
   useEffect(() => {
     if (animal) {
@@ -157,19 +198,6 @@ export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
   const { data: ongsResponse } = useGetOngs({ page: 1, per_page: 100, search: "" })
   const ongs = ongsResponse?.data || []
 
-  // Função para fazer upload da imagem
-  const uploadImageToServer = async (file: File): Promise<string> => {
-    setIsUploading(true)
-    try {
-      const imageUrl = await uploadImage(file)
-      setIsUploading(false)
-      return imageUrl
-    } catch (error) {
-      setIsUploading(false)
-      throw new Error("Falha no upload da imagem")
-    }
-  }
-
   const handleSuccessDialogClose = () => {
     setIsSuccessDialogOpen(false)
     onSuccess?.()
@@ -181,7 +209,24 @@ export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
 
       // Se uma nova imagem foi selecionada, fazer upload
       if (selectedImage) {
-        finalImageUrl = await uploadImageToServer(selectedImage)
+        try {
+          console.log('Fazendo upload da imagem do animal...')
+          finalImageUrl = await uploadImage(selectedImage)
+          console.log('URL da imagem recebida:', finalImageUrl)
+          
+          // Garante que a URL é válida e completa
+          if (!finalImageUrl || (!finalImageUrl.startsWith('http://') && !finalImageUrl.startsWith('https://'))) {
+            throw new Error('URL da imagem inválida recebida do servidor')
+          }
+          
+          form.setValue('image', finalImageUrl)
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error 
+            ? error.message 
+            : 'Erro ao fazer upload da imagem. Tente novamente.'
+          toast.error(errorMessage)
+          return // Para o processo se o upload falhar
+        }
       }
 
       const payload = {
@@ -251,51 +296,61 @@ export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
             </FormItem>
           )}
 
-          {/* Campo Image */}
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Imagem do Animal (URL)</FormLabel>
-                <div className="flex flex-row items-center gap-4 w-full">
-                  {/* Preview da imagem */}
-                  <div className="flex flex-col justify-center items-center">
-                    <Avatar className="h-20 w-20">
-                      <AvatarImage 
-                        src={image || ""} 
-                        alt={name || animal.name}
-                        className="object-cover"
-                      />
-                      <AvatarFallback className="text-lg font-semibold bg-gray-200">
-                        {getInitials(name || animal.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Preview da imagem
-                    </p>
-                  </div>
+          {/* Campo Image com Upload */}
+          <FormItem>
+            <FormLabel>Imagem do Animal</FormLabel>
+            <div className="flex flex-row items-center gap-4 w-full">
+              {/* Preview da imagem */}
+              <div className="flex flex-col justify-center items-center">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage 
+                    src={imagePreview || normalizeImageUrl(image) || ""} 
+                    alt={name || animal.name}
+                    className="object-cover"
+                  />
+                  <AvatarFallback className="text-lg font-semibold bg-gray-200">
+                    {getInitials(name || animal.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Preview da imagem
+                </p>
+              </div>
 
-                  {/* Campo de input */}
-                  <div className="flex-grow">
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder="https://exemplo.com/imagem-animal.jpg"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => {
-                          field.onChange(e)
-                          setImagePreview(e.target.value)
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </div>
+              {/* Campo de upload */}
+              <div className="flex-grow">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="hidden"
+                    id="update-animal-image-upload"
+                    disabled={isPending}
+                  />
+                  <label
+                    htmlFor="update-animal-image-upload"
+                    className="cursor-pointer inline-block rounded-xl border-2 border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {selectedImage ? 'Trocar Imagem' : 'Selecionar Imagem'}
+                  </label>
+                  {(selectedImage || image) && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="ml-2 text-sm text-red-500 hover:text-red-700"
+                      disabled={isPending}
+                    >
+                      Remover
+                    </button>
+                  )}
                 </div>
-              </FormItem>
-            )}
-          />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Selecione uma imagem para fazer upload
+                </p>
+              </div>
+            </div>
+          </FormItem>
 
           <FormField
             control={form.control}
@@ -430,8 +485,8 @@ export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
 
           <Button 
             type="submit" 
-            disabled={isPending || isUploading}>
-              {isPending || isUploading ? "Atualizando..." : "Atualizar Animal"}
+            disabled={isPending}>
+              {isPending ? "Atualizando..." : "Atualizar Animal"}
           </Button>
         </form>
       </Form>

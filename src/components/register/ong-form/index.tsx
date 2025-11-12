@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { uploadImage } from "@/app/services/image-upload"
+import { normalizeImageUrl } from "@/lib/image-url"
 
 // Schema para Step 1 - Dados do Usuário
 const userStepSchema = z.object({
@@ -15,7 +17,7 @@ const userStepSchema = z.object({
   email: z.string().email('E-mail inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   confirmPassword: z.string(),
-  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
+  avatar: z.string().optional().or(z.literal('')),
 }).refine(data => data.password === data.confirmPassword, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"]
@@ -53,6 +55,8 @@ export default function RegisterONG() {
     const [showPassword, setShowPassword] = useState(false)
     const [userStepData, setUserStepData] = useState<UserStepData | null>(null)
     const [createdUserId, setCreatedUserId] = useState<string | null>(null)
+    const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
+    const [imagePreview, setImagePreview] = useState<string>('')
 
     // Form para Step 1 - Dados do Usuário
     const userForm = useForm<UserStepData>({
@@ -83,6 +87,48 @@ export default function RegisterONG() {
     // Watch para o campo avatar e name para preview em tempo real
     const avatar = userForm.watch('avatar')
     const name = userForm.watch('name')
+
+    // Função para selecionar imagem (apenas preview, sem upload)
+    const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+
+        // Validação do tipo de arquivo
+        if (!file.type.startsWith('image/')) {
+            setApiError('Por favor, selecione um arquivo de imagem válido')
+            return
+        }
+
+        // Validação do tamanho (máximo 5MB)
+        const maxSize = 5 * 1024 * 1024 // 5MB
+        if (file.size > maxSize) {
+            setApiError('A imagem deve ter no máximo 5MB')
+            return
+        }
+
+        // Armazena o arquivo para upload posterior
+        setSelectedImageFile(file)
+        setApiError(null)
+
+        // Cria preview local (base64 temporário apenas para visualização)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            setImagePreview(reader.result as string)
+        }
+        reader.onerror = () => {
+            setApiError('Erro ao carregar preview da imagem')
+        }
+        reader.readAsDataURL(file)
+    }
+
+    // Função para remover imagem selecionada
+    const handleRemoveImage = () => {
+        setSelectedImageFile(null)
+        setImagePreview('')
+        userForm.setValue('avatar', '')
+        const fileInput = document.getElementById('ong-avatar-upload') as HTMLInputElement
+        if (fileInput) fileInput.value = ''
+    }
 
     // Formatadores para telefone, CEP, CNPJ e CPF
     const formatPhone = (value: string) => {
@@ -150,13 +196,38 @@ export default function RegisterONG() {
         setApiError(null)
 
         try {
+            let avatarUrl = data.avatar || null
+
+            // Se uma nova imagem foi selecionada, fazer upload primeiro
+            if (selectedImageFile) {
+                try {
+                    console.log('Fazendo upload da imagem...')
+                    avatarUrl = await uploadImage(selectedImageFile)
+                    console.log('URL da imagem recebida:', avatarUrl)
+                    
+                    // Garante que a URL é válida e completa
+                    if (!avatarUrl || (!avatarUrl.startsWith('http://') && !avatarUrl.startsWith('https://'))) {
+                        throw new Error('URL da imagem inválida recebida do servidor')
+                    }
+                    
+                    userForm.setValue('avatar', avatarUrl)
+                } catch (error: unknown) {
+                    const errorMessage = error instanceof Error 
+                        ? error.message 
+                        : 'Erro ao fazer upload da imagem. Tente novamente.'
+                    setApiError(errorMessage)
+                    setIsSubmitting(false)
+                    return // Para o processo se o upload falhar
+                }
+            }
+
             const userData = {
                 name: data.name,
                 email: data.email,
                 password: data.password,
                 password_confirmation: data.confirmPassword,
                 type_user: 'ong',
-                avatar: data.avatar || null
+                avatar: avatarUrl || null
             }
 
             console.log('Creating user:', userData)
@@ -189,7 +260,12 @@ export default function RegisterONG() {
             }
             
             setCreatedUserId(userId)
-            setUserStepData(data)
+            // Salva os dados do usuário com a URL da imagem atualizada (após upload)
+            setUserStepData({
+                ...data,
+                avatar: avatarUrl || null
+            })
+            console.log('User step data saved with avatar URL:', avatarUrl)
             setCurrentStep(2)
             
         } catch (error: any) {
@@ -212,6 +288,9 @@ export default function RegisterONG() {
         setApiError(null)
 
         try {
+            // Usa a URL da imagem do usuário como ong_image
+            const ongImageUrl = userStepData?.avatar || null
+            
             const ongData = {
                 user_id: createdUserId,
                 name_institution: data.name_institution,
@@ -221,11 +300,12 @@ export default function RegisterONG() {
                 address: data.address,
                 cep: data.cep.replace(/\D/g, ''),
                 description: data.description,
-                ong_image: userStepData.avatar || null,
+                ong_image: ongImageUrl,
                 ong_email: userStepData.email,
                 status: '1'
             }
 
+            console.log('Creating ONG with image URL:', ongImageUrl)
             console.log('Creating ONG:', ongData)
 
             const response = await fetch('http://localhost:8000/api/ongs', {
@@ -293,15 +373,15 @@ export default function RegisterONG() {
                     {/* Step 1 - Dados do Usuário */}
                     {currentStep === 1 && (
                         <form onSubmit={userForm.handleSubmit(onSubmitUserStep)} className="flex flex-col py-4 w-full">
-                            {/* Campo Avatar com Preview */}
+                            {/* Campo Avatar com Upload */}
                             <div className="mb-6">
-                                <label className="block mb-1">Imagem de Perfil (URL)</label>
+                                <label className="block mb-1">Imagem de Perfil</label>
                                 <div className="flex flex-row items-center gap-4 w-full">
                                     {/* Preview da imagem */}
                                     <div className="flex flex-col justify-center items-center">
                                         <Avatar className="h-24 w-24">
                                             <AvatarImage 
-                                                src={avatar || ""} 
+                                                src={imagePreview || normalizeImageUrl(avatar) || ""} 
                                                 alt={name || "Usuário"}
                                                 className="object-cover"
                                             />
@@ -314,20 +394,37 @@ export default function RegisterONG() {
                                         </p>
                                     </div>
 
-                                    {/* Campo de input */}
+                                    {/* Campo de upload */}
                                     <div className="flex-grow">
-                                        <input
-                                            type="url"
-                                            {...userForm.register('avatar')}
-                                            placeholder="https://exemplo.com/imagem.jpg"
-                                            className={`rounded-xl border-2 px-4 py-2 w-full ${
-                                                userForm.formState.errors.avatar ? 'border-red-500' : 'border-aborder'
-                                            }`}
-                                            disabled={isSubmitting}
-                                        />
-                                        {userForm.formState.errors.avatar && (
-                                            <p className="text-red-500 text-sm mt-1">{userForm.formState.errors.avatar.message}</p>
-                                        )}
+                                        <div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageSelect}
+                                                className="hidden"
+                                                id="ong-avatar-upload"
+                                                disabled={isSubmitting}
+                                            />
+                                            <label
+                                                htmlFor="ong-avatar-upload"
+                                                className="cursor-pointer inline-block rounded-xl border-2 border-aborder px-4 py-2 text-sm font-medium hover:bg-aborder transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                                            >
+                                                {selectedImageFile ? 'Trocar Imagem' : 'Selecionar Imagem'}
+                                            </label>
+                                            {(selectedImageFile || avatar) && (
+                                                <button
+                                                    type="button"
+                                                    onClick={handleRemoveImage}
+                                                    className="ml-2 text-sm text-red-500 hover:text-red-700"
+                                                    disabled={isSubmitting}
+                                                >
+                                                    Remover
+                                                </button>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground mt-2">
+                                            Selecione uma imagem para fazer upload
+                                        </p>
                                     </div>
                                 </div>
                             </div>

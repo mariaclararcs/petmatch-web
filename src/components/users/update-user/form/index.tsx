@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dialog"
 import { Eye, EyeClosed } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { uploadImage } from "@/app/services/image-upload"
+import { normalizeImageUrl } from "@/lib/image-url"
 
 const editUserSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -24,7 +26,7 @@ const editUserSchema = z.object({
   type_user: z.enum(['admin', 'ong', 'adopter'], {
     errorMap: () => ({ message: 'Tipo de usuário inválido' })
   }),
-  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
+  avatar: z.string().optional().or(z.literal('')),
   password: z.string().optional(),
   password_confirmation: z.string().optional(),
 }).refine((data) => {
@@ -65,6 +67,8 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const [apiError, setApiError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
   const updateUserMutation = useUpdateUser()
 
   const {
@@ -80,6 +84,48 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
   const avatar = watch('avatar') // PARA PREVIEW
   const name = watch('name') // PARA AS INICIAIS
 
+  // Função para selecionar imagem (apenas preview, sem upload)
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validação do tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+      setApiError('Por favor, selecione um arquivo de imagem válido')
+      return
+    }
+
+    // Validação do tamanho (máximo 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      setApiError('A imagem deve ter no máximo 5MB')
+      return
+    }
+
+    // Armazena o arquivo para upload posterior
+    setSelectedImageFile(file)
+    setApiError(null)
+
+    // Cria preview local (base64 temporário apenas para visualização)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.onerror = () => {
+      setApiError('Erro ao carregar preview da imagem')
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Função para remover imagem selecionada
+  const handleRemoveImage = () => {
+    setSelectedImageFile(null)
+    setImagePreview(user?.avatar || '')
+    setValue('avatar', '')
+    const fileInput = document.getElementById('update-user-image-upload') as HTMLInputElement
+    if (fileInput) fileInput.value = ''
+  }
+
   useEffect(() => {
     if (user) {
       setValue('name', user.name)
@@ -88,6 +134,7 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       setValue('avatar', user.avatar || '')
       setValue('password', '')
       setValue('password_confirmation', '')
+      setImagePreview(user.avatar || '')
       setApiError(null)
     }
   }, [user, setValue])
@@ -96,11 +143,35 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
     setApiError(null)
 
     try {
+      let imageUrl = data.avatar || null
+
+      // Se uma nova imagem foi selecionada, fazer upload primeiro
+      if (selectedImageFile) {
+        try {
+          console.log('Fazendo upload da imagem do usuário...')
+          imageUrl = await uploadImage(selectedImageFile)
+          console.log('URL da imagem recebida:', imageUrl)
+          
+          // Garante que a URL é válida e completa
+          if (!imageUrl || (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://'))) {
+            throw new Error('URL da imagem inválida recebida do servidor')
+          }
+          
+          setValue('avatar', imageUrl)
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error 
+            ? error.message 
+            : 'Erro ao fazer upload da imagem. Tente novamente.'
+          setApiError(errorMessage)
+          return // Para o processo se o upload falhar
+        }
+      }
+
       const updateData: any = {
         name: data.name,
         email: data.email,
         type_user: data.type_user,
-        avatar: data.avatar || null
+        avatar: imageUrl || null
       }
 
       // Só inclui senha se foi fornecida
@@ -133,16 +204,16 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Campo Avatar */}
+        {/* Campo Avatar com Upload - ATUALIZADO */}
         <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-1">Imagem de Perfil (URL)</label>
+          <label className="block text-sm font-medium mb-1">Imagem de Perfil</label>
 
           <div className="flex flex-row items-center gap-4 w-full">
             {/* Preview da imagem */}
             <div className="flex flex-col justify-center items-center">
               <Avatar className="h-20 w-20">
                 <AvatarImage 
-                  src={avatar || ""} 
+                  src={imagePreview || normalizeImageUrl(avatar) || ""} 
                   alt={name || user.name}
                   className="object-cover"
                 />
@@ -155,18 +226,37 @@ export function UpdateUserForm({ user, onSuccess }: UpdateUserFormProps) {
               </p>
             </div>
 
-            {/* Campo de input */}
+            {/* Campo de upload */}
             <div className="flex-grow">
-              <Input
-                type="url"
-                {...register('avatar')}
-                placeholder="https://exemplo.com/imagem.jpg"
-                className={errors.avatar ? 'border-red-500' : ''}
-                disabled={updateUserMutation.isPending}
-              />
-              {errors.avatar && (
-                <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
-              )}
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                  id="update-user-image-upload"
+                  disabled={updateUserMutation.isPending}
+                />
+                <label
+                  htmlFor="update-user-image-upload"
+                  className="cursor-pointer inline-block rounded-xl border-2 border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {selectedImageFile ? 'Trocar Imagem' : 'Selecionar Imagem'}
+                </label>
+                {(selectedImageFile || avatar) && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="ml-2 text-sm text-red-500 hover:text-red-700"
+                    disabled={updateUserMutation.isPending}
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Selecione uma imagem para fazer upload
+              </p>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function AdoptionInfo() {
     return (
         <div className="flex flex-col justify-center items-center bg-aprimarymuted rounded-xl py-6 px-20 space-y-6 w-full">
-            <h3 className="font-semibold text-lg">O que fazer quando quiser adotar?</h3>
+            <h3 className="font-semibold text-lg">O que fazer quando quiser adotar</h3>
             <div className="flex flex-row gap-6 text-center justify-center">
                 <div className="flex flex-col items-center gap-2 w-72">
                     <Image

@@ -16,6 +16,8 @@ import {
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { uploadImage } from "@/app/services/image-upload"
+import { normalizeImageUrl } from "@/lib/image-url"
 
 const registerSchema = z.object({
   name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
@@ -26,7 +28,7 @@ const registerSchema = z.object({
   cep: z.string().length(9, 'CEP inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
   confirmPassword: z.string(),
-  avatar: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
+  avatar: z.string().optional().or(z.literal('')),
 }).refine(data => data.password === data.confirmPassword, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"]
@@ -51,6 +53,8 @@ export default function RegisterUser() {
     const [showPassword, setShowPassword] = useState(false)
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
+    const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
+    const [imagePreview, setImagePreview] = useState<string>('')
 
     const {
         register,
@@ -76,6 +80,48 @@ export default function RegisterUser() {
     // Watch para o campo avatar e name para preview em tempo real
     const avatar = watch('avatar')
     const name = watch('name')
+
+    // Função para selecionar imagem (apenas preview, sem upload)
+    const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+
+        // Validação do tipo de arquivo
+        if (!file.type.startsWith('image/')) {
+            setApiError('Por favor, selecione um arquivo de imagem válido')
+            return
+        }
+
+        // Validação do tamanho (máximo 5MB)
+        const maxSize = 5 * 1024 * 1024 // 5MB
+        if (file.size > maxSize) {
+            setApiError('A imagem deve ter no máximo 5MB')
+            return
+        }
+
+        // Armazena o arquivo para upload posterior
+        setSelectedImageFile(file)
+        setApiError(null)
+
+        // Cria preview local (base64 temporário apenas para visualização)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+            setImagePreview(reader.result as string)
+        }
+        reader.onerror = () => {
+            setApiError('Erro ao carregar preview da imagem')
+        }
+        reader.readAsDataURL(file)
+    }
+
+    // Função para remover imagem selecionada
+    const handleRemoveImage = () => {
+        setSelectedImageFile(null)
+        setImagePreview('')
+        setValue('avatar', '')
+        const fileInput = document.getElementById('avatar-upload') as HTMLInputElement
+        if (fileInput) fileInput.value = ''
+    }
 
     // Formatadores para telefone e CEP
     const formatPhone = (value: string) => {
@@ -107,6 +153,31 @@ export default function RegisterUser() {
         setApiError(null);
 
         try {
+            let avatarUrl = data.avatar || null
+
+            // Se uma nova imagem foi selecionada, fazer upload primeiro
+            if (selectedImageFile) {
+                try {
+                    console.log('Fazendo upload da imagem...')
+                    avatarUrl = await uploadImage(selectedImageFile)
+                    console.log('URL da imagem recebida:', avatarUrl)
+                    
+                    // Garante que a URL é válida e completa
+                    if (!avatarUrl || (!avatarUrl.startsWith('http://') && !avatarUrl.startsWith('https://'))) {
+                        throw new Error('URL da imagem inválida recebida do servidor')
+                    }
+                    
+                    setValue('avatar', avatarUrl)
+                } catch (error: unknown) {
+                    const errorMessage = error instanceof Error 
+                        ? error.message 
+                        : 'Erro ao fazer upload da imagem. Tente novamente.'
+                    setApiError(errorMessage)
+                    setIsSubmitting(false)
+                    return // Para o processo se o upload falhar
+                }
+            }
+
             const userData = {
                 name: data.name,
                 email: data.email,
@@ -117,10 +188,11 @@ export default function RegisterUser() {
                 phone: data.phone.replace(/\D/g, ''),
                 address: data.address,
                 cep: data.cep.replace(/\D/g, ''),
-                avatar: data.avatar || null
+                avatar: avatarUrl || null // Envia null se não houver imagem
             };
 
-            console.log('Sending to API:', userData); // Debug log
+            console.log('Enviando dados do usuário para API:', { ...userData, password: '***', password_confirmation: '***' })
+            console.log('URL do avatar que será salva no banco:', avatarUrl)
             
             const response = await fetch('http://localhost:8000/api/users', {
                 method: 'POST',
@@ -140,12 +212,10 @@ export default function RegisterUser() {
             console.log('Registration success:', result);
             router.push('/login'); // Redireciona para login após sucesso
             
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Registration error:', error); // Debug log
-            setApiError(
-                error.message || 
-                'Erro durante o cadastro. Tente novamente.'
-            );
+            const errorMessage = error instanceof Error ? error.message : 'Erro durante o cadastro. Tente novamente.'
+            setApiError(errorMessage)
         } finally {
             setIsSubmitting(false);
         }
@@ -164,15 +234,15 @@ export default function RegisterUser() {
                     )}
 
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col py-4 w-full max-w-2xl">
-                        {/* Campo Avatar com Preview */}
+                        {/* Campo Avatar com Upload e Preview */}
                         <div className="mb-6">
-                            <label className="block mb-1">Imagem de Perfil (URL)</label>
+                            <label className="block mb-1">Imagem de Perfil</label>
                             <div className="flex flex-row items-center gap-4 w-full">
                                 {/* Preview da imagem */}
                                 <div className="flex flex-col justify-center items-center">
                                     <Avatar className="h-24 w-24">
                                         <AvatarImage 
-                                            src={avatar || ""} 
+                                            src={imagePreview || normalizeImageUrl(avatar) || ""} 
                                             alt={name || "Usuário"}
                                             className="object-cover"
                                         />
@@ -185,20 +255,37 @@ export default function RegisterUser() {
                                     </p>
                                 </div>
 
-                                {/* Campo de input */}
+                                {/* Campo de upload */}
                                 <div className="flex-grow">
-                                    <input
-                                        type="url"
-                                        {...register('avatar')}
-                                        placeholder="https://exemplo.com/imagem.jpg"
-                                        className={`rounded-xl border-2 px-4 py-2 w-full ${
-                                            errors.avatar ? 'border-red-500' : 'border-aborder'
-                                        }`}
-                                        disabled={isSubmitting}
-                                    />
-                                    {errors.avatar && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>
-                                    )}
+                                    <div>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageSelect}
+                                            className="hidden"
+                                            id="avatar-upload"
+                                            disabled={isSubmitting}
+                                        />
+                                        <label
+                                            htmlFor="avatar-upload"
+                                            className="cursor-pointer inline-block rounded-xl border-2 border-aborder px-4 py-2 text-sm font-medium hover:bg-aborder transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                                        >
+                                            {selectedImageFile ? 'Trocar Imagem' : 'Selecionar Imagem'}
+                                        </label>
+                                        {(selectedImageFile || avatar) && (
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveImage}
+                                                className="ml-2 text-sm text-red-500 hover:text-red-700"
+                                                disabled={isSubmitting}
+                                            >
+                                                Remover
+                                            </button>
+                                        )}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-2">
+                                        Selecione uma imagem para fazer upload
+                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -15,13 +15,13 @@ import { PaginationFull } from "../../pagination"
 import { UpdateUser } from "../update-user"
 import { DeleteUser } from "../delete-user"
 import LoadingComponent from "../../loading"
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar" // IMPORT ADICIONADO
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar"
 
 export default function ListUsers() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const page = z.coerce.number().parse(searchParams.get("page") ?? "1")
-  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "12")
+  const per_page = z.coerce.number().parse(searchParams.get("per_page") ?? "20")
   const [debouncedSearchTerm] = useState<string>(searchParams.get("search") || "")
 
   const { data: usersResponse, isLoading, isError } = useGetUsers({

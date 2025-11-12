@@ -17,6 +17,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { uploadImage } from "@/app/services/image-upload"
+import { normalizeImageUrl } from "@/lib/image-url"
 
 const editONGSchema = z.object({
   name_institution: z.string().min(3, 'Nome da instituição deve ter pelo menos 3 caracteres'),
@@ -26,7 +28,7 @@ const editONGSchema = z.object({
   address: z.string().min(5, 'Endereço muito curto'),
   cep: z.string().min(8, 'CEP deve ter 8 dígitos'),
   description: z.string().min(10, 'Descrição deve ter pelo menos 10 caracteres'),
-  ong_image: z.string().url('URL da imagem inválida').optional().or(z.literal('')),
+  ong_image: z.string().optional().or(z.literal('')),
   ong_email: z.string().email('E-mail inválido'), // ADICIONADO
 })
 
@@ -50,6 +52,8 @@ const getInitials = (name: string) => {
 export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
   const [apiError, setApiError] = useState<string | null>(null)
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string>('')
   const updateOngMutation = useUpdateOng()
 
   const {
@@ -64,6 +68,48 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
 
   const ong_image = watch('ong_image') // PARA PREVIEW
   const name_institution = watch('name_institution') // PARA AS INICIAIS
+
+  // Função para selecionar imagem (apenas preview, sem upload)
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validação do tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+      setApiError('Por favor, selecione um arquivo de imagem válido')
+      return
+    }
+
+    // Validação do tamanho (máximo 5MB)
+    const maxSize = 5 * 1024 * 1024 // 5MB
+    if (file.size > maxSize) {
+      setApiError('A imagem deve ter no máximo 5MB')
+      return
+    }
+
+    // Armazena o arquivo para upload posterior
+    setSelectedImageFile(file)
+    setApiError(null)
+
+    // Cria preview local (base64 temporário apenas para visualização)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.onerror = () => {
+      setApiError('Erro ao carregar preview da imagem')
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // Função para remover imagem selecionada
+  const handleRemoveImage = () => {
+    setSelectedImageFile(null)
+    setImagePreview(ong?.ong_image || '')
+    setValue('ong_image', '')
+    const fileInput = document.getElementById('update-ong-image-upload') as HTMLInputElement
+    if (fileInput) fileInput.value = ''
+  }
 
   // Formatadores
   const formatPhone = (value: string) => {
@@ -131,6 +177,7 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       setValue('description', ong.description)
       setValue('ong_image', ong.ong_image || '')
       setValue('ong_email', ong.ong_email || '') // ADICIONADO
+      setImagePreview(ong.ong_image || '')
       setApiError(null)
     }
   }, [ong, setValue])
@@ -139,13 +186,37 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
     setApiError(null)
 
     try {
+      let imageUrl = data.ong_image || null
+
+      // Se uma nova imagem foi selecionada, fazer upload primeiro
+      if (selectedImageFile) {
+        try {
+          console.log('Fazendo upload da imagem da ONG...')
+          imageUrl = await uploadImage(selectedImageFile)
+          console.log('URL da imagem recebida:', imageUrl)
+          
+          // Garante que a URL é válida e completa
+          if (!imageUrl || (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://'))) {
+            throw new Error('URL da imagem inválida recebida do servidor')
+          }
+          
+          setValue('ong_image', imageUrl)
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error 
+            ? error.message 
+            : 'Erro ao fazer upload da imagem. Tente novamente.'
+          setApiError(errorMessage)
+          return // Para o processo se o upload falhar
+        }
+      }
+
       const updateData = {
         ...data,
         document_responsible: data.document_responsible.replace(/\D/g, ''),
         cnpj: data.cnpj.replace(/\D/g, ''),
         phone: data.phone.replace(/\D/g, ''),
         cep: data.cep.replace(/\D/g, ''),
-        ong_image: data.ong_image || null,
+        ong_image: imageUrl || null,
         ong_email: data.ong_email, // ADICIONADO
         status: ong.status
       }
@@ -173,16 +244,16 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Campo ONG Image */}
+        {/* Campo ONG Image com Upload */}
         <div className="flex flex-col">
-          <label className="block text-sm font-medium mb-1">Imagem de Perfil (URL)</label>
+          <label className="block text-sm font-medium mb-1">Imagem de Perfil</label>
 
           <div className="flex flex-row items-center gap-4 w-full">
             {/* Preview da imagem */}
             <div className="flex flex-col justify-center items-center">
               <Avatar className="h-20 w-20">
                 <AvatarImage 
-                  src={ong_image || ""} 
+                  src={imagePreview || normalizeImageUrl(ong_image) || ""} 
                   alt={name_institution || ong.name_institution}
                   className="object-cover"
                 />
@@ -195,18 +266,37 @@ export function UpdateOngForm({ ong, onSuccess }: UpdateOngFormProps) {
               </p>
             </div>
 
-            {/* Campo de input */}
+            {/* Campo de upload */}
             <div className="flex-grow">
-              <Input
-                type="url"
-                {...register('ong_image')}
-                placeholder="https://exemplo.com/imagem-ong.jpg"
-                className={errors.ong_image ? 'border-red-500' : ''}
-                disabled={updateOngMutation.isPending}
-              />
-              {errors.ong_image && (
-                <p className="text-red-500 text-sm mt-1">{errors.ong_image.message}</p>
-              )}
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                  id="update-ong-image-upload"
+                  disabled={updateOngMutation.isPending}
+                />
+                <label
+                  htmlFor="update-ong-image-upload"
+                  className="cursor-pointer inline-block rounded-xl border-2 border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {selectedImageFile ? 'Trocar Imagem' : 'Selecionar Imagem'}
+                </label>
+                {(selectedImageFile || ong_image) && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="ml-2 text-sm text-red-500 hover:text-red-700"
+                    disabled={updateOngMutation.isPending}
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Selecione uma imagem para fazer upload
+              </p>
             </div>
           </div>
         </div>
