@@ -21,23 +21,26 @@ import { useRouter, useParams } from "next/navigation"
 import { useGetAnimal } from "@/hooks/animal/useGetAnimal"
 import { useGetOng } from "@/hooks/ongs/useGetOng"
 import LoadingComponent from "@/components/loading"
+import emailjs from '@emailjs/browser'
+
+// Configuração do EmailJS (substitua com suas credenciais)
+const EMAILJS_CONFIG = {
+  serviceId: 'service_j1ip5vo', // Substitua pelo seu Service ID do EmailJS
+  templateId: 'template_x2p36cd', // Substitua pelo seu Template ID do EmailJS
+  publicKey: 'Gz9B6hknojpmtMweS', // Substitua pela sua Public Key do EmailJS
+}
 
 // Função de formatação de telefone
 const formatPhoneNumber = (phone: string): string => {
   if (!phone) return ''
   
-  // Remove todos os caracteres não numéricos
   const cleaned = phone.replace(/\D/g, '')
   
-  // Aplica a formatação baseada no tamanho do número
   if (cleaned.length === 11) {
-    // Formato para celular: (11) 99999-9999
     return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`
   } else if (cleaned.length === 10) {
-    // Formato para telefone fixo: (11) 9999-9999
     return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
   } else {
-    // Retorna o número original se não for um formato conhecido
     return phone
   }
 }
@@ -48,20 +51,17 @@ export default function AdoptionForm() {
     const params = useParams()
     const animalId = params.id as string
     
-    // Buscar dados do animal - SEMPRE chamado, independente da sessão
     const { data: animalResponse, isLoading: isLoadingAnimal, isError: isErrorAnimal } = useGetAnimal(animalId)
     const animal = animalResponse?.data
 
-    // Buscar dados completos da ONG usando o ID da ONG do animal
     const { data: ongResponse, isLoading: isLoadingOng, isError: isErrorOng } = useGetOng(animal?.ong_id || '')
     const ong = ongResponse?.data
 
-    // Estados do formulário - SEMPRE chamados
     const [open, setOpen] = React.useState(false)
     const [date, setDate] = React.useState<Date | undefined>(undefined)
-    const [currentStep, setCurrentStep] = React.useState(1) // 1 = Dados, 2 = Questionário
+    const [currentStep, setCurrentStep] = React.useState(1)
+    const [isSubmitting, setIsSubmitting] = React.useState(false)
 
-    // Dados do formulário - SEMPRE chamado
     const [formData, setFormData] = React.useState({
         nome: "",
         email: "",
@@ -69,7 +69,6 @@ export default function AdoptionForm() {
         celular: "",
         endereco: "",
         cep: "",
-        // Perguntas do questionário
         pergunta1: "",
         pergunta2: "",
         pergunta3: "",
@@ -80,10 +79,14 @@ export default function AdoptionForm() {
         pergunta8: "",
         pergunta9: "",
         pergunta10: "",
-        pergunta11: "",
     })
 
-    // Verificar se o usuário está logado - AGORA DEPOIS DOS HOOKS
+    // Inicializar EmailJS
+    React.useEffect(() => {
+        emailjs.init(EMAILJS_CONFIG.publicKey)
+    }, [])
+
+    // Verificar se o usuário está logado
     if (!session) {
         return (
             <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
@@ -103,11 +106,9 @@ export default function AdoptionForm() {
         )
     }
 
-    // Loading enquanto carrega os dados do animal e da ONG
     const isLoading = isLoadingAnimal || isLoadingOng
     if (isLoading) return <LoadingComponent />
 
-    // Erro ao carregar animal ou ONG
     const isError = isErrorAnimal || isErrorOng
     if (isError || !animal || !ong) {
         return (
@@ -128,10 +129,8 @@ export default function AdoptionForm() {
         )
     }
 
-    // Formata o telefone da ONG
     const formattedPhone = formatPhoneNumber(ong.phone)
 
-    // Resto das funções...
     const formatPhone = (value: string) => {
         value = value.replace(/\D/g, '')
         if (value.length > 11) value = value.substring(0, 11)
@@ -162,7 +161,6 @@ export default function AdoptionForm() {
         }))
     }
 
-    // Funções específicas para campos formatados
     const handlePhoneChange = (value: string) => {
         const formatted = formatPhone(value)
         handleInputChange('celular', formatted)
@@ -174,7 +172,6 @@ export default function AdoptionForm() {
     }
 
     const handleContinue = () => {
-        // Validação básica dos dados antes de continuar
         if (!formData.nome || !formData.email || !date || 
             !formData.celular || !formData.endereco || !formData.cep) {
             alert("Por favor, preencha todos os campos obrigatórios")
@@ -187,22 +184,122 @@ export default function AdoptionForm() {
         setCurrentStep(1)
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        // Lógica para enviar o formulário
-        console.log("Formulário enviado:", formData)
-        console.log("Animal:", animal.name)
-        console.log("ONG:", ong.name_institution)
+    const sendEmail = async (): Promise<boolean> => {
+        try {
+            // DIAGNÓSTICO: Ver todos os campos da ONG
+            console.log('🔍 Diagnóstico completo da ONG:', {
+                todosOsCampos: Object.keys(ong || {}),
+                dadosCompletos: ong,
+                emailCampo: ong?.email,
+                ong_emailCampo: ong?.ong_email,
+                emailInstitution: ong?.email_institution,
+                // Adicione outras possibilidades baseadas na sua API
+            })
 
-        setCurrentStep(3)
+            // Tente diferentes nomes de campo para o email
+            const ongEmail = 
+                ong?.ong_email
+
+            console.log('📧 Email da ONG encontrado:', ongEmail)
+
+            // VERIFICAÇÃO CRÍTICA
+            if (!ongEmail || !ongEmail.includes('@') || ongEmail === 'seu-email-fallback@dominio.com') {
+                console.error('❌ Email da ONG inválido ou não encontrado. Campos disponíveis:', Object.keys(ong || {}))
+                alert(`Erro: A ONG ${ong.name_institution} não possui um email válido cadastrado no sistema. Entre em contato diretamente com a ONG.`)
+                return false
+            }
+
+            // Preparar dados para o email
+            const templateParams = {
+                to_email: ongEmail,
+                from_name: "Sistema de Adoção PetAdopt",
+                reply_to: formData.email,
+                
+                // Dados do solicitante
+                nome_solicitante: formData.nome,
+                email_solicitante: formData.email,
+                data_nascimento: date?.toLocaleDateString('pt-BR') || '',
+                celular: formData.celular,
+                endereco: formData.endereco,
+                cep: formData.cep,
+                
+                // Dados do animal
+                nome_animal: animal.name,
+                especie_animal: animal.species,
+                raca_animal: animal.breed || 'Não informada',
+                
+                // Dados da ONG
+                nome_ong: ong.name_institution,
+                email_ong: ongEmail, // ← Adicione isso também
+                
+                // Respostas do questionário
+                pergunta1: formData.pergunta1,
+                pergunta2: formData.pergunta2,
+                pergunta3: formData.pergunta3,
+                pergunta4: formData.pergunta4,
+                pergunta5: formData.pergunta5,
+                pergunta6: formData.pergunta6,
+                pergunta7: formData.pergunta7,
+                pergunta8: formData.pergunta8,
+                pergunta9: formData.pergunta9,
+                pergunta10: formData.pergunta10,
+                
+                // Data de envio
+                data_envio: new Date().toLocaleDateString('pt-BR'),
+                hora_envio: new Date().toLocaleTimeString('pt-BR'),
+            }
+
+            console.log('🚀 Enviando email para:', ongEmail)
+            console.log('📤 Template params:', templateParams)
+
+            const response = await emailjs.send(
+                EMAILJS_CONFIG.serviceId,
+                EMAILJS_CONFIG.templateId,
+                templateParams
+            )
+
+            console.log('✅ Email enviado com sucesso!', response)
+            return response.status === 200
+            
+        } catch (error: any) {
+            console.error('❌ Erro detalhado ao enviar email:', {
+                status: error?.status,
+                text: error?.text,
+                message: error?.message
+            })
+            return false
+        }
     }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setIsSubmitting(true)
+
+        try {
+            const emailSent = await sendEmail()
+            
+            if (emailSent) {
+                setCurrentStep(3)
+            } else {
+                alert("Erro ao enviar formulário. Tente novamente.")
+            }
+        } catch (error) {
+            alert("Erro ao enviar formulário. Tente novamente.")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
+    // Antes do return no componente principal, adicione:
+    console.log('🔍 TODOS os dados da ONG:', ong)
+    console.log('🔍 Campos disponíveis:', Object.keys(ong || {}))
 
     return (
         <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
             <div className="flex flex-col items-center w-full max-w-4xl">
                 <h1 className="text-lg font-bold mb-6">Formulário de Adoção</h1>
                 
-                {/* Header com Steps - Indicador de progresso */}
+                {/* Header com Steps */}
                 <div className="flex items-center justify-center mb-8 w-full">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full ${currentStep >= 1 ? 'bg-asecondary text-white' : 'bg-gray-300 text-gray-600'}`}>
                         1
@@ -415,29 +512,26 @@ export default function AdoptionForm() {
                                 </Button>
                                 <button 
                                     type="submit"
-                                    onClick={handleContinue}
-                                    className="flex justify-center items-center bg-aprimary rounded-xl border-2 border-asecondary text-md my-6 py-2 px-3 w-fit h-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center"
+                                    disabled={isSubmitting}
+                                    className={`flex justify-center items-center bg-aprimary rounded-xl border-2 border-asecondary text-md my-6 py-2 px-3 w-fit h-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    Enviar formulário
+                                    {isSubmitting ? 'Enviando...' : 'Enviar formulário'}
                                 </button>
                             </div>
                         </div>
                     )}
 
-                    {/* ETAPA 3: Questionário Enviado */}
+                    {/* ETAPA 3: Confirmação */}
                     {currentStep === 3 && (
                         <div className="flex flex-col items-center justify-center text-center space-y-6 py-12">
-                            {/* Ícone de sucesso */}
                             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
                                 <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
 
-                            {/* Mensagem principal */}
                             <h2 className="text-3xl font-bold text-green-600">Formulário Enviado com Sucesso!</h2>
                             
-                            {/* Informações detalhadas */}
                             <div className="bg-gray-50 rounded-xl p-6 space-y-4 max-w-md">
                                 <h3 className="font-semibold text-lg">Detalhes do Envio</h3>
                                 
@@ -464,7 +558,6 @@ export default function AdoptionForm() {
                                 </div>
                             </div>
 
-                            {/* Instruções próximas */}
                             <div className="space-y-4 max-w-md">
                                 <h3 className="font-semibold text-lg">Próximos Passos</h3>
                                 
@@ -499,20 +592,18 @@ export default function AdoptionForm() {
                                 </div>
                             </div>
 
-                            {/* Contato da ONG */}
                             <div className="bg-blue-50 rounded-xl p-6 space-y-3 max-w-md">
                                 <h3 className="font-semibold text-lg">Contato da ONG</h3>
                                 <p className="text-sm text-muted-foreground">
                                     Caso tenha dúvidas, entre em contato diretamente com a ONG {ong.name_institution}:
                                 </p>
                                 <div className="space-y-1 text-sm">
-                                    <div>📧 {ong.email || "email@ong.org.br"}</div>
+                                    <div>📧 {ong.ong_email || "email@ong.org.br"}</div>
                                     <div>📞 {formattedPhone || "(00) 00000-0000"}</div>
                                     <div>📍 {ong.address || "Endereço da ONG"}</div>
                                 </div>
                             </div>
 
-                            {/* Botões de ação */}
                             <div className="flex gap-4 pt-6">
                                 <Button
                                     onClick={() => window.location.href = '/'}
@@ -522,7 +613,6 @@ export default function AdoptionForm() {
                                 </Button>
                             </div>
 
-                            {/* Mensagem final */}
                             <p className="text-sm text-muted-foreground italic max-w-md">
                                 Obrigado por escolher a adoção responsável! 💚
                             </p>
