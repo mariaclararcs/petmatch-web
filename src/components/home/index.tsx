@@ -7,6 +7,7 @@ import Link from "next/link"
 import { useGetAllAnimals } from "@/hooks/animal/useGetAllAnimals"
 import { IAnimal } from "@/interfaces/animal"
 import { useEffect, useState } from "react"
+import AdoptionInfo from "../adoption-info"
 
 interface AnimalWithFormattedDate extends Omit<IAnimal, 'shelter_date'> {
   formatted_date?: string
@@ -145,6 +146,9 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Seção de informações de como adotar */}
+      <AdoptionInfo />
+
       {/* Seção de animais recentemente abrigados */}
       <div className="flex flex-col w-full gap-6">
         <div className="flex flex-row justify-between items-center">
@@ -200,6 +204,9 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      {/* Seção de informações de como adotar */}
+      <AdoptionInfo />
 
       {/* Seção de animais recentemente abrigados */}
       <div className="flex flex-col w-full gap-6">

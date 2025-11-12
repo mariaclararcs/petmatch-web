@@ -8,7 +8,7 @@ export default function AboutUs() {
       <div className="flex flex-col gap-2 items-center text-center mb-6">
         <Image
           alt="Pet Match Icon" 
-          src="/icons/pet-house2.svg"
+          src="/icons/pet-house.png"
           className="mb-2"
           width={92}
           height={92}
