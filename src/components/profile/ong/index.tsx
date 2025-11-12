@@ -136,7 +136,7 @@ export default function ProfileOng() {
                 <h2 className="text-2xl font-medium">Perfil da ONG</h2>
 
                 <div className="flex flex-row gap-8">
-                    <Avatar className="h-38 w-38 rounded-full">
+                    <Avatar className="h-38 w-38 rounded-full border-amuted border-1">
                         <AvatarFallback className="h-38 w-38 rounded-xg">
                             <Image
                                 src={ong.ong_image || "/images/default-avatar.jpg"}

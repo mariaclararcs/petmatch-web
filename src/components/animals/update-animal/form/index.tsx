@@ -310,7 +310,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
             name="age"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Idade (anos)</FormLabel>
+                <FormLabel>Idade aproximada (anos)</FormLabel>
                 <FormControl>
                   <Input type="number" min="1" {...field} />
                 </FormControl>

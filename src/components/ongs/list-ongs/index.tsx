@@ -155,7 +155,7 @@ export default function ListOngs() {
         </Table>
       </div>
 
-      {/* Paginação */}
+      {/* Paginação 
       {paginationData && (
         <PaginationFull
           pageIndex={paginationData.current_page}
@@ -167,6 +167,7 @@ export default function ListOngs() {
           onPageChange={handlePageChange}
         />
       )}
+      */}
     </section>
   )
 }

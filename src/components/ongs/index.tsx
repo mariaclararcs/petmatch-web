@@ -52,6 +52,8 @@ export default function Ongs() {
                     </div>
                 </div>
             </div>
+
+            {/* 
             <div className="mx-24">
                 {paginationData && (
                     <PaginationFull
@@ -65,6 +67,7 @@ export default function Ongs() {
                     />
                 )}
             </div>
+            */}
         </div>
     )
 }

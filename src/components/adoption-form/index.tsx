@@ -107,15 +107,15 @@ export default function AdoptionForm() {
             <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
                 <div className="flex flex-col items-center w-full max-w-2xl text-center">
                     <h1 className="text-2xl font-bold mb-6">Formulário de Adoção</h1>
-                    <p className="text-lg text-gray-600 mb-6">
+                    <p className="text-lg mb-4">
                         Você precisa estar logado para enviar o formulário de adoção.
                     </p>
-                    <Button
-                        onClick={() => router.push('/login')}
-                        className="bg-asecondary text-white hover:bg-asecondary/90"
+                    <Link 
+                        href="/login"
+                        className="bg-aprimary rounded-xl border-2 border-asecondary py-2 px-6 w-fit font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
                     >
-                        Fazer Login
-                    </Button>
+                        Ir para Login
+                    </Link>
                 </div>
             </div>
         )
@@ -130,15 +130,15 @@ export default function AdoptionForm() {
             <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
                 <div className="flex flex-col items-center w-full max-w-2xl text-center">
                     <h1 className="text-2xl font-bold mb-6">Formulário de Adoção</h1>
-                    <p className="text-lg text-red-500 mb-6">
+                    <p className="text-lg text-red-500 mb-4">
                         {!animal ? "Erro ao carregar informações do animal." : "Erro ao carregar informações da ONG."} Tente novamente mais tarde.
                     </p>
-                    <Button
-                        onClick={() => router.push('/')}
-                        className="bg-asecondary text-white hover:bg-asecondary/90"
+                    <Link 
+                        href="/"
+                        className="bg-aprimary rounded-xl border-2 border-asecondary py-2 px-6 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
                     >
-                        Voltar para Home
-                    </Button>
+                        Voltar para Tela Inicial
+                    </Link>
                 </div>
             </div>
         )
@@ -346,7 +346,6 @@ export default function AdoptionForm() {
                                 </label>
                                 <label className="mb-6 block">Animal a ser adotado: 
                                     <span className="font-bold text-asecondary ml-1">{animal.name}</span>
-                                    <span className="text-gray-600 ml-2">({formattedAnimalType})</span> {/* ← EXIBINDO TIPO FORMATADO */}
                                 </label>
                             </div>
 
@@ -378,6 +377,7 @@ export default function AdoptionForm() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block mb-2 font-medium">Data de Nascimento *</label>
+                                        {/* INPUT DE DATA ATUALIZADO - IGUAL AO CADASTRO */}
                                         <Popover open={open} onOpenChange={setOpen}>
                                             <PopoverTrigger asChild>
                                                 <Button
@@ -388,16 +388,19 @@ export default function AdoptionForm() {
                                                     <ChevronDownIcon />
                                                 </Button>
                                             </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                                                 <Calendar
                                                     mode="single"
                                                     selected={date}
+                                                    captionLayout="dropdown"
                                                     onSelect={(selectedDate) => {
                                                         setDate(selectedDate)
-                                                        setOpen(false)
                                                         if (selectedDate) {
-                                                            handleInputChange('dataNascimento', selectedDate.toISOString())
+                                                            handleInputChange('dataNascimento', selectedDate.toISOString().split('T')[0])
+                                                        } else {
+                                                            handleInputChange('dataNascimento', '')
                                                         }
+                                                        setOpen(false)
                                                     }}
                                                 />
                                             </PopoverContent>
