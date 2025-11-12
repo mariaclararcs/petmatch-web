@@ -23,11 +23,11 @@ import { useGetOng } from "@/hooks/ongs/useGetOng"
 import LoadingComponent from "@/components/loading"
 import emailjs from '@emailjs/browser'
 
-// Configuração do EmailJS (substitua com suas credenciais)
+// Configuração do EmailJS (credenciais)
 const EMAILJS_CONFIG = {
-  serviceId: 'service_j1ip5vo', // Substitua pelo seu Service ID do EmailJS
-  templateId: 'template_x2p36cd', // Substitua pelo seu Template ID do EmailJS
-  publicKey: 'Gz9B6hknojpmtMweS', // Substitua pela sua Public Key do EmailJS
+  serviceId: 'service_j1ip5vo', // Service ID do EmailJS
+  templateId: 'template_x2p36cd', // Template ID do EmailJS
+  publicKey: 'Gz9B6hknojpmtMweS', // Public Key do EmailJS
 }
 
 // Função de formatação de telefone
@@ -42,6 +42,20 @@ const formatPhoneNumber = (phone: string): string => {
     return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 6)}-${cleaned.substring(6)}`
   } else {
     return phone
+  }
+}
+
+// Função de formatação do tipo de animal
+const formatAnimalType = (type: string): string => {
+  switch (type?.toLowerCase()) {
+    case 'dog':
+      return 'Cachorro'
+    case 'cat':
+      return 'Gato'
+    case 'other':
+      return 'Outro'
+    default:
+      return type || 'Não informado'
   }
 }
 
@@ -130,6 +144,7 @@ export default function AdoptionForm() {
     }
 
     const formattedPhone = formatPhoneNumber(ong.phone)
+    const formattedAnimalType = formatAnimalType(animal.type)
 
     const formatPhone = (value: string) => {
         value = value.replace(/\D/g, '')
@@ -193,10 +208,8 @@ export default function AdoptionForm() {
                 emailCampo: ong?.email,
                 ong_emailCampo: ong?.ong_email,
                 emailInstitution: ong?.email_institution,
-                // Adicione outras possibilidades baseadas na sua API
             })
 
-            // Tente diferentes nomes de campo para o email
             const ongEmail = 
                 ong?.ong_email
 
@@ -223,14 +236,14 @@ export default function AdoptionForm() {
                 endereco: formData.endereco,
                 cep: formData.cep,
                 
-                // Dados do animal
+                // Dados do animal - COM TIPO FORMATADO
                 nome_animal: animal.name,
-                especie_animal: animal.species,
-                raca_animal: animal.breed || 'Não informada',
+                idade_animal: animal.age,
+                especie_animal: formattedAnimalType,
                 
                 // Dados da ONG
                 nome_ong: ong.name_institution,
-                email_ong: ongEmail, // ← Adicione isso também
+                email_ong: ongEmail,
                 
                 // Respostas do questionário
                 pergunta1: formData.pergunta1,
@@ -251,6 +264,10 @@ export default function AdoptionForm() {
 
             console.log('🚀 Enviando email para:', ongEmail)
             console.log('📤 Template params:', templateParams)
+            console.log('🐾 Tipo do animal:', {
+                original: animal.type,
+                formatado: formattedAnimalType
+            })
 
             const response = await emailjs.send(
                 EMAILJS_CONFIG.serviceId,
@@ -290,9 +307,13 @@ export default function AdoptionForm() {
         }
     }
 
-    // Antes do return no componente principal, adicione:
     console.log('🔍 TODOS os dados da ONG:', ong)
     console.log('🔍 Campos disponíveis:', Object.keys(ong || {}))
+    console.log('🐾 Dados do animal:', {
+        nome: animal.name,
+        tipo: animal.type,
+        tipoFormatado: formattedAnimalType
+    })
 
     return (
         <div className="flex flex-col items-center mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen">
@@ -324,6 +345,7 @@ export default function AdoptionForm() {
                                 </label>
                                 <label className="mb-6 block">Animal a ser adotado: 
                                     <span className="font-bold text-asecondary ml-1">{animal.name}</span>
+                                    <span className="text-gray-600 ml-2">({formattedAnimalType})</span> {/* ← EXIBINDO TIPO FORMATADO */}
                                 </label>
                             </div>
 
@@ -463,21 +485,21 @@ export default function AdoptionForm() {
                                                 <SelectContent>
                                                     {item.number === 1 && (
                                                         <>
-                                                            <SelectItem value="companhia" className="text-md">Companhia</SelectItem>
-                                                            <SelectItem value="guarda" className="text-md">Guarda</SelectItem>
-                                                            <SelectItem value="outro" className="text-md">Outro</SelectItem>
+                                                            <SelectItem value="Companhia" className="text-md">Companhia</SelectItem>
+                                                            <SelectItem value="Guarda" className="text-md">Guarda</SelectItem>
+                                                            <SelectItem value="Outro" className="text-md">Outro</SelectItem>
                                                         </>
                                                     )}
                                                     {item.number === 2 && (
                                                         <>
-                                                            <SelectItem value="casa" className="text-md">Casa</SelectItem>
-                                                            <SelectItem value="apartamento" className="text-md">Apartamento</SelectItem>
+                                                            <SelectItem value="Casa" className="text-md">Casa</SelectItem>
+                                                            <SelectItem value="Apartamento" className="text-md">Apartamento</SelectItem>
                                                         </>
                                                     )}
                                                     {item.number === 3 && (
                                                         <>
-                                                            <SelectItem value="nao" className="text-md">Não</SelectItem>
-                                                            <SelectItem value="sim" className="text-md">Sim, já verifiquei</SelectItem>
+                                                            <SelectItem value="Nao" className="text-md">Não</SelectItem>
+                                                            <SelectItem value="Sim" className="text-md">Sim</SelectItem>
                                                         </>
                                                     )}
                                                 </SelectContent>
