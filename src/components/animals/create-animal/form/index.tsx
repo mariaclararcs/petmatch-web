@@ -80,7 +80,11 @@ const getInitials = (name: string) => {
     .slice(0, 2)
 }
 
-export function CreateAnimalForm() {
+interface CreateAnimalFormProps {
+  onSuccess?: () => void
+}
+
+export function CreateAnimalForm({ onSuccess }: CreateAnimalFormProps) {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   const [userOng, setUserOng] = useState<IOng | null>(null)
   
@@ -139,6 +143,11 @@ export function CreateAnimalForm() {
       }
     }
   }, [session, ongs, canManageOngs, form])
+
+  const handleSuccessDialogClose = () => {
+    setIsSuccessDialogOpen(false)
+    onSuccess?.()
+  }
 
   function onSubmit(data: AnimalFormValues) {
     const payload = {
@@ -386,7 +395,7 @@ export function CreateAnimalForm() {
       </Form>
 
       {/* Dialog de sucesso */}
-      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+      <Dialog open={isSuccessDialogOpen} onOpenChange={handleSuccessDialogClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Animal cadastrado com sucesso!</DialogTitle>

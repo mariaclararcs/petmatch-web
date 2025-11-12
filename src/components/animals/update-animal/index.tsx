@@ -8,15 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog" // Importe todos do mesmo lugar
+} from "@/components/ui/dialog"
+import { useState } from "react"
 
 interface UpdateAnimalProps {
   animal: IAnimal
 }
 
 export function UpdateAnimal({ animal }: UpdateAnimalProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleSuccess = () => {
+    setIsOpen(false)
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline" 
@@ -32,7 +39,7 @@ export function UpdateAnimal({ animal }: UpdateAnimalProps) {
           <DialogTitle>Atualizar cadastro do animal</DialogTitle>
         </DialogHeader>
         <div className="overflow-y-auto max-h-[calc(90vh-100px)]">
-          <UpdateAnimalForm animal={animal} />
+          <UpdateAnimalForm animal={animal} onSuccess={handleSuccess} />
         </div>
       </DialogContent>
     </Dialog>

@@ -14,7 +14,7 @@ export default function AdoptionInfo() {
                         height={92}
                     />
                     <span className="font-semibold text-asecondary">Encontre um pet</span>
-                    <span className="text-sm">Entre na tela de informações do animal e clique em "Formulário de Adoção"</span>
+                    <span className="text-sm">Entre na tela de informações do animal escolhido e clique em "Formulário de Adoção"</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 w-72">
                     <Image
@@ -25,7 +25,7 @@ export default function AdoptionInfo() {
                         height={92}
                     />
                     <span className="font-semibold text-asecondary">Preencha o formulário de adoção</span>
-                    <span className="text-sm">Insira suas informações, meios de contato e responda o questionário</span>
+                    <span className="text-sm">Insira suas informações, dados para contato e responda o questionário</span>
                 </div>
                 <div className="flex flex-col items-center gap-2 w-72">
                     <Image

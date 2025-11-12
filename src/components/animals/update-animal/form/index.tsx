@@ -84,9 +84,10 @@ const getInitials = (name: string) => {
 
 interface UpdateAnimalFormProps {
   animal: IAnimal
+  onSuccess?: () => void
 }
 
-export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
+export function UpdateAnimalForm({ animal, onSuccess }: UpdateAnimalFormProps) {
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
@@ -144,7 +145,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
     mutationFn: (data: AnimalFormValues) =>
       api.put(`http://localhost:8000/api/animals/${animal.id}`, data),
     onSuccess: () => {
-      setIsSuccessDialogOpen(true)
+      setIsSuccessDialogOpen(true) // Abre o dialog de sucesso
       queryClient.invalidateQueries({ queryKey: ["get-animals"] })
     },
     onError: error => {
@@ -167,6 +168,11 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
       setIsUploading(false)
       throw new Error("Falha no upload da imagem")
     }
+  }
+
+  const handleSuccessDialogClose = () => {
+    setIsSuccessDialogOpen(false)
+    onSuccess?.()
   }
 
   async function onSubmit(data: AnimalFormValues) {
@@ -431,7 +437,7 @@ export function UpdateAnimalForm({ animal }: UpdateAnimalFormProps) {
       </Form>
 
       {/* Dialog de sucesso */}
-      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+      <Dialog open={isSuccessDialogOpen} onOpenChange={handleSuccessDialogClose}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Cadastro de animal atualizado com sucesso!</DialogTitle>
