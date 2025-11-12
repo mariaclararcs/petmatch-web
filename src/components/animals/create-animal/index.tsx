@@ -15,7 +15,7 @@ export function CreateAnimalSheet() {
       <DialogTrigger>
         <Button>Cadastrar</Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] w-[100vw] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] w-[100vw]">
         <DialogHeader className="sticky top-0 z-10">
           <DialogTitle>Cadastre um animal</DialogTitle>
         </DialogHeader>

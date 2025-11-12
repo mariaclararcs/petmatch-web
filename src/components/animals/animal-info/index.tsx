@@ -44,7 +44,7 @@ export default function AnimalInfo() {
     }
 
     return (
-        <div className="flex flex-col mx-auto gap-8 px-20 py-6 xl:py-8 min-h-screen mb-4">
+        <div className="flex flex-col mx-auto gap-8 px-20 py-6 xl:py-8 min-h-178 mb-4">
             <h2 className="text-2xl font-medium">Informações do Animal</h2>
             <div className="flex flex-row justify-center gap-10">
                 <div className="flex flex-col w-100 h-120">
@@ -60,12 +60,18 @@ export default function AnimalInfo() {
                         }}
                         unoptimized
                     />
-                    <Link 
-                        href={`/formulario-adocao/${animal.id}`}
-                        className="bg-aprimary rounded-xl border-2 border-asecondary my-6 py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
-                    >
-                        Formulário de Adoção
-                    </Link>
+
+                    <div className="flex flex-col gap-2 mt-4">
+                        <span className="text-muted-foreground text-sm">
+                            Se interessou em adotar este animal? Preencha o formulário de adoção
+                        </span>
+                        <Link 
+                            href={`/formulario-adocao/${animal.id}`}
+                            className="bg-aprimary rounded-xl border-2 border-asecondary py-2 w-full font-bold text-asecondary hover:bg-asecondary hover:text-background transition-colors text-center block"
+                        >
+                            Formulário de Adoção
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="flex flex-col w-fit">

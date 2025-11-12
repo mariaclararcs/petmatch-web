@@ -34,7 +34,7 @@ export function UpdateUser({ user }: UpdateUserProps) {
           <Pencil className="h-3 w-3" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] w-[100vw] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] w-[100vw]">
         <DialogHeader className="sticky top-0 z-10">
           <DialogTitle>Editar Usuário</DialogTitle>
         </DialogHeader>
